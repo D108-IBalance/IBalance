@@ -7,15 +7,21 @@ import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
 
+    private final UserDetailsService userDetailsService;
     private String secretKey;
 
-    public JwtTokenProvider(@Value("${jwt.secret.key}") String secretKey) {
+    public JwtTokenProvider(UserDetailsService userDetailsService, @Value("${jwt.secret.key}") String secretKey) {
+        this.userDetailsService = userDetailsService;
         this.secretKey = secretKey;
     }
 
@@ -40,5 +46,19 @@ public class JwtTokenProvider {
         }
 
         return JwtCode.DENIED;
+    }
+
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPrimaryKey(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    private String getUserPrimaryKey(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }
