@@ -6,7 +6,7 @@ import Lottie from 'react-lottie';
 import Icon from "../../assets/load/json/Lottie-load.json";
 
 // 내부 모듈
-import './Load.css';
+import classes from './Load.module.css';
 
 /* 
     props값 step을 통해 상태 업데이트 가능
@@ -27,7 +27,7 @@ const Load = (props)=>{
             break;
         case 2: // off -> on
             isShow = true;
-            fade = "";
+            fade = "fadeOut";
             break;
         default: // 디폴트값 명시적 작성
             isShow = false;
@@ -60,11 +60,11 @@ const Spinner = (props)=>{
       };
 
     let {fade} = props // 애니메이션 클래스
-    
+
     return(
-        <div className={`container ${fade}`} >
+        <div className={classes.container + ` ${classes[fade]}`} >
             <Lottie options={defaultOptions} height={100} width={100}/>
-            <span className="loadText">Loading...</span>
+            <span className={classes.loadText}>Loading...</span>
         </div>
     )
 }
