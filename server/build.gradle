@@ -88,6 +88,13 @@ dependencies {
 	testImplementation 'com.squareup.okhttp3:mockwebserver'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+	// H2 & JDBC(for H2)
+	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// google case format
+	implementation 'com.google.guava:guava:31.1-jre'
+
 }
 
 openapi3 {

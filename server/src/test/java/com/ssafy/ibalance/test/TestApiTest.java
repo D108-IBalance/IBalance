@@ -1,12 +1,10 @@
 package com.ssafy.ibalance.test;
 
-import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.jayway.jsonpath.JsonPath;
 import com.ssafy.ibalance.ApiTest;
 import com.ssafy.ibalance.test.dto.request.TestSaveRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -47,25 +45,26 @@ public class TestApiTest extends ApiTest {
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
-//    @Test
-//    void QueryDSL_Test() throws Exception{
-//        String dongwooAddr = "Daegu Dalseo Bolli";
-//        test_entity_save("dongwoo", dongwooAddr);
-//        test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
-//
-//        String targetUrl = "/test/querydsl/" + "dongwoo";
-//
-//        MvcResult mvcResult = mockMvc.perform(
-//                        get(targetUrl)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String result = mvcResult.getResponse().getContentAsString();
-//        String name = JsonPath.parse(result).read("$.[0].address");
-//        assertThat(name).contains(dongwooAddr);
-//    }
+    @Test
+    void QueryDSL_Test() throws Exception{
+        String dongwooAddr = "Daegu Dalseo Bolli";
+        test_entity_save("dongwoo", dongwooAddr);
+        test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
+
+        String targetUrl = "/test/querydsl/" + "dongwoo";
+
+        MvcResult mvcResult = mockMvc.perform(
+                        get(targetUrl)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andReturn();
+
+        String result = mvcResult.getResponse().getContentAsString();
+        String name = JsonPath.parse(result).read("$.[0].address");
+        assertThat(name).contains(dongwooAddr);
+    }
 
     void test_entity_save(String name, String address) throws Exception {
         TestSaveRequest request = TestSaveRequest.builder()
