@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.user.service;
+package com.ssafy.ibalance.member.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

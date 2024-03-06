@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.user.type;
+package com.ssafy.ibalance.member.type;
 
 public enum OAuthProvider {
     GOOGLE, KAKAO, NAVER

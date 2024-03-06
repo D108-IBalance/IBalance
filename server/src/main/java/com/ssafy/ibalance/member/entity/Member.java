@@ -1,7 +1,7 @@
-package com.ssafy.ibalance.user.entity;
+package com.ssafy.ibalance.member.entity;
 
-import com.ssafy.ibalance.user.type.OAuthProvider;
-import com.ssafy.ibalance.user.type.Role;
+import com.ssafy.ibalance.member.type.OAuthProvider;
+import com.ssafy.ibalance.member.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User implements UserDetails {
+public class Member implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    private Integer memberId;
 
     @Column(length = 40, nullable = false)
     String email;
