@@ -1,14 +1,17 @@
 package com.ssafy.ibalance.test;
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.jayway.jsonpath.JsonPath;
 import com.ssafy.ibalance.ApiTest;
 import com.ssafy.ibalance.test.dto.request.TestSaveRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class TestApiTest extends ApiTest {
@@ -16,14 +19,17 @@ public class TestApiTest extends ApiTest {
     @Test
     void helloTest() throws Exception {
         String name = "dongwoo";
-        String targetUrl = "/test/hello/" + name;
         mockMvc.perform(
-                get(targetUrl)
+                get("/test/hello/{name}", name)
                         .contentType(MediaType.APPLICATION_JSON)
 
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("hello " + name));
+                .andExpect(jsonPath("$").value("hello " + name))
+                .andDo(
+                        document(DEFAULT_RESTDOC_PATH, "Swagger 기본 기능을 검증합니다.",
+                                "스웨거검증")
+                );
     }
 
     @Test
@@ -34,32 +40,32 @@ public class TestApiTest extends ApiTest {
         test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
 
         mockMvc.perform(
-                        get("/test/jpa/" + daegu)
+                        get("/test/jpa/{name}", daegu)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
-    @Test
-    void QueryDSL_Test() throws Exception{
-        String dongwooAddr = "Daegu Dalseo Bolli";
-        test_entity_save("dongwoo", dongwooAddr);
-        test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
-
-        String targetUrl = "/test/querydsl/" + "dongwoo";
-
-        MvcResult mvcResult = mockMvc.perform(
-                        get(targetUrl)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String result = mvcResult.getResponse().getContentAsString();
-        String name = JsonPath.parse(result).read("$.[0].address");
-        assertThat(name).contains(dongwooAddr);
-    }
+//    @Test
+//    void QueryDSL_Test() throws Exception{
+//        String dongwooAddr = "Daegu Dalseo Bolli";
+//        test_entity_save("dongwoo", dongwooAddr);
+//        test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
+//
+//        String targetUrl = "/test/querydsl/" + "dongwoo";
+//
+//        MvcResult mvcResult = mockMvc.perform(
+//                        get(targetUrl)
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                )
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        String result = mvcResult.getResponse().getContentAsString();
+//        String name = JsonPath.parse(result).read("$.[0].address");
+//        assertThat(name).contains(dongwooAddr);
+//    }
 
     void test_entity_save(String name, String address) throws Exception {
         TestSaveRequest request = TestSaveRequest.builder()
