@@ -1,0 +1,72 @@
+.introBack{
+    background-color: black;
+    background: url('../../assets/auth/img/intro_bg.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+}
+.introImg{
+    position: absolute;
+    background: url('../../assets/auth/img/intro_img.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 100px;
+    height: 100px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    animation: rotateLogo 1s;
+    animation-iteration-count: infinite;
+    transform-origin: top left;
+    /* border: 1px solid rebeccapurple; */
+}
+
+@keyframes rotateLogo {
+    0% {
+        transform: rotate(0deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+      }
+    10% {
+        transform: rotate(15deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+      }
+    20% {
+        transform: rotate(0deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+      }
+    30% {
+        transform: rotate(10deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+      }
+    50% {
+        transform: rotate(0deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+      }
+      100% {
+        transform: rotate(0deg) translate(-50%,-50%);
+        transform-origin: 25%, 25%;
+
+
+      }
+}
+
+.introLogo{
+    position: absolute;
+    background: url('../../assets/auth/img/intro_logo.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 200px;
+    height: 80px;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+
+}
