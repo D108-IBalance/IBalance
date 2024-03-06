@@ -32,7 +32,6 @@ const Load = (props)=>{
         default: // 디폴트값 명시적 작성
             isShow = false;
     }
-
     return(
         <>
         {
@@ -58,9 +57,7 @@ const Spinner = (props)=>{
           preserveAspectRatio: "xMidYMid slice"
         },
       };
-
     let {fade} = props // 애니메이션 클래스
-
     return(
         <div className={classes.container + ` ${classes[fade]}`} >
             <Lottie options={defaultOptions} height={100} width={100}/>
