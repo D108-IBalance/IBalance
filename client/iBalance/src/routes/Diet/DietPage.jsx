@@ -3,15 +3,15 @@
 // 외부 모듈
 import NavbarModule from "../../modules/Navbar/NavbarModule"
 
-const HomePage = ()=>{
+const DietPage = ()=>{
     return(
         <>
         <div>
-            this is home
+            this is Diet
         </div>
-        <NavbarModule isClick={0}></NavbarModule>
+        <NavbarModule isClick={2}></NavbarModule>
         </>
     )
 }
 
-export default HomePage
+export default DietPage
