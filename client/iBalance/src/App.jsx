@@ -2,8 +2,10 @@
 
 // 외부 모듈
 import { Route,Routes } from "react-router";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './routes/Auth/LoginPage.jsx';
 import IntroPage from './routes/Auth/IntroPage.jsx';
+import HomePage from './routes/Home/HomePage.jsx';
 
 // 내부 모듈
 import  "./App.css";
@@ -17,6 +19,14 @@ const App = ()=>{
         <Route path="/" element={<IntroPage></IntroPage>}/> 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<LoginPage></LoginPage>}/>
+        {/* 홈페이지 */}
+        <Route path="/home" element={ <HomePage></HomePage> }></Route>
+        {/* 레시피페이지 */}
+        <Route path="/recipe" element={ <div>recipe page</div> }></Route>
+        {/* 식단페이지 */}
+        <Route path="/diet" element={ <div>diet page</div> }></Route>
+        {/* 일기장페이지 */}
+        <Route path="/diary" element={ <div>diary page</div> }></Route>
         {/* 오류 페이지 */}
         <Route path="*" element={<><Error/></>}/>
       </Routes>

@@ -32,7 +32,7 @@ const IntroPage = ()=>{
     });
 
     return(
-        <Container className={classes.introBack}>
+        <div className={classes.introBack}>
             {/* 인트로 상태값이 true 일때만 intro컴포넌트 보여주기 */}
             { intro === true ?
                 <Col sm>
@@ -40,7 +40,7 @@ const IntroPage = ()=>{
                     <Row className={classes.introLogo} ></Row>
                 </Col> : null
             }
-        </Container>
+        </div>
     )
 }
 
