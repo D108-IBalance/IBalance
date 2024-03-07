@@ -1,16 +1,3 @@
-body{
-    margin: 0;
-    padding: 0;
-}
-
-.loginBack{
-    background-color: black;
-    background: url('../../assets/auth/img/login_bg.png');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    width: 100%;
-}
 
 .loginFormbox{
     display: flex;
