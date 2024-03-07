@@ -10,6 +10,7 @@ import HomePage from './routes/Home/HomePage.jsx';
 import RecipePage from "./routes/Recipe/RecipePage.jsx";
 import DietPage from "./routes/Diet/DietPage.jsx";
 import DiaryPage from "./routes/Diary/DiaryPage.jsx";
+import Profile from "./routes/Profile/Profile.jsx";
 
 // 내부 모듈
 import  "./App.css";
@@ -24,6 +25,10 @@ const App = ()=>{
         {/* 로그인 페이지 */}
         <Route path="/enter" element={<EnterPage></EnterPage>}>
           <Route path="login" element={<LoginForm></LoginForm>}/>
+        </Route>
+        {/* 프로필 페이지 */}
+        <Route path="/enter" element={<EnterPage></EnterPage>}>
+          <Route path="profile" element={<Profile/>}/>
         </Route>
         {/* 홈페이지 */}
         <Route path="/home" element={ <HomePage/> }></Route>

@@ -12,8 +12,8 @@ import classes from './Load.module.css';
     props값 step을 통해 상태 업데이트 가능
     key(step)
         - 0 : default(none)
-        - 1 : (off -> on)
-        - 2 : (on/none->off)
+        - 1 : (on -> off) off지만 dom에 상태는 on, display만 none 처리
+        - 2 : (off/none -> on)
 */
 const Load = (props)=>{ 
     let { step } = props;
@@ -27,7 +27,8 @@ const Load = (props)=>{
             break;
         case 2: // off -> on
             isShow = true;
-            fade = "fadeOut";
+            fade = "";
+            // fade = "fadeOut";
             break;
         default: // 디폴트값 명시적 작성
             isShow = false;
