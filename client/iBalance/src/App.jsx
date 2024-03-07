@@ -7,6 +7,7 @@ import LoginForm from './routes/Auth/LoginForm.jsx';
 import IntroPage from './routes/Auth/IntroPage.jsx';
 import EnterPage from './routes/Auth/EnterPage.jsx';
 import HomePage from './routes/Home/HomePage.jsx'
+import Profile from "./routes/Profile/Profile.jsx";
 
 // 내부 모듈
 import  "./App.css";
@@ -21,6 +22,10 @@ const App = ()=>{
         {/* 로그인 페이지 */}
         <Route path="/enter" element={<EnterPage></EnterPage>}>
           <Route path="login" element={<LoginForm></LoginForm>}/>
+        </Route>
+        {/* 프로필 페이지 */}
+        <Route path="/enter" element={<EnterPage></EnterPage>}>
+          <Route path="profile" element={<Profile/>}/>
         </Route>
         {/* 홈페이지 */}
         <Route path="/home" element={ <HomePage></HomePage> }></Route>
