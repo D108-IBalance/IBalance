@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom';
 
 // 내부 모듈
-import classes from '../../assets/auth/IntroPage.module.css'
+import classes from './IntroPage.module.css'
 
 const IntroPage = ()=>{
     // 인트로 화면 상태 값 저장

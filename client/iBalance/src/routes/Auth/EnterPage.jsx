@@ -5,7 +5,7 @@ import {Container,  Row} from 'react-bootstrap';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 
 // 내부 모듈
-import classes from '../../assets/auth/EnterPage.module.css'
+import classes from './EnterPage.module.css'
 
 const EnterPage = ()=>{
     return(
