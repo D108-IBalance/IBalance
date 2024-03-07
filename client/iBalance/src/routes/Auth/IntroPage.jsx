@@ -16,7 +16,7 @@ const IntroPage = ()=>{
     // 2초 뒤 로그인 페이지로 넘어가는 함수
     const timeout = () => {
         setTimeout(() => {
-            navigate('/Login')
+            navigate('/enter/login')
             // 인트로 상태값 false로 변경
             setIntro(false)
         }, 2000);

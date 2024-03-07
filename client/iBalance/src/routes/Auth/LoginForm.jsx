@@ -1,22 +1,6 @@
-/* eslint-disable */
-
-// 외부 모듈
+import { useNavigate } from "react-router-dom"
+import classes from './LoginForm.module.css'
 import {Container,  Row} from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-
-// 내부 모듈
-import classes from '../../assets/auth/LoginPage.module.css'
-
-const LoginPage = ()=>{
-    return(
-        <>
-            <div className={classes.loginBack}>
-                <LoginForm></LoginForm>
-            </div>
-        </>
-    )
-
-}
 
 const LoginForm = ()=>{
     let navigate = useNavigate()
@@ -33,4 +17,4 @@ const LoginForm = ()=>{
     )
 }
 
-export default LoginPage
+export default LoginForm
