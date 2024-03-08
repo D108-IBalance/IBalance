@@ -35,11 +35,6 @@ public class GoogleOAuth2Utils {
     private static final String USER_INFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo";
 
     public GoogleMemberInfoResponse getUserInfo(String code) {
-
-        // 1. 먼저, WebClient 로 유저정보를 가져올 수 있는지 테스트한다.
-        // 2. 그런 다음에, authorization 에 어떤 내용이 들어가 있는지 파악한다
-        // 3. 그에 맞게, GoogleUserInfo 내용을 생성해 준다
-        // 4. 이
         String accessToken = getAccessToken(code);
         String bearerToken = "Bearer " + accessToken;
 
