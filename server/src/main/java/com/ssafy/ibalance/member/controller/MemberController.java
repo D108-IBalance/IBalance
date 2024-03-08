@@ -51,5 +51,15 @@ public class MemberController {
         jwtTokenProvider.setRefreshTokenForClient(response, memberInfo);
         return jwtTokenProvider.makeJwtTokenResponse(memberInfo);
     }
+
+    /**
+     * 회원 로그아웃
+     *
+     * @param response 쿠키 삭제를 위한 response
+     */
+    @GetMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        jwtTokenProvider.removeRefreshTokenForClient(response);
+    }
 }
 
