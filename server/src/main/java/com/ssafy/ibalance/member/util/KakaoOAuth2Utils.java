@@ -1,7 +1,7 @@
 package com.ssafy.ibalance.member.util;
 
 import com.ssafy.ibalance.member.dto.response.KakaoMemberInfoResponse;
-import com.ssafy.ibalance.member.dto.response.KakaoTokenResponseDto;
+import com.ssafy.ibalance.member.dto.response.KakaoTokenResponse;
 import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,16 +63,16 @@ public class KakaoOAuth2Utils {
         requestBody.add("redirect_uri", redirectUri);
         requestBody.add("code", code);
 
-        KakaoTokenResponseDto kakaoTokenResponseDto = webClient.post()
+        KakaoTokenResponse kakaoTokenResponse = webClient.post()
                 .bodyValue(requestBody)
                 .retrieve()
-                .bodyToMono(KakaoTokenResponseDto.class)
+                .bodyToMono(KakaoTokenResponse.class)
                 .block();
 
-        log.info("kakaoTokenResponseDto : {}", kakaoTokenResponseDto);
+        log.info("kakaoTokenResponseDto : {}", kakaoTokenResponse);
 
-        if(kakaoTokenResponseDto != null) {
-            return kakaoTokenResponseDto.getAccessToken();
+        if(kakaoTokenResponse != null) {
+            return kakaoTokenResponse.getAccessToken();
         }
 
         throw new KakaoTokenIsNullException("kakao accessToken이 없습니다.");
