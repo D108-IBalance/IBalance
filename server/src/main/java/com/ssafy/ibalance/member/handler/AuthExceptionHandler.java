@@ -1,7 +1,7 @@
 package com.ssafy.ibalance.member.handler;
 
 import com.ssafy.ibalance.common.type.ErrorResponse;
-import com.ssafy.ibalance.member.exception.KakaoInfoIsNullException;
+import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,9 +21,9 @@ public class AuthExceptionHandler {
         return makeErrorResponse(e, "code");
     }
 
-    @ExceptionHandler(KakaoInfoIsNullException.class)
+    @ExceptionHandler(OAuthInfoNullException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public List<ErrorResponse> kakaoInfoExceptionHandler(KakaoInfoIsNullException e) {
+    public List<ErrorResponse> kakaoInfoExceptionHandler(OAuthInfoNullException e) {
         return makeErrorResponse(e, "code");
     }
 }

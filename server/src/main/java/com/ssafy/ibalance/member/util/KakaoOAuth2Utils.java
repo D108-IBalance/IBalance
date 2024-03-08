@@ -1,24 +1,22 @@
-package com.ssafy.ibalance.member.service;
+package com.ssafy.ibalance.member.util;
 
 import com.ssafy.ibalance.member.dto.response.KakaoMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.KakaoTokenResponseDto;
-import com.ssafy.ibalance.member.entity.Member;
-import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
-import com.ssafy.ibalance.member.repository.MemberRepository;
-import com.ssafy.ibalance.member.type.OAuthProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Service
+@Component
+@PropertySource("classpath:oauth.properties")
 @RequiredArgsConstructor
 @Slf4j
-public class OauthService {
+public class KakaoOAuth2Utils {
 
     @Value("${kakao.client-id}")
     private String clientId;
@@ -32,9 +30,7 @@ public class OauthService {
     @Value("${kakao.token-url}")
     private String kakaoTokenUrl;
 
-    private final MemberRepository memberRepository;
-
-    public Member getKakaoInfo(String code) {
+    public KakaoMemberInfoResponse getKakaoInfo(String code) {
         log.info("getKakaoInfo 호출 : {}", code);
 
         String kakaoAccessToken = getKakaoToken(code);
@@ -47,21 +43,10 @@ public class OauthService {
                 .defaultHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                 .build();
 
-        KakaoMemberInfoResponse kakaoUserInfoResponse = webClient.get()
+        return webClient.get()
                 .retrieve()
                 .bodyToMono(KakaoMemberInfoResponse.class)
                 .block();
-
-        // kakao info null 확인
-        if(kakaoUserInfoResponse == null) {
-            throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
-        }
-
-        return memberRepository.findByCodeAndProvider(kakaoUserInfoResponse.getId().toString(), OAuthProvider.KAKAO)
-                .orElseGet(() -> memberRepository.save(Member.builder()
-                .code(kakaoUserInfoResponse.getId().toString())
-                .provider(OAuthProvider.KAKAO)
-                .build()));
     }
 
     public String getKakaoToken(String code) throws KakaoTokenIsNullException {
