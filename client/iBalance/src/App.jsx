@@ -7,7 +7,7 @@ import LoginForm from './routes/Auth/LoginForm.jsx';
 import IntroPage from './routes/Auth/IntroPage.jsx';
 import EnterPage from './routes/Auth/EnterPage.jsx';
 import HomePage from './routes/Home/HomePage.jsx';
-import { SocialLogin } from "./routes/Auth/SocialLogin.jsx";
+import SocialLogin  from "./routes/Auth/SocialLogin.jsx";
 import RecipePage from "./routes/Recipe/RecipePage.jsx";
 import DietPage from "./routes/Diet/DietPage.jsx";
 import DiaryPage from "./routes/Diary/DiaryPage.jsx";

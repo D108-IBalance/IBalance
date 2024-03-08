@@ -1,0 +1,39 @@
+@media screen and (max-width: 576px){
+    body{
+        /* height: 100vh; */
+        /* width: 100vw; */
+        overflow: hidden;
+        background: #F7F8F9;
+    }
+
+    .homeContentBack{
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 20px;
+        border: 1px solid blue;
+        /* height: 400px; */
+        width: 90%;
+        overflow-y: scroll;
+    }
+    .todayDietBox{
+        /* border: 1px solid red; */
+        height: 200px;
+        width: 100%;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
+}
+
+@media screen and (min-width: 576px){
+    body{
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background: #F7F8F9;
+    }
+}

@@ -1,7 +1,9 @@
-@media screen and (max-width: 768px){
+@media screen and (max-width: 576px){
+
 .navBox{
     position: fixed;
     bottom: 0;
+    right: 0;
     width: 100%;
     box-shadow: 0px -2px 5px rgba(230, 230, 230, 10);
 }
@@ -140,12 +142,18 @@
 }
 
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 576px){
+.body{
+    margin: 0;
+    padding: 0;
+}
+
 .navBox{
-    position: fixed;
-    top: 0;
-    width: 100%;
-    box-shadow: 0px 2px 5px rgba(230, 230, 230, 10);
+    box-shadow: 2px 0px 5px rgba(230, 230, 230, 10);
+    height: 100vh;
+    width: 25%;
+    padding-left: 3%;
+    padding-right: 2%;
 }
 
 .iconBox {
@@ -154,8 +162,9 @@
 
 .texticonBox {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
     width: 100%;
 }
 
@@ -163,6 +172,17 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.IconBox span{
+    font-size: 1em;
+    margin-left: 10px;
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+
 }
 
 .homeIcon{
@@ -170,8 +190,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -181,8 +201,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -192,8 +212,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -203,8 +223,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -214,8 +234,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -225,8 +245,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -236,8 +256,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -247,8 +267,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -258,8 +278,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -269,8 +289,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -280,8 +300,8 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
@@ -291,9 +311,20 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
     cursor: pointer;
     margin: 0;
 }
+
+.logoBox{
+    background: url(../../assets/auth/img/logo_large.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 70px;
+    width: 90%;
+    margin: 10% auto;
+}
+
 }
