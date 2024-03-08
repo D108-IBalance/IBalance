@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.member.entity;
 
+import com.ssafy.ibalance.common.util.BaseTime;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import com.ssafy.ibalance.member.type.Role;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Member implements UserDetails {
+public class Member extends BaseTime implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
