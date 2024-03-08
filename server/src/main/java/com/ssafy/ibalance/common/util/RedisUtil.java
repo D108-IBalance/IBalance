@@ -16,16 +16,16 @@ public class RedisUtil {
 
     public void setChildAllergy(Integer key, List<Long> values) {
 
-        childAllergyTemplate.opsForList().rightPushAll("child_allergy" + Integer.toString(key), values);
+        childAllergyTemplate.opsForList().rightPushAll("child_allergy_" + Integer.toString(key), values);
     }
 
     public List<Long> getChildAllergy(Integer key) {
 
         RedisOperations<String, Long> operations = childAllergyTemplate.opsForList().getOperations();
-        return operations.opsForList().range("child_allergy" + Integer.toString(key), 0, -1);
+        return operations.opsForList().range("child_allergy_" + Integer.toString(key), 0, -1);
     }
 
     public void deleteChildAllergy(Integer key) {
-        childAllergyTemplate.delete("child_allergy" + Integer.toString(key));
+        childAllergyTemplate.delete("child_allergy_" + Integer.toString(key));
     }
 }

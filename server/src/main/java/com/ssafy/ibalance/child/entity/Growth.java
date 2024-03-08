@@ -3,6 +3,8 @@ package com.ssafy.ibalance.child.entity;
 import com.ssafy.ibalance.common.util.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Builder
@@ -23,5 +25,6 @@ public class Growth extends BaseTime {
     private double weight;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Child child;
 }

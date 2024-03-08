@@ -28,4 +28,9 @@ public class ChildController {
         childService.registChild(registChildRequestDto);
     }
 
+    @DeleteMapping("/{childId}")
+    public void deleteChild(@PathVariable Integer childId) {
+        childService.deleteChild(childId);
+    }
+
 }

@@ -47,6 +47,11 @@ public class ChildService {
         redisUtil.setChildAllergy(child.getId(), childAllergyList);
     }
 
+    public void deleteChild(Integer childId) {
+        childRepository.deleteById(childId);
+        redisUtil.deleteChildAllergy(childId);
+    }
+
 
     public Child saveChild(RegistChildRequestDto registChildRequestDto) {
 
