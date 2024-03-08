@@ -10,6 +10,7 @@ import com.ssafy.ibalance.child.repository.AllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.GrowthRepository;
+import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class ChildService {
     private final GrowthRepository growthRepository;
     private final AllergyRepository allergyRepository;
     private final ChildAllergyRepository childAllergyRepository;
+    private final RedisUtil redisUtil;
 
     // MemberRepository 제작 완료 후 주석 제거
     // private final MemberRepository memberRepository;
@@ -42,7 +44,7 @@ public class ChildService {
         Child child = saveChild(registChildRequestDto);
         saveGrowth(child);
         List<Long> childAllergyList = saveChildAllergy(registChildRequestDto, child);
-        // redis에 childAllergy 데이터 추가 메서드 필요
+        redisUtil.setChildAllergy(child.getId(), childAllergyList);
     }
 
 
