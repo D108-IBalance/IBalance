@@ -20,7 +20,7 @@ import java.util.Set;
 public class Member implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer memberId;
+    private Integer id;
 
     @Column(length = 200, nullable = false)
     String code;
