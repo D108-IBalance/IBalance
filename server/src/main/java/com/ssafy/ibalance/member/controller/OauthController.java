@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class OauthController {
 
     private final OauthService oauthService;
-    private final MemberRepository memberRepository;
 
     /**
      * 소셜 로그인 (KAKAO, GOOGLE, NAVER) 후 회원 정보를 반환
@@ -31,21 +30,7 @@ public class OauthController {
     public Member socialLogin(@PathVariable("provider") OAuthProvider oAuthProvider, @RequestBody String code) {
         switch (oAuthProvider) {
             case KAKAO -> {
-                KakaoInfoResponseDto kakaoInfo = oauthService.getKakaoInfo(code);
-                boolean checkMemberExists = memberRepository.existsByCode(kakaoInfo.getId().toString());
-
-                if(!checkMemberExists) {
-                    Member member = Member.builder()
-                            .code(kakaoInfo.getId().toString())
-                            .provider(OAuthProvider.KAKAO)
-                            .build();
-
-                    memberRepository.save(member);
-                    return member;
-                }
-
-                return memberRepository.findByCode(kakaoInfo.getId().toString()).get();
-
+               return oauthService.getKakaoInfo(code);
             }
         }
 
