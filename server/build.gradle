@@ -95,6 +95,12 @@ dependencies {
 	// google case format
 	implementation 'com.google.guava:guava:31.1-jre'
 
+	// https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http
+	implementation group: 'com.google.auth', name: 'google-auth-library-oauth2-http', version: '1.23.0'
+
+	// https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+	implementation group: 'com.google.api-client', name: 'google-api-client', version: '2.2.0'
+
 }
 
 openapi3 {

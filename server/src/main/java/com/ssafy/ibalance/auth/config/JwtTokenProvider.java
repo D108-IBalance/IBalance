@@ -115,6 +115,7 @@ public class JwtTokenProvider {
                 .sameSite("None")
                 .build();
 
+        // TODO : Refresh Token 생성하고, Redis 에 저장하는 코드 생성하기
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
