@@ -22,8 +22,8 @@ public class Member implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer memberId;
 
-    @Column(length = 40, nullable = false)
-    String email;
+    @Column(length = 200, nullable = false)
+    String code;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 6, nullable = false)
@@ -47,7 +47,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return code;
     }
 
     @Override
