@@ -1,8 +1,6 @@
 package com.ssafy.ibalance.member.controller;
 
-import com.ssafy.ibalance.member.dto.response.KakaoInfoResponseDto;
 import com.ssafy.ibalance.member.entity.Member;
-import com.ssafy.ibalance.member.repository.MemberRepository;
 import com.ssafy.ibalance.member.service.OauthService;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import lombok.RequiredArgsConstructor;
