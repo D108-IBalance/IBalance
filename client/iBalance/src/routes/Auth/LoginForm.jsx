@@ -10,13 +10,13 @@ const LoginForm = () => {
     let server = "";
     if (num == 0) {
       // server = process.env.GOOGLE_AUTH_URL;
-      server = home;
+      server = "/home";
     } else if (num == 1) {
       // server = process.env.KAKAO_AUTH_URL;
-      server = home;
+      server = "/home";
     } else {
       // server = process.env.NAVER_AUTH_URL;
-      server = home;
+      server = "/home";
     }
     window.location.href = server;
   };
@@ -26,9 +26,21 @@ const LoginForm = () => {
       <Container className={classes.loginForm}>
         <Row className={classes.loginLogo}></Row>
 
-        <Row className={classes.loginGoogle} onClick={SocialLogin(0)}></Row>
-        <Row className={classes.loginKakao} onClick={SocialLogin(1)}></Row>
-        <Row className={classes.loginNaver} onClick={SocialLogin(2)}></Row>
+        <Row
+          className={classes.loginGoogle}
+          onClick={() => {
+            SocialLogin(0);
+          }}></Row>
+        <Row
+          className={classes.loginKakao}
+          onClick={() => {
+            SocialLogin(1);
+          }}></Row>
+        <Row
+          className={classes.loginNaver}
+          onClick={() => {
+            SocialLogin(2);
+          }}></Row>
       </Container>
     </div>
   );

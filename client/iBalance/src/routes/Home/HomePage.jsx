@@ -10,7 +10,7 @@ import profileImgfile from "../../assets/auth/img/default_profile1.png";
 const HomePage = () => {
   return (
     <>
-      <div>
+      <div className={classes.gridSet}>
         <NavbarModule isClick={0}></NavbarModule>
         <div className={classes.homeContentBack}>
           <ProfileView />
