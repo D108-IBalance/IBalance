@@ -1,192 +1,191 @@
-@media screen and (max-width: 576px){
-
-.navBox{
+@media screen and (max-width: 576px) {
+  .navBox {
     position: fixed;
     bottom: 0;
     right: 0;
     width: 100%;
     box-shadow: 0px -2px 5px rgba(230, 230, 230, 10);
-}
+    z-index: 10;
+    /* position: relative; */
+    /* transform: translateY(-100%); */
+  }
 
-.iconBox {
+  .iconBox {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     width: 100%;
-}
+  }
 
-.texticonBox {
+  .texticonBox {
     display: none;
-}
+  }
 
-.homeIcon{
-    background: url('../../assets/navbar/home_inactive_jcon.png');
+  .homeIcon {
+    background: url("../../assets/navbar/home_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.homeIcon:hover{
-    background: url('../../assets/navbar/home_active_jcon.png');
+  .homeIcon:hover {
+    background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.homeIconActive{
-    background: url('../../assets/navbar/home_active_jcon.png');
+  .homeIconActive {
+    background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.recipeIcon{
-    background: url('../../assets/navbar/recipe_inactive_jcon.png');
+  .recipeIcon {
+    background: url("../../assets/navbar/recipe_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.recipeIcon:hover{
-    background: url('../../assets/navbar/recipe_active_jcon.png');
+  .recipeIcon:hover {
+    background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.recipeIconActive{
-    background: url('../../assets/navbar/recipe_active_jcon.png');
+  .recipeIconActive {
+    background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.dietIcon{
-    background: url('../../assets/navbar/diet_inactive_jcon.png');
+  .dietIcon {
+    background: url("../../assets/navbar/diet_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.dietIcon:hover{
-    background: url('../../assets/navbar/diet_active_jcon.png');
+  .dietIcon:hover {
+    background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.dietIconActive{
-    background: url('../../assets/navbar/diet_active_jcon.png');
+  .dietIconActive {
+    background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.diaryIcon{
-    background: url('../../assets/navbar/diary_inactive_jcon.png');
+  .diaryIcon {
+    background: url("../../assets/navbar/diary_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.diaryIcon:hover{
-    background: url('../../assets/navbar/diary_active_jcon.png');
+  .diaryIcon:hover {
+    background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
-}
+  }
 
-.diaryIconActive{
-    background: url('../../assets/navbar/diary_active_jcon.png');
+  .diaryIconActive {
+    background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     height: 30px;
     width: 30px;
     cursor: pointer;
+  }
 }
 
-}
-
-
-@media screen and (min-width: 576px){
-.body{
+@media screen and (min-width: 576px) {
+  .body {
     margin: 0;
     padding: 0;
-}
+  }
 
-.navBox{
+  .navBox {
     box-shadow: 2px 0px 5px rgba(230, 230, 230, 10);
     height: 100vh;
     width: 25%;
     padding-left: 3%;
     padding-right: 2%;
-}
+  }
 
-.iconBox {
+  .iconBox {
     display: none;
-}
+  }
 
-.texticonBox {
+  .texticonBox {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
     width: 100%;
-}
+  }
 
-.IconBox{
+  .IconBox {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-top: 20px;
     margin-left: 20px;
-}
+  }
 
-.IconBox span{
+  .IconBox span {
     font-size: 1em;
     margin-left: 10px;
     font-family: "Outfit", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
+  }
 
-}
-
-.homeIcon{
-    background: url('../../assets/navbar/home_inactive_jcon.png');
+  .homeIcon {
+    background: url("../../assets/navbar/home_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -194,10 +193,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.homeIcon:hover{
-    background: url('../../assets/navbar/home_active_jcon.png');
+  .homeIcon:hover {
+    background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -205,10 +204,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.homeIconActive{
-    background: url('../../assets/navbar/home_active_jcon.png');
+  .homeIconActive {
+    background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -216,10 +215,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.recipeIcon{
-    background: url('../../assets/navbar/recipe_inactive_jcon.png');
+  .recipeIcon {
+    background: url("../../assets/navbar/recipe_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -227,10 +226,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.recipeIcon:hover{
-    background: url('../../assets/navbar/recipe_active_jcon.png');
+  .recipeIcon:hover {
+    background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -238,10 +237,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.recipeIconActive{
-    background: url('../../assets/navbar/recipe_active_jcon.png');
+  .recipeIconActive {
+    background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -249,10 +248,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.dietIcon{
-    background: url('../../assets/navbar/diet_inactive_jcon.png');
+  .dietIcon {
+    background: url("../../assets/navbar/diet_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -260,10 +259,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.dietIcon:hover{
-    background: url('../../assets/navbar/diet_active_jcon.png');
+  .dietIcon:hover {
+    background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -271,10 +270,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.dietIconActive{
-    background: url('../../assets/navbar/diet_active_jcon.png');
+  .dietIconActive {
+    background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -282,10 +281,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.diaryIcon{
-    background: url('../../assets/navbar/diary_inactive_jcon.png');
+  .diaryIcon {
+    background: url("../../assets/navbar/diary_inactive_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -293,10 +292,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.diaryIcon:hover{
-    background: url('../../assets/navbar/diary_active_jcon.png');
+  .diaryIcon:hover {
+    background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -304,10 +303,10 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.diaryIconActive{
-    background: url('../../assets/navbar/diary_active_jcon.png');
+  .diaryIconActive {
+    background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -315,9 +314,9 @@
     width: 30px;
     cursor: pointer;
     margin: 0;
-}
+  }
 
-.logoBox{
+  .logoBox {
     background: url(../../assets/auth/img/logo_large.png);
     background-position: center;
     background-repeat: no-repeat;
@@ -325,6 +324,5 @@
     height: 70px;
     width: 90%;
     margin: 10% auto;
-}
-
+  }
 }
