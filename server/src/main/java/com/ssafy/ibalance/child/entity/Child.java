@@ -1,10 +1,11 @@
 package com.ssafy.ibalance.child.entity;
 
-import com.ssafy.ibalance.child.dto.request.RegistChildRequestDto;
+import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.type.Gender;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@DynamicInsert
 public class Child {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,21 +39,21 @@ public class Child {
     @Column(nullable = false)
     private double weight;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "varchar(255) default '초기 이미지 URL'")
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member member;
 
-    public static Child from(RegistChildRequestDto registChildRequestDto, Member member) {
+    public static Child ConvertDtoToEntity(RegistChildRequest registChildRequest, Member member) {
 
         return builder()
-                .name(registChildRequestDto.getName())
-                .birthDate(registChildRequestDto.getBirthDate())
-                .gender(registChildRequestDto.getGender())
-                .height(registChildRequestDto.getHeight())
-                .weight(registChildRequestDto.getWeight())
-                .imageUrl(registChildRequestDto.getImageUrl())
+                .name(registChildRequest.getName())
+                .birthDate(registChildRequest.getBirthDate())
+                .gender(registChildRequest.getGender())
+                .height(registChildRequest.getHeight())
+                .weight(registChildRequest.getWeight())
+                .imageUrl(registChildRequest.getImageUrl())
                 .member(member)
                 .build();
     }
