@@ -6,13 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Builder
 @AllArgsConstructor
 @Getter
-public class ChildListResponseDto {
+public class ChildListResponse {
 
     private final Integer childId;
     private final String name;
@@ -20,7 +17,7 @@ public class ChildListResponseDto {
     private Gender test;
 
 
-    public static ChildListResponseDto of(Child child) {
+    public static ChildListResponse ConvertEntityToDto(Child child) {
         return builder()
                 .childId(child.getId())
                 .name(child.getName())
