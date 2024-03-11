@@ -1,78 +1,77 @@
-.container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.profileWrap{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.profileWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.logo{
-    width: 300px;
-    height: 110px;
-    background: url('../../assets/auth/img/logo_large.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-bottom: 50px;
+.logo {
+  width: 300px;
+  height: 110px;
+  background: url("../../assets/auth/img/logo_large.png");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.profileForm{
-    width: 300px;
-    height: 255px;
-    /* border: 1px solid black; */
-    display: flex;
-    flex-wrap: wrap;
+.profileForm {
+  width: 285px;
+  height: 255px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
-.formCenter{
-    justify-content: center;
+.formCenter {
+  justify-content: center;
 }
 
-.formStart{
-    justify-content: start;
+.formStart {
+  justify-content: start;
 }
 
-.profile{
-    width: 77px;
-    height: 77px;
-    margin: 5px;
+.profile {
+  width: 77px;
+  height: 77px;
+  margin: 5px;
+  margin-bottom: 25px;
 }
 
-.profileIcon{
-    /* display: inlin; */
-    height: 77px;
-    width: 77px;
-    border : 2px solid #FE724C;
+.profileIcon {
+  height: 77px;
+  width: 77px;
+  border: 2px solid #fe724c;
+  border-radius: 5px;
 }
 
-.profileName{
-    text-align: center;
+.profileName {
+  text-align: center;
+  margin-bottom: 5px;
 }
 
-.profilePlus{
-    /* display: inlin; */
-
-    height: 77px;
-    width: 77px;
-    border : 2px solid #FE724C;
-    background: url('../../assets//profile/Img/Plus.svg');
-    background-position: center;
-    background-repeat: no-repeat;
+.profilePlus {
+  height: 77px;
+  width: 77px;
+  border: 2px solid #fe724c;
+  background: url("../../assets//profile/Img/Plus.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 5px;
 }
 
-
-
-.profilePlus:hover, .profileIcon:hover{
-    animation: goPage 0.1s ease forwards;
+.profilePlus:hover,
+.profileIcon:hover {
+  animation: goPage 0.1s ease forwards;
 }
 
 @keyframes goPage {
-    to{
-        transform: scale(1.05);
-    }
+  to {
+    transform: scale(1.05);
+  }
 }
