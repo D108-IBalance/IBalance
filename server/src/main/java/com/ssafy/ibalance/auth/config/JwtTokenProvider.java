@@ -128,6 +128,8 @@ public class JwtTokenProvider {
                 .sameSite("None")
                 .build();
 
+        // TODO : Redis에 저장된 Refresh Token 삭제
+
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
