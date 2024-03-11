@@ -1,24 +1,20 @@
 /* eslint-disable */
 
 // 외부 모듈
-import NavbarModule from "../../modules/Navbar/NavbarModule"
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import NavbarModule from "../../modules/Navbar/NavbarModule";
 
 // 내부 모듈
-import classes from './RecipePage.module.css';
+import classes from "./RecipePage.module.css";
 
-const RecipePage = ()=>{
-    return(
-        <>
-            <Row>
-                <NavbarModule isClick={1}></NavbarModule>
-                <Col>
-                    this is Recipe
-                </Col>
-            </Row>
-        </>
-    )
-}
+const RecipePage = () => {
+  return (
+    <>
+      <div className={classes.gridSet}>
+        <NavbarModule isClick={1}></NavbarModule>
+        <div className={classes.recipeContentBox}>this is Recipe</div>
+      </div>
+    </>
+  );
+};
 
-export default RecipePage
+export default RecipePage;
