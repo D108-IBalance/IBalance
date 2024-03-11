@@ -1,0 +1,56 @@
+@media screen and (max-width: 576px) {
+  .emptyBox {
+    width: 100%;
+    /* min-height: 667px; */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  .emptyIcon {
+    background: url(../../assets/diet/emptyDiet.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 200px;
+    height: 200px;
+    transform-origin: center;
+    animation: rotateLogo 2s;
+    animation-iteration-count: infinite;
+  }
+  @keyframes rotateLogo {
+    0% {
+      transform: rotate(0deg);
+    }
+    10% {
+      transform: rotate(15deg);
+    }
+    20% {
+      transform: rotate(0deg);
+    }
+    30% {
+      transform: rotate(10deg);
+    }
+    50% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  .emptyBtn {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1em;
+    background: #fe724c;
+    padding: 12px 55px;
+    border-radius: 50px;
+    box-shadow: 10px 10px 20px rgba(254, 114, 76, 25%);
+    cursor: pointer;
+  }
+  .emptyBtn:hover {
+    transform: scale(1.2);
+  }
+}

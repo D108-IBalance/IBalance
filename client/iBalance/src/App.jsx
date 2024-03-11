@@ -3,6 +3,7 @@
 // 외부 모듈
 import { Route, Routes } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect, useState } from "react";
 
 // 내부 모듈
 import "./App.css";
@@ -20,6 +21,22 @@ import DiaryPage from "./routes/Diary/DiaryPage.jsx";
 import Profile from "./routes/Profile/Profile.jsx";
 
 const App = () => {
+  let [displaySize, setDisplaysize] = useState({
+    height: window.innerHeight * 0.01,
+    width: window.innerWidth,
+  });
+
+  function setScreenSize() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    setDisplaysize({ height: vh, width: window.innerWidth });
+  }
+  useEffect(() => {
+    window.addEventListener("resize", setScreenSize);
+    return () => {
+      window.removeEventListener("resize", setScreenSize);
+    };
+  }, [displaySize]);
   return (
     <>
       <Routes>
@@ -39,13 +56,24 @@ const App = () => {
         </Route>
         <Route path="/profile/add" element={<AddProfile></AddProfile>}></Route>
         {/* 홈페이지 */}
-        <Route path="/home" element={<HomePage />}></Route>
+        <Route
+          path="/home"
+          element={<HomePage displaySize={displaySize.height} />}></Route>
         {/* 레시피페이지 */}
-        <Route path="/recipe" element={<RecipePage />}></Route>
+        <Route
+          path="/recipe"
+          displaySize={displaySize.height}
+          element={<RecipePage />}></Route>
         {/* 식단페이지 */}
-        <Route path="/diet" element={<DietPage />}></Route>
+        <Route
+          path="/diet"
+          displaySize={displaySize.height}
+          element={<DietPage />}></Route>
         {/* 일기장페이지 */}
-        <Route path="/diary" element={<DiaryPage />}></Route>
+        <Route
+          path="/diary"
+          displaySize={displaySize.height}
+          element={<DiaryPage />}></Route>
         {/* 오류 페이지 */}
         <Route
           path="*"

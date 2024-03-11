@@ -1,13 +1,17 @@
 @media screen and (max-width: 576px) {
+  .gridSet {
+    display: flex;
+    flex-direction: column;
+  }
   .homeContentBack {
     position: relative;
     background: #f7f8f9;
     margin-bottom: 20px;
-    border: 1px solid blue;
-    padding: 280px 15px 100px 15px;
-    min-height: 900px;
+    /* border: 1px solid blue; */
+    padding: 280px 15px 50px 15px;
+    /* min-height: 900px; */
     overflow: scroll;
-    height: 1000px;
+    height: calc(var(--vh, 1vh) * 100);
   }
 
   .homeContentBack::-webkit-scrollbar {
@@ -34,6 +38,7 @@
     border-radius: 0px 0px 15px 15px;
     box-shadow: 0px 5px 5px rgba(160, 160, 160, 30%);
     padding-top: 40px;
+    z-index: 20;
   }
 
   .headerBox {
@@ -175,7 +180,7 @@
     border-radius: 15px;
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
     margin-top: 10px;
-    margin-bottom: 150px;
+    margin-bottom: 50px;
   }
 }
 

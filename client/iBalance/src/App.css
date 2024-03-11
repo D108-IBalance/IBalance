@@ -1,5 +1,7 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
-
+:root {
+  --vh: 100%;
+}
 * {
   font-family:
     Pretendard,
