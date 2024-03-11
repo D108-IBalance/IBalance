@@ -76,6 +76,7 @@ def get_api_data():
             if key == "RCP_NM":
                 newObj["menu_name"] = value
             if key == "RCP_PARTS_DTLS":
+                str = "test str"
                 value = value.replace('\n', ', ')
                 newObj["recipe"]["need"] = value
                 value = value.replace(" ", "")
