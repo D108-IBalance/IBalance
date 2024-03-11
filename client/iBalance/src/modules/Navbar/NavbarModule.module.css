@@ -6,6 +6,7 @@
     width: 100%;
     box-shadow: 0px -2px 5px rgba(230, 230, 230, 10);
     z-index: 10;
+    height: 70px;
     /* position: relative; */
     /* transform: translateY(-100%); */
   }
