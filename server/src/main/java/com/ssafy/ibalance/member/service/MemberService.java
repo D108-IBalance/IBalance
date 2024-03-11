@@ -7,6 +7,7 @@ import com.ssafy.ibalance.member.repository.MemberRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import com.ssafy.ibalance.member.util.GoogleOAuth2Utils;
 import com.ssafy.ibalance.member.util.KakaoOAuth2Utils;
+import com.ssafy.ibalance.member.util.NaverOAuth2Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class MemberService {
 
     private final GoogleOAuth2Utils googleUtil;
     private final KakaoOAuth2Utils kakaoUtil;
+    private final NaverOAuth2Utils naverUtil;
 
 
     private final MemberRepository memberRepository;
@@ -40,7 +42,7 @@ public class MemberService {
         return switch(provider){
             case GOOGLE -> googleUtil.getUserInfo(code);
             case KAKAO -> kakaoUtil.getKakaoInfo(code);
-            default -> throw new IllegalArgumentException("잘못된 요청입니다.");
+            case NAVER -> naverUtil.getUserInfo(code);
         };
     }
 }
