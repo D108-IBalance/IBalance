@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import classes from "./ChildAllergy.module.css";
 import allergy from "./allergy.js";
 import { useNavigate } from "react-router-dom";
+import { addProfile } from "../ServerConnect.js";
 
 const ChildAllergy = (props) => {
   let { setProfileData, profileData } = props;
@@ -16,23 +17,24 @@ const ChildAllergy = (props) => {
   });
   let [shadow, setShadow] = useState(temp);
   let navigate = useNavigate();
-  let selectShadow = (idx) => {
+  let selectShadow = (idx, id) => {
     let tempShadow = [...shadow];
     let tempSelect = [...select];
     if (tempShadow[idx] === "0px 4px 4px 0px rgba(0,0,0,0.25)") {
       tempShadow[idx] = "0px 4px 4px 0px rgba(254, 114, 76, 0.8)";
-      tempSelect.push(idx);
+      tempSelect.push(id);
     } else {
       tempShadow[idx] = "0px 4px 4px 0px rgba(0,0,0,0.25)";
-      tempSelect = tempSelect.filter((elem) => elem !== idx);
+      tempSelect = tempSelect.filter((elem) => elem !== id);
     }
     setShadow(tempShadow);
     setSelect(tempSelect);
   };
-  let nextStep = () => {
+  let nextStep = async () => {
     let temp = Object.assign({}, profileData);
     temp.haveAllergies = select;
     setProfileData(temp);
+    await addProfile(temp);
     //temp로 axios 요청하는 함수 필요
     setCurrent(1);
   };
@@ -66,7 +68,7 @@ const ChildAllergy = (props) => {
                   boxShadow: `${shadow[idx]}`,
                 }}
                 onClick={() => {
-                  selectShadow(idx);
+                  selectShadow(idx, data.id);
                 }}
               />
               <span className={classes.info}>{data["name"]}</span>

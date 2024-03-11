@@ -19,11 +19,6 @@ import chicken from "../../../assets/profile/Img/allergy/닭고기.png";
 
 const allergy = [
   {
-    id: 0,
-    name: "메밀",
-    img: wheat,
-  },
-  {
     id: 1,
     name: "대두",
     img: bean,
@@ -107,6 +102,11 @@ const allergy = [
     id: 17,
     name: "닭고기",
     img: chicken,
+  },
+  {
+    id: 18,
+    name: "메밀",
+    img: wheat,
   },
 ];
 
