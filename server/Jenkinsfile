@@ -1,0 +1,30 @@
+pipeline{
+    agent any
+
+    stages{
+        stage('Build'){
+            steps{
+                dir('server'){
+                    script{
+                        sh 'echo "hello"'
+//                         sh "sed -i 's/\${JASYPT_KEY}/${JASYPT_KEY}/' ./src/main/resources/application-prod.properties"
+//                         sh './gradlew clean build'
+//                         sh 'chmod +x ./docker_install.sh'
+//                         sh './docker_install.sh'
+                    }
+                }
+            }
+        }
+//         stage('Deploy'){
+//             steps{
+//                 dir('server'){
+//                     script{
+//                         sh 'docker build --build-arg JASYPT_KEY=${JASYPT_KEY} -t backend-jenkins .'
+//                         sh 'docker rm -f backend-jenkins'
+//                         sh 'docker run -d --name backend-jenkins -p 8080:8080 backend-jenkins'
+//                     }
+//                 }
+//             }
+//         }
+    }
+}
