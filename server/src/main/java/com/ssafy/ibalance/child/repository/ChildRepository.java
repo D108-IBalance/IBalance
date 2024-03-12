@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ChildRepository extends JpaRepository<Child, Integer>, ChildCustomRepository {
+public interface ChildRepository extends JpaRepository<Child, Integer> {
 
     List<Child> findAllByMemberId(Integer memberId);
 }
