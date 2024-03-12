@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegistChildRequestDto {
+public class RegistChildRequest {
 
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

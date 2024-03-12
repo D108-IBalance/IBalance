@@ -1,7 +1,9 @@
 package com.ssafy.ibalance.child.service;
 
-import com.ssafy.ibalance.child.dto.request.RegistChildRequestDto;
-import com.ssafy.ibalance.child.dto.response.ChildListResponseDto;
+import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
+import com.ssafy.ibalance.child.dto.response.ChildListResponse;
+import com.ssafy.ibalance.child.dto.response.DeleteChildResponse;
+import com.ssafy.ibalance.child.dto.response.RegistChildResponse;
 import com.ssafy.ibalance.child.entity.Allergy;
 import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.child.entity.ChildAllergy;
@@ -33,30 +35,29 @@ public class ChildService {
     // MemberRepository 제작 완료 후 주석 제거
     // private final MemberRepository memberRepository;
 
-    public List<ChildListResponseDto> getChildList(Integer memberId) {
+    public List<ChildListResponse> getChildList(Integer memberId) {
 
         List<Child> children = childRepository.findAllByMemberId(memberId);
-        return children.stream().map(ChildListResponseDto::of).toList();
+        return children.stream().map(ChildListResponse::ConvertEntityToDto).toList();
     }
 
-    public void registChild(RegistChildRequestDto registChildRequestDto) {
+    public RegistChildResponse registChild(RegistChildRequest registChildRequest) {
 
-        Child child = saveChild(registChildRequestDto);
+        Child child = saveChild(registChildRequest);
         saveGrowth(child);
-        List<Long> childAllergyList = saveChildAllergy(registChildRequestDto, child);
+        List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
         redisUtil.setChildAllergy(child.getId(), childAllergyList);
+        return RegistChildResponse.convertEntityToDto(child);
     }
 
-    public void deleteChild(Integer childId) {
-        childRepository.deleteById(childId);
+    public DeleteChildResponse deleteChild(Integer childId) {
+        Child child = childRepository.findById(childId).orElseThrow(IllegalArgumentException::new);
+        childRepository.delete(child);
         redisUtil.deleteChildAllergy(childId);
+        return DeleteChildResponse.ConvertEntityToDto(child);
     }
 
-
-    public Child saveChild(RegistChildRequestDto registChildRequestDto) {
-
-        // 자녀 프로필 초기 이미지 설정
-        registChildRequestDto.setImageUrl("이미지url");
+    private Child saveChild(RegistChildRequest registChildRequest) {
 
         // MemberRepository 제작 완료 후 주석 제거
         // memberId 구하는 메서드 필요
@@ -66,11 +67,11 @@ public class ChildService {
         Member member = new Member();
         member.setId(1);
 
-        Child child = Child.from(registChildRequestDto, member);
+        Child child = Child.ConvertDtoToEntity(registChildRequest, member);
         return childRepository.save(child);
     }
 
-    public void saveGrowth(Child child) {
+    private void saveGrowth(Child child) {
 
         Growth growth = Growth.builder()
                 .height(child.getHeight())
@@ -81,11 +82,11 @@ public class ChildService {
         growthRepository.save(growth);
     }
 
-    public List<Long> saveChildAllergy(RegistChildRequestDto registChildRequestDto, Child child) {
+    private List<Long> saveChildAllergy(RegistChildRequest registChildRequest, Child child) {
 
         List<Long> childAllergyList = new ArrayList<>();
 
-        for(Integer i : registChildRequestDto.getHaveAllergies()) {
+        for(Integer i : registChildRequest.getHaveAllergies()) {
             Allergy allergy = allergyRepository.findById(i).orElseThrow(IllegalArgumentException::new);
             ChildAllergy childAllergy = ChildAllergy.builder()
                     .child(child)
