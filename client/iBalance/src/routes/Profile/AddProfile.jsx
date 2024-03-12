@@ -13,7 +13,7 @@ import ChildAllergy from "./AddChild/ChildAllergy";
 const AddProfile = () => {
   let [profileData, setProfileData] = useState({});
   let [step, setStep] = useState(0);
-  let component;
+  let component = null;
   switch (step) {
     case 0:
       component = (

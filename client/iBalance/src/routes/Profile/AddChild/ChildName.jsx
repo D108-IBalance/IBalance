@@ -6,7 +6,7 @@ const ChildName = (props) => {
   let { setStep, setProfileData, profileData } = props;
   let [animation, setAnimation] = useState("fadeIn");
   let [text, setText] = useState("");
-  let nextStep = () => {
+  let onNextStep = () => {
     if (text.length === 0) return;
     setAnimation("fadeOut");
     let data = Object.assign({}, profileData);
@@ -22,7 +22,7 @@ const ChildName = (props) => {
   };
 
   useEffect(() => {
-    let timer;
+    let timer = null;
     if (current === 1) {
       timer = setTimeout(() => {
         setStep(1);
@@ -50,7 +50,7 @@ const ChildName = (props) => {
         <button
           className={classes.nextBtn}
           onClick={() => {
-            nextStep();
+            onNextStep();
           }}>
           다음
         </button>
