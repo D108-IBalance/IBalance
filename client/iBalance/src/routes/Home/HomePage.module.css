@@ -11,7 +11,8 @@
     padding: 280px 15px 50px 15px;
     /* min-height: 900px; */
     overflow: scroll;
-    height: calc(var(--vh, 1vh) * 100);
+    height: auto;
+    /* height: calc(var(--vh, 1vh) * 100); */
   }
 
   .homeContentBack::-webkit-scrollbar {

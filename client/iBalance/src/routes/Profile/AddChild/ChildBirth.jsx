@@ -13,7 +13,7 @@ const ChildBirth = (props) => {
   let [month, setMonth] = useState(0);
   let [day, setDay] = useState(0);
   let [warn, setWarn] = useState(false);
-  let nextStep = () => {
+  let onNextStep = () => {
     let flag = birthValidation(year, month, day);
     if (flag === false) {
       setWarn(true);
@@ -29,7 +29,7 @@ const ChildBirth = (props) => {
     setProfileData(data);
   };
   useEffect(() => {
-    let timer;
+    let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
@@ -82,7 +82,7 @@ const ChildBirth = (props) => {
       <button
         className={classes.nextBtn}
         onClick={() => {
-          nextStep();
+          onNextStep();
         }}>
         다음
       </button>

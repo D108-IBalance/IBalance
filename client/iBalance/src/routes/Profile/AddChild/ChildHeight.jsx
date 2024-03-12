@@ -4,12 +4,12 @@ import classes from "./ChildHeight.module.css";
 
 const ChildHeight = (props) => {
   // 최대 키
-  const maxHeight = 150;
+  const MAX_HEIGHT = 150;
 
   let [current, setCurrent] = useState(0);
   let [animation, setAnimation] = useState("fadeIn");
   let { setStep, setProfileData, profileData } = props;
-  let arr = [...new Array(maxHeight + 1)].map((_, idx) => {
+  let arr = [...new Array(MAX_HEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";
     }
@@ -18,10 +18,12 @@ const ChildHeight = (props) => {
   let [go, setGo] = useState(0);
   let [height, setHeight] = useState("0");
   let [validate, setValidate] = useState(false);
-  let changeIt = (e) => {
-    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
-    let temp = Number.parseInt(e.currentTarget.value);
-    if (temp > maxHeight) {
+  let onChangeIt = (e) => {
+    e.currentTarget.value = e.currentTarget.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+    let temp = Number.parseFloat(e.currentTarget.value);
+    if (temp > MAX_HEIGHT) {
       e.currentTarget.value = e.currentTarget.value.slice(0, 2);
     }
     setHeight(e.currentTarget.value);
@@ -30,7 +32,7 @@ const ChildHeight = (props) => {
     // .replace(/(\..*)\./g, "$1");
   };
 
-  let nextStep = () => {
+  let onNextStep = () => {
     let temp = Object.assign({}, profileData);
     temp.height = Number.parseInt(height);
     setProfileData(temp);
@@ -68,14 +70,14 @@ const ChildHeight = (props) => {
       <p
         className={
           classes.description
-        }>{`만 6세까지의 식단을 제공함으로 키는 최대 ${maxHeight}cm 까지 받고있습니다.`}</p>
+        }>{`만 6세까지의 식단을 제공함으로 키는 최대 ${MAX_HEIGHT}cm 까지 받고있습니다.`}</p>
 
       <div className={classes.heightForm}>
         <div
           style={{ transform: `translateY(${go}px)` }}
           className={classes.ruler}>
           {arr.map((content, idx) => {
-            if (idx == height) {
+            if (idx == Math.round(height)) {
               return (
                 <div key={idx} className={classes[content + "Color"]}></div>
               );
@@ -87,9 +89,9 @@ const ChildHeight = (props) => {
           <input
             type="text"
             className={classes.heightInput}
-            maxLength={3}
+            maxLength={5}
             onChange={(e) => {
-              changeIt(e);
+              onChangeIt(e);
             }}
           />
           <p className={classes.cm}>(CM)</p>
@@ -100,7 +102,7 @@ const ChildHeight = (props) => {
         <button
           className={classes.nextBtn}
           onClick={() => {
-            nextStep();
+            onNextStep();
           }}>
           다음
         </button>

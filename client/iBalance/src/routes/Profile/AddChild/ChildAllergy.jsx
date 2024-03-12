@@ -12,10 +12,10 @@ const ChildAllergy = (props) => {
   let [animation, setAnimation] = useState("fadeIn");
   let [current, setCurrent] = useState(0);
   let [select, setSelect] = useState([]);
-  let temp = [...new Array(allergy.length)].map(() => {
+  let tempShadow = [...new Array(allergy.length)].map(() => {
     return "0px 4px 4px 0px rgba(0,0,0,0.25)";
   });
-  let [shadow, setShadow] = useState(temp);
+  let [shadow, setShadow] = useState(tempShadow);
   let navigate = useNavigate();
   let selectShadow = (idx, id) => {
     let tempShadow = [...shadow];
@@ -30,16 +30,15 @@ const ChildAllergy = (props) => {
     setShadow(tempShadow);
     setSelect(tempSelect);
   };
-  let nextStep = async () => {
+  let onNextStep = async () => {
     let temp = Object.assign({}, profileData);
     temp.haveAllergies = select;
     setProfileData(temp);
     await addProfile(temp);
-    //temp로 axios 요청하는 함수 필요
     setCurrent(1);
   };
   useEffect(() => {
-    let timer;
+    let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
@@ -79,7 +78,7 @@ const ChildAllergy = (props) => {
       <button
         className={classes.nextBtn}
         onClick={() => {
-          nextStep();
+          onNextStep();
         }}>
         다음({select.length}/18)
       </button>

@@ -6,31 +6,31 @@ import classes from "./ChildWeight.module.css";
 
 const ChildWeight = (props) => {
   // 최대 몸무게 100Kg
-  const maxWeight = 100;
+  const MAX_WEIGHT = 100;
   let { setStep, setProfileData, profileData } = props;
   let [animation, setAnimation] = useState("fadeIn");
   let [current, setCurrent] = useState(0);
   let [weight, setWeight] = useState(0);
-  let [go, setGo] = useState(maxWeight * 4.1);
+  let [go, setGo] = useState(MAX_WEIGHT * 4.1);
   let [validate, setValidate] = useState(false);
-  let arr = [...new Array(maxWeight + 1)].map((_, idx) => {
+  let arr = [...new Array(MAX_WEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";
     }
     return "short";
   });
-  let changeIt = (e) => {
+  let onChangeIt = (e) => {
     e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
     let temp = Number.parseInt(e.currentTarget.value);
-    if (temp > maxWeight) {
+    if (temp > MAX_WEIGHT) {
       e.currentTarget.value = e.currentTarget.value.slice(0, 2);
     }
     setWeight(e.currentTarget.value);
     // 요소의 크기 고려한 픽셀식 4.25 Y축 방향으로 세로로 가야하기에 음수 값
-    setGo(maxWeight * 4.1 - 8.2 * e.currentTarget.value);
+    setGo(MAX_WEIGHT * 4.1 - 8.2 * e.currentTarget.value);
     // .replace(/(\..*)\./g, "$1");
   };
-  let nextStep = () => {
+  let onNextStep = () => {
     let temp = Object.assign({}, profileData);
     temp.weight = Number.parseInt(weight);
     setProfileData(temp);
@@ -47,7 +47,7 @@ const ChildWeight = (props) => {
     weightValidate();
   }, [weight]);
   useEffect(() => {
-    let timer;
+    let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
@@ -65,7 +65,7 @@ const ChildWeight = (props) => {
       <p
         className={
           classes.description
-        }>{`만 6세까지의 식단을 제공함으로 최대 ${maxWeight}kg 까지 받고있습니다.`}</p>
+        }>{`만 6세까지의 식단을 제공함으로 최대 ${MAX_WEIGHT}kg 까지 받고있습니다.`}</p>
       <div className={classes.weightForm}>
         <div className={classes.inputBox}>
           <input
@@ -73,7 +73,7 @@ const ChildWeight = (props) => {
             className={classes.weightInput}
             maxLength={3}
             onChange={(e) => {
-              changeIt(e);
+              onChangeIt(e);
             }}
           />
           <p className={classes.kg}>(KG)</p>
@@ -95,7 +95,7 @@ const ChildWeight = (props) => {
         <button
           className={classes.nextBtn}
           onClick={() => {
-            nextStep();
+            onNextStep();
           }}>
           다음
         </button>

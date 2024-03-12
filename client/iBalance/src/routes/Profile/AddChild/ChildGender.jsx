@@ -13,14 +13,14 @@ const ChildGender = (props) => {
   let { setStep, setProfileData, profileData } = props;
   let [animation, setAnimation] = useState("fadeIn");
   let [gender, setGender] = useState("");
-  let nextStep = () => {
+  let onNextStep = () => {
     let data = Object.assign({}, profileData);
     data.gender = gender;
     setProfileData(data);
     setCurrent(1);
   };
   useEffect(() => {
-    let timer;
+    let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
@@ -64,7 +64,7 @@ const ChildGender = (props) => {
         <button
           className={classes.nextBtn}
           onClick={() => {
-            nextStep();
+            onNextStep();
           }}>
           다음
         </button>

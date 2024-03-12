@@ -15,7 +15,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   // 이후 프로필 리스트 추가할 변수 ajax 통신 필요
-  let [profileList, setProfileList] = useState([]);
+  let [profileList, setProfileList] = useState([null]);
   let [isSetting, setIsSetting] = useState(false);
   let [deleteIdx, setDeleteIdx] = useState(-1);
   // 길이 정보를 통해 레이아웃( 4개 이상일 시 가운데 정렬 풂) 및 프로필 추가 버튼 여부 결정할 것
@@ -103,7 +103,7 @@ const Profile = () => {
 
 const Modal = (props) => {
   let { deleteIdx, setProfileList, profileList, setDeleteIdx } = props;
-  let deleteIt = async () => {
+  let onDeleteIt = async () => {
     let temp = profileList.map((content, idx) => {
       if (idx !== deleteIdx) {
         return content;
@@ -141,7 +141,7 @@ const Modal = (props) => {
           <button
             className={classes.confirmBtn}
             onClick={() => {
-              deleteIt();
+              onDeleteIt();
             }}>
             확인
           </button>
