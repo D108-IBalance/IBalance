@@ -13,6 +13,7 @@ import warningImg from "../../assets/profile/Img/warning.svg";
 
 const Profile = () => {
   const navigate = useNavigate();
+  console.log("hi");
 
   // 이후 프로필 리스트 추가할 변수 ajax 통신 필요
   let [profileList, setProfileList] = useState([null]);
