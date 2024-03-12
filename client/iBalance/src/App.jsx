@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Error from "./routes/Error/Error";
 import AddProfile from "./routes/Profile/AddProfile.jsx";
-import "bootstrap/dist/css/bootstrap.min.css";
 import LoginForm from "./routes/Auth/LoginForm.jsx";
 import IntroPage from "./routes/Auth/IntroPage.jsx";
 import EnterPage from "./routes/Auth/EnterPage.jsx";
@@ -62,18 +61,15 @@ const App = () => {
         {/* 레시피페이지 */}
         <Route
           path="/recipe"
-          displaySize={displaySize.height}
-          element={<RecipePage />}></Route>
+          element={<RecipePage displaySize={displaySize.height} />}></Route>
         {/* 식단페이지 */}
         <Route
           path="/diet"
-          displaySize={displaySize.height}
-          element={<DietPage />}></Route>
+          element={<DietPage displaySize={displaySize.height} />}></Route>
         {/* 일기장페이지 */}
         <Route
           path="/diary"
-          displaySize={displaySize.height}
-          element={<DiaryPage />}></Route>
+          element={<DiaryPage displaySize={displaySize.height} />}></Route>
         {/* 오류 페이지 */}
         <Route
           path="*"

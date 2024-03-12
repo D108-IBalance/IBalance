@@ -4,10 +4,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(var(--vh, 1vh) * 100);
-    border: 1px blue solid;
+    height: calc(var(--vh, 1vh) * 100 - 170px);
     width: 100%;
-    /* overflow-y: scroll; */
   }
   .dietContentBox {
     display: flex;
@@ -16,7 +14,6 @@
     width: 100%;
     height: 100%;
     padding: 30px;
-    border: 1px red solid;
   }
 }
 
