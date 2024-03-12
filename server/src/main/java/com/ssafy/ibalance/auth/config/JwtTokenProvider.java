@@ -98,12 +98,13 @@ public class JwtTokenProvider {
     }
 
     private String getUserPrimaryKey(String token) {
-        return Jwts.parserBuilder()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        return claims.get("provider") + ":" + claims.getSubject();
     }
 
     public void setRefreshTokenForClient(HttpServletResponse response, Member member) {
