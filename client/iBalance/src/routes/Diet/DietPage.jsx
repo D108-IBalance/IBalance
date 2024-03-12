@@ -19,16 +19,16 @@ const DietPage = (props) => {
   return (
     <div>
       <Header></Header>
-      <div className={classes.gridSet}>
-        <NavbarModule isClick={2}></NavbarModule>
-        <div className={classes.dietContentBox}>
-          {emptyDiet === true ? (
+      <NavbarModule isClick={2}></NavbarModule>
+      {emptyDiet === true ? (
+        <div className={classes.gridSet}>
+          <div className={classes.dietContentBox}>
             <EmptyDiet setEmptyDiet={setEmptyDiet}></EmptyDiet>
-          ) : (
-            <DietListPage></DietListPage>
-          )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <DietListPage></DietListPage>
+      )}
     </div>
   );
 };

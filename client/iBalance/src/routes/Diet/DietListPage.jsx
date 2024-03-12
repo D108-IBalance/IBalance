@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 // 외부 모듈
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // 내부 모듈
 import classes from "./DietListPage.module.css";
@@ -39,23 +39,69 @@ const DietListPage = () => {
   );
 };
 const WeekCard = (props) => {
+  // 유저가 접속 시 해당 화면이 모바일인지 혹은 데스크탑인지 점검
+  const IS_MOBILE = window.matchMedia(
+    "(hover: none) and (pointer: coarse)",
+  ).matches;
   let { weekList } = props;
-  let [isClick, setIsclick] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
+  let [isClick, setIsclick] = useState(0);
+  // 드래그 중인지 여부를 체크
+  let [isDrag, setIsDrag] = useState(false);
+  // 이전 마우스 드래그 좌표
+  let [prevPoint, setPrevPoint] = useState(0);
+  let [trans, setTrans] = useState(0);
+  let onDragStart = (e) => {
+    let pointX = null;
+    pointX = e.changedTouches[0]["screenX"];
+    setPrevPoint(pointX);
+    setIsDrag(true);
+  };
+
+  let onDragging = (e) => {
+    if (!isDrag) return;
+    let pointX = null;
+    pointX = e.changedTouches[0]["screenX"];
+    if (prevPoint < pointX && trans !== 0) {
+      console.log("gg");
+      setTrans(trans + 50);
+    }
+    if (prevPoint > pointX && trans !== -100) {
+      setTrans(trans - 50);
+    }
+    setPrevPoint(pointX);
+    setIsDrag(false);
+  };
+
+  let onDragEnd = () => {};
+
   return (
     <div style={{ width: "100vw", overflow: "hidden" }}>
-      <div className={classes.weekCardBox}>
+      <div
+        style={{ transform: `translateX(${trans}%)` }}
+        className={classes.weekCardBox}
+        onTouchStart={onDragStart}
+        onTouchMove={onDragging}
+        onTouchEnd={onDragEnd}>
         <div
-          className={
-            classes.weekCard
-            // isClick[7] === 0 ? classes.weekCard : classes.weekCardClicked
-          }>
+          className={isClick === 0 ? classes.weekCardClicked : classes.weekCard}
+          onClick={(e) => {
+            setIsclick(0);
+          }}>
           <p className={classes.dayFont}>All</p>
           <p className={classes.dateFont}>Day</p>
         </div>
         {weekList.map((data, key) => {
           return (
-            <div key={key}>
-              {data["date"]}날짜 {data["day"]}
+            <div
+              key={key}
+              className={
+                isClick === key + 1 ? classes.weekCardClicked : classes.weekCard
+              }
+              onClick={() => {
+                setIsclick(key + 1);
+              }}>
+              <p className={classes.dayFont}>{data["day"]}</p>
+              <p className={classes.dateFont}>{data["date"]}</p>
             </div>
           );
         })}

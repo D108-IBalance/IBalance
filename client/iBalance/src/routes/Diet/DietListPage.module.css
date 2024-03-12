@@ -6,8 +6,9 @@
   width: 100%;
   padding: 10px;
   /* border: 1px red solid; */
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
   margin-bottom: 30px;
+  transition: 0.3s ease;
 }
 .weekCard {
   flex: none;
@@ -24,8 +25,8 @@
   cursor: pointer;
 }
 
-.weekCardClicked,
-.weekCard:hover {
+.weekCardClicked {
+  flex: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
