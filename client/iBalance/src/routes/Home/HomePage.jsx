@@ -17,11 +17,15 @@ const HomePage = (props) => {
     <>
       <div className={classes.gridSet}>
         <NavbarModule isClick={0}></NavbarModule>
-        <ProfileView />
-        <div className={classes.homeContentBack}>
-          <TodayDiet />
-          <div>우라아이 성장곡선</div>
-          <div className={classes.growthBox}></div>
+        <div style={{ width: "75%" }}>
+          <ProfileView />
+          <div className={classes.homeContentBack}>
+            <TodayDiet />
+            <TodayDiet />
+            <TodayDiet />
+            {/* <div>우라아이 성장곡선</div> */}
+            {/* <div className={classes.growthBox}></div> */}
+          </div>
         </div>
       </div>
     </>
@@ -46,10 +50,22 @@ const ProfileView = () => {
           </p>
           <div className={classes.growthBack}>
             <div className={classes.growthLine}></div>
-            <div>
-              <p className={classes.profiletext}>신장</p>
-              <p className={classes.profiletext}>몸무게</p>
-              <p className={classes.profiletext}>BMI</p>
+            <div className={classes.profiletextBox}>
+              <div>
+                <p className={classes.profiletext}>신장</p>
+                <p className={classes.profiledata}>135cm</p>
+                <div className={classes.normal}></div>
+              </div>
+              <div>
+                <p className={classes.profiletext}>몸무게</p>
+                <p className={classes.profiledata}>30kg</p>
+                <div className={classes.normal}></div>
+              </div>
+              <div>
+                <p className={classes.profiletext}>BMI</p>
+                <p className={classes.profiledata}>20.71</p>
+                <div className={classes.normal}></div>
+              </div>
             </div>
           </div>
         </div>
@@ -60,7 +76,7 @@ const ProfileView = () => {
 
 const TodayDiet = () => {
   return (
-    <>
+    <div className={classes.dietBox}>
       <div className={classes.dietTitle}>
         <div className={classes.dietIcon}></div>
         <span>오늘의 식단표</span>
@@ -69,7 +85,7 @@ const TodayDiet = () => {
         <div className={classes.emptyIcon}></div>
         <p>오늘의 식단을 추천받아보세요.</p>
       </div>
-    </>
+    </div>
   );
 };
 
