@@ -1,14 +1,17 @@
 package com.ssafy.ibalance.diet.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
+import com.ssafy.ibalance.diet.entity.Diet;
+import com.ssafy.ibalance.diet.entity.DietMenu;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.*;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
 import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
 
@@ -19,21 +22,24 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
 
     @Override
     public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date) {
-        List<DietByDateDto> dietByDateDtoList = jpaQueryFactory.select(
-                Projections.bean(
-                        DietByDateDto.class,
-                        diet.as("diet"),
-                        dietMenu.as("dietMenu")
-                        )
-                )
+        Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
                 .from(diet)
                 .join(dietMenu)
                 .on(diet.id.eq(dietMenu.diet.id))
                 .where(diet.child.id.eq(childId).and(diet.dietDate.eq(date)))
-                .fetch();
+                .transform(
+                        groupBy(diet).as(
+                                list(dietMenu)
+                        )
+                );
 
-        System.out.println(dietByDateDtoList);
-
-        return null;
+        return transform.entrySet().stream()
+                .map(entry -> DietByDateResponse.builder()
+                        .dietId(entry.getKey().getId())
+                        .dietDate(entry.getKey().getDietDate())
+                        .sequence(entry.getKey().getSequence())
+                        .dietMenuList(entry.getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
