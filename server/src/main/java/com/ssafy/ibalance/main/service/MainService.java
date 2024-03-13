@@ -45,7 +45,7 @@ public class MainService {
     }
 
     public List<GrowthResponse> getGrowth(Integer childId) {
-        return growthRepository.findTop3ByChildIdOrderByCreatedTimeDesc(childId)
+        return growthRepository.findTop3ByChildIdOrderByIdDesc(childId)
                 .stream()
                 .map(GrowthResponse::ConvertEntityToDto)
                 .collect(Collectors.toList());

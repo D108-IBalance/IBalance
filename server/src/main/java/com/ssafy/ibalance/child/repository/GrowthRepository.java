@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface GrowthRepository extends JpaRepository<Growth, Long> {
     Optional<Growth> findTopByChildIdOrderByCreatedTimeDesc(Integer childId);
-    List<Growth> findTop3ByChildIdOrderByCreatedTimeDesc(Integer childId);
+    List<Growth> findTop3ByChildIdOrderByIdDesc(Integer childId);
 }
 
