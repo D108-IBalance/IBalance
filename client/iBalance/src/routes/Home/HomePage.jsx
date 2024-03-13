@@ -10,9 +10,7 @@ import { useEffect, useState } from "react";
 
 const HomePage = (props) => {
   let { displaySize } = props;
-  useEffect(() => {
-    console.log(displaySize);
-  }, [displaySize]);
+
   return (
     <>
       <div className={classes.gridSet}>
