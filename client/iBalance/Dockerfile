@@ -19,7 +19,7 @@ COPY . .
 # npm build
 RUN npm run build
 
-RUN ls -al
+CMD ["ls", "-al"]
 
 # prod environment
 FROM nginx:stable-alpine
