@@ -21,24 +21,26 @@ public class MainService {
     private final GrowthRepository growthRepository;
 
     public MainResponse getMain(Integer childId, LocalDate date) {
+        return MainResponse.builder()
+                .childDetailResponse(getChildDetail(childId))
+                .dietList(dietRepository.getDietByDate(childId, date)).build();
+    }
+
+    public ChildDetailResponse getChildDetail(Integer childId) {
         Growth growth = growthRepository
                 .findTopByChildIdOrderByCreatedTimeDesc(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
-        List<DietByDateResponse> dietByDateList = dietRepository.getDietByDate(childId, date);
-
-        return MainResponse.builder()
-                .childDetailResponse(ChildDetailResponse.builder()
-                        .childId(growth.getChild().getId())
-                        .imageUrl(growth.getChild().getImageUrl())
-                        .name(growth.getChild().getName())
-                        .birthDate(growth.getChild().getBirthDate())
-                        .gender(growth.getChild().getGender())
-                        .height(growth.getHeight())
-                        .weight(growth.getWeight())
-                        .lastUpdateDate(growth.getCreatedTime().toLocalDate())
-                        .build()).build();
-
+        return ChildDetailResponse.builder()
+                .childId(growth.getChild().getId())
+                .imageUrl(growth.getChild().getImageUrl())
+                .name(growth.getChild().getName())
+                .birthDate(growth.getChild().getBirthDate())
+                .gender(growth.getChild().getGender())
+                .height(growth.getHeight())
+                .weight(growth.getWeight())
+                .lastUpdateDate(growth.getCreatedTime().toLocalDate())
+                .build();
     }
 
 }
