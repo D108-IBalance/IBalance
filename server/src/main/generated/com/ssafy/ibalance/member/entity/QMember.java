@@ -20,9 +20,14 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final com.ssafy.ibalance.common.util.QBaseTime _super = new com.ssafy.ibalance.common.util.QBaseTime(this);
+
     public final StringPath code = createString("code");
 
-    public final NumberPath<Integer> memberId = createNumber("memberId", Integer.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdTime = _super.createdTime;
+
+    public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
     public final EnumPath<com.ssafy.ibalance.member.type.OAuthProvider> provider = createEnum("provider", com.ssafy.ibalance.member.type.OAuthProvider.class);
 

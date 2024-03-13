@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.main.service;
 
 import com.ssafy.ibalance.child.dto.response.ChildDetailResponse;
+import com.ssafy.ibalance.child.dto.response.GrowthResponse;
 import com.ssafy.ibalance.child.entity.Growth;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.GrowthRepository;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,13 @@ public class MainService {
                 .weight(growth.getWeight())
                 .lastUpdateDate(growth.getCreatedTime().toLocalDate())
                 .build();
+    }
+
+    public List<GrowthResponse> getGrowth(Integer childId) {
+        return growthRepository.findTop3ByChildIdOrderByCreatedTimeDesc(childId)
+                .stream()
+                .map(GrowthResponse::ConvertEntityToDto)
+                .collect(Collectors.toList());
     }
 
 }
