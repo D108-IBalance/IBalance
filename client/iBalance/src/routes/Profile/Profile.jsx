@@ -16,9 +16,9 @@ const Profile = () => {
   console.log("hi");
 
   // 이후 프로필 리스트 추가할 변수 ajax 통신 필요
-  let [profileList, setProfileList] = useState([null]);
-  let [isSetting, setIsSetting] = useState(false);
-  let [deleteIdx, setDeleteIdx] = useState(-1);
+  const [profileList, setProfileList] = useState([null]);
+  const [isSetting, setIsSetting] = useState(false);
+  const [deleteIdx, setDeleteIdx] = useState(-1);
   // 길이 정보를 통해 레이아웃( 4개 이상일 시 가운데 정렬 풂) 및 프로필 추가 버튼 여부 결정할 것
   let length = profileList.length;
   let justify = classes.formCenter; // default값은 가운데 정렬
