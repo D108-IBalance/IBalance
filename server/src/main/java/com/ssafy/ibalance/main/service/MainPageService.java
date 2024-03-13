@@ -6,7 +6,7 @@ import com.ssafy.ibalance.child.entity.Growth;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.GrowthRepository;
 import com.ssafy.ibalance.diet.repository.DietRepository;
-import com.ssafy.ibalance.main.dto.response.MainResponse;
+import com.ssafy.ibalance.main.dto.response.MainPageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class MainService {
+public class MainPageService {
 
     private final DietRepository dietRepository;
     private final GrowthRepository growthRepository;
 
-    public MainResponse getMain(Integer childId, LocalDate date) {
-        return MainResponse.builder()
+    public MainPageResponse getMain(Integer childId, LocalDate date) {
+        return MainPageResponse.builder()
                 .childDetailResponse(getChildDetail(childId))
                 .dietList(dietRepository.getDietByDate(childId, date)).build();
     }
