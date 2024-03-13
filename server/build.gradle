@@ -119,10 +119,6 @@ openapi3 {
 
 def querydslDir = 'src/main/generated'
 
-tasks.withType(JavaCompile){
-	options.encoding = 'UTF-8'
-}
-
 tasks.withType(JavaCompile).configureEach {
 	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
