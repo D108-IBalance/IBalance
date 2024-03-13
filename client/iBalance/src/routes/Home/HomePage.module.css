@@ -1,0 +1,348 @@
+@media screen and (max-width: 576px) {
+  .gridSet {
+    display: flex;
+    flex-direction: column;
+  }
+  .homeContentBack {
+    position: relative;
+    background: #f7f8f9;
+    margin-bottom: 20px;
+    padding: 280px 15px 50px 15px;
+    overflow-y: scroll;
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
+  .homeContentBack::-webkit-scrollbar {
+    width: 10px; /* 스크롤바의 너비 */
+  }
+
+  .homeContentBack::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: #ffd1b5; /* 스크롤바의 색상 */
+    border-radius: 10px;
+  }
+
+  .homeContentBack::-webkit-scrollbar-track {
+    background: #fff; /*스크롤바 뒷 배경 색상*/
+  }
+
+  .profileBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fe724c;
+    height: 228px;
+    width: 100%;
+    border-radius: 0px 0px 15px 15px;
+    box-shadow: 0px 5px 5px rgba(160, 160, 160, 30%);
+    padding-top: 40px;
+    z-index: 20;
+  }
+
+  .headerBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .tempIcon {
+    height: 30px;
+    width: 30px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .homeLogo {
+    background: url("../../assets/home/logo_white.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 50px;
+    width: 30%;
+  }
+
+  .toggleBtn {
+    background: url("../../assets/home/toggle_white.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 30px;
+    width: 30px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .profileContentBox {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  .profileContent {
+    width: 40%;
+  }
+  .profileImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 170px;
+    height: 170px;
+    border-radius: 12px;
+    background-color: #fff;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+  }
+  .profileImg img {
+    width: 155px;
+    height: 155px;
+    background-color: #ffefe9;
+    border-radius: 12px;
+    border: #fe724c solid 2px;
+  }
+  .growthBack {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .growthLine {
+    background: url("../../assets/home/growth_line_icon.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    height: 60px;
+    width: 20px;
+    margin-top: 5px;
+  }
+  .profileName {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .profileName span {
+    font-size: 12px;
+    font-weight: 400;
+    margin-left: 5px;
+  }
+  .profiletextBox {
+    width: 100%;
+  }
+  .profiletextBox div {
+    display: flex;
+    flex-direction: row;
+  }
+  .profiletext {
+    color: #ffceb0;
+    font-size: 12px;
+    margin-top: 2px;
+    margin-bottom: 7px;
+    margin-left: 5px;
+    width: 50%;
+  }
+  .profiledata {
+    color: #fff;
+    font-size: 12px;
+    margin-top: 2px;
+    margin-bottom: 7px;
+    margin-left: 5px;
+    width: 50%;
+  }
+  .dietTitle {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+  .dietTitle span {
+    font-weight: 600;
+  }
+  .dietIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+  .todayDietBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .todayDietBox {
+    color: #fe724c;
+  }
+  .emptyIcon {
+    background: url("../../assets/home/empty_diet.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 100px;
+    height: 100px;
+  }
+  .growthBox {
+    height: 350px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 50px;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .gridSet {
+    display: flex;
+    flex-direction: row;
+  }
+  .homeContentBack {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background: #f7f8f9;
+    margin-bottom: 20px;
+    padding: 30px 15px 50px 15px;
+    height: 100vh;
+    width: 100%;
+  }
+
+  .profileBox {
+    display: flex;
+    background: #fe724c;
+    height: 228px;
+    width: 100%;
+    border-radius: 0px 0px 15px 15px;
+    box-shadow: 5px 0px 5px rgba(160, 160, 160, 30%);
+    padding-top: 40px;
+    z-index: 20;
+  }
+  .profileContentBox {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  .profileImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 170px;
+    height: 170px;
+    border-radius: 12px;
+    background-color: #fff;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+  }
+  .profileImg img {
+    width: 155px;
+    height: 155px;
+    background-color: #ffefe9;
+    border-radius: 12px;
+    border: #fe724c solid 2px;
+  }
+  .profileName {
+    color: #fff;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  .profileName span {
+    font-size: 0.5em;
+    font-weight: 400;
+    margin-left: 5px;
+  }
+  .profileContent {
+    display: flex;
+    flex-direction: column;
+    width: 76%;
+  }
+  .growthBack {
+    margin-top: 20px;
+  }
+  .profiletextBox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-around;
+    font-size: 0.9em;
+  }
+  .profiletextBox div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .profiletext {
+    color: #ffceb0;
+  }
+  .profiledata {
+    color: #fff;
+    font-size: 1.5em;
+  }
+  .normal {
+    background: url("../../assets/home/normal.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 25%);
+    margin-top: 5px;
+  }
+  .dietBox {
+    width: 30%;
+  }
+  .dietTitle {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+  .dietTitle span {
+    font-weight: 600;
+  }
+  .dietIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+  .todayDietBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 330px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .emptyIcon {
+    background: url("../../assets/home/empty_diet.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 100px;
+    height: 100px;
+  }
+}
