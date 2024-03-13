@@ -103,6 +103,10 @@ dependencies {
 
 }
 
+jar{
+	encoding = 'UTF-8'
+}
+
 openapi3 {
 	servers = [
 			{url = "http://localhost:8080"}
