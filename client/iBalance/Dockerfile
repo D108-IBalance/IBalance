@@ -4,7 +4,7 @@
 FROM node:20-alpine as build
 
 # 컨테이너 내부 작업 디렉토리 설정
-WORKDIR /
+WORKDIR /app
 
 # app dependencies
 # 컨테이너 내부로 package.json 파일들을 복사
@@ -25,7 +25,7 @@ CMD ["ls", "-al"]
 FROM nginx:stable-alpine
 
 # 이전 빌드 단계에서 빌드한 결과물을 /usr/share/nginx/html 으로 복사한다.
-COPY --from=build /app/iBalance/build /usr/share/nginx/html
+COPY --from=build /app/iBalance/dist /usr/share/nginx/html
 
 # 기본 nginx 설정 파일을 삭제한다. (custom 설정과 충돌 방지)
 #RUN rm /etc/nginx/conf.d/default.conf
