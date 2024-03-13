@@ -1,0 +1,55 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "SSAFY D108 IBalance API",
+    "description" : "SSAFY 특화프로젝트 IBalance 에서 사용할 API 문서입니다.",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "tags" : [ ],
+  "paths" : {
+    "/test/hello/{name}" : {
+      "get" : {
+        "tags" : [ "test" ],
+        "summary" : "스웨거검증",
+        "description" : "Swagger 기본 기능을 검증합니다.",
+        "operationId" : "test_api_test/hello_test",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "text/plain;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/test-hello-name486549215"
+                },
+                "examples" : {
+                  "test_api_test/hello_test" : {
+                    "value" : "hello dongwoo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "test-hello-name486549215" : {
+        "type" : "object"
+      }
+    }
+  }
+}
