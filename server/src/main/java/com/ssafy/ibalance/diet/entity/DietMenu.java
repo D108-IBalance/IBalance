@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.diet.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -11,7 +12,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class DietMenu {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +24,7 @@ public class DietMenu {
     private Float score;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Diet diet;
 

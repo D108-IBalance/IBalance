@@ -4,14 +4,12 @@ import com.ssafy.ibalance.child.dto.response.ChildDetailResponse;
 import com.ssafy.ibalance.child.entity.Growth;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.GrowthRepository;
-import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.main.dto.response.MainResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
