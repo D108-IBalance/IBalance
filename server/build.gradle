@@ -127,23 +127,6 @@ tasks.withType(JavaCompile).configureEach {
 	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
-tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
-	doFirst {
-		def swaggerUIFile = file("${openapi3.outputDirectory}/openapi3.yaml")
-
-		def securitySchemesContent =  "  securitySchemes:\n" +  \
-                                      "    APIKey:\n" +  \
-                                      "      type: apiKey\n" +  \
-                                      "      name: Authorization\n" +  \
-                                      "      in: header\n" + \
-                                      "security:\n" +
-				"  - APIKey: []  # Apply the security scheme here"
-
-		swaggerUIFile.append securitySchemesContent
-	}
-}
-
 tasks.withType(GenerateSwaggerUI).configureEach {
 	dependsOn 'openapi3'
 
