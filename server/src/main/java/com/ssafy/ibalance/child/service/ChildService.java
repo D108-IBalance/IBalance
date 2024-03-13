@@ -32,18 +32,15 @@ public class ChildService {
     private final ChildAllergyRepository childAllergyRepository;
     private final RedisUtil redisUtil;
 
-    // MemberRepository 제작 완료 후 주석 제거
-    // private final MemberRepository memberRepository;
-
     public List<ChildListResponse> getChildList(Integer memberId) {
 
         List<Child> children = childRepository.findAllByMemberId(memberId);
         return children.stream().map(ChildListResponse::ConvertEntityToDto).toList();
     }
 
-    public RegistChildResponse registChild(RegistChildRequest registChildRequest) {
+    public RegistChildResponse registChild(RegistChildRequest registChildRequest, Member member) {
 
-        Child child = saveChild(registChildRequest);
+        Child child = saveChild(registChildRequest, member);
         saveGrowth(child);
         List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
         redisUtil.setChildAllergy(child.getId(), childAllergyList);
@@ -57,18 +54,9 @@ public class ChildService {
         return DeleteChildResponse.ConvertEntityToDto(child);
     }
 
-    private Child saveChild(RegistChildRequest registChildRequest) {
+    private Child saveChild(RegistChildRequest registChildRequest, Member member) {
 
-        // MemberRepository 제작 완료 후 주석 제거
-        // memberId 구하는 메서드 필요
-        // Member member = memberRepository.finById(Integer memberId)
-
-        // 임시 member
-        Member member = new Member();
-        member.setId(1);
-
-        Child child = Child.ConvertDtoToEntity(registChildRequest, member);
-        return childRepository.save(child);
+        return Child.ConvertDtoToEntity(registChildRequest, member);
     }
 
     private void saveGrowth(Child child) {
