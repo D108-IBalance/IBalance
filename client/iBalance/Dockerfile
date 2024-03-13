@@ -22,6 +22,8 @@ RUN npm run build
 # prod environment
 FROM nginx:stable-alpine
 
+RUN ls -al
+
 # 이전 빌드 단계에서 빌드한 결과물을 /usr/share/nginx/html 으로 복사한다.
 COPY --from=build /app/iBalance/build /usr/share/nginx/html
 
