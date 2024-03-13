@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class MainResponse {
+public class MainPageResponse {
     private ChildDetailResponse childDetailResponse;
     private List<DietByDateResponse> dietList;
 }
