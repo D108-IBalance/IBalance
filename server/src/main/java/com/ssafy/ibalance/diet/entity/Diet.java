@@ -23,7 +23,7 @@ public class Diet extends BaseTime {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dietDate;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) default '4'")
+    @Column(nullable = false)
     private Integer sequence;
 
     @Column
