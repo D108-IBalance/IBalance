@@ -3,23 +3,26 @@ package com.ssafy.ibalance.child.service;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.ChildListResponse;
 import com.ssafy.ibalance.child.dto.response.DeleteChildResponse;
+import com.ssafy.ibalance.child.dto.response.GrowthResponse;
 import com.ssafy.ibalance.child.dto.response.RegistChildResponse;
 import com.ssafy.ibalance.child.entity.Allergy;
 import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.child.entity.ChildAllergy;
-import com.ssafy.ibalance.growth.entity.Growth;
+import com.ssafy.ibalance.child.entity.Growth;
 import com.ssafy.ibalance.child.repository.AllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
-import com.ssafy.ibalance.growth.repository.GrowthRepository;
+import com.ssafy.ibalance.child.repository.GrowthRepository;
 import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -84,5 +87,12 @@ public class ChildService {
         }
 
         return childAllergyList;
+    }
+
+    public List<GrowthResponse> getGrowthList(Integer childId, Pageable pageable) {
+        return growthRepository.findByChildIdOrderByIdDesc(childId, pageable)
+                .stream()
+                .map(GrowthResponse::ConvertEntityToDto)
+                .collect(Collectors.toList());
     }
 }
