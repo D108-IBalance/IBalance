@@ -3,9 +3,11 @@ from fastapi import FastAPI
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uvicorn
+# from recommend import recommend_first_init
 from pydantic_settings import BaseSettings
 from UBCFPractice import read_ratings, read_names, set_user_id, getRecomm
 import mysql.connector
+from make_random_rating import make
 import csv
 
 
@@ -23,6 +25,7 @@ app = FastAPI()
 # ratings = []
 uri = f'{settings.MONGO_HOST}'
 client = MongoClient(uri, server_api=ServerApi('1'))
+
 mydb = mysql.connector.connect(
     host=settings.MYSQL_HOST,
     user=settings.MYSQL_USER,
@@ -59,7 +62,10 @@ except Exception as e:
 def hello_world(user_id : int | None = None):
     return {"Hello": "World"}
 
-
+# @app.get("/make")
+# def make_random_rating():
+#     make(client, mydb)
+#     return{}
 # def _load_movies(csv_path : str):
 #     f = open(csv_path, 'r', encoding='utf-8')
 #     lines = csv.reader(f)
@@ -108,11 +114,12 @@ def hello_world(user_id : int | None = None):
 #     _load_ratings("ratings.csv")
 #     ratings_collection.insert_many(ratings)
 
-@app.get("/recomm/{user_id}")
-def recommend(user_id : str):
+@app.get("/recomm/{child_id}")
+def init_recommend(user_id : str):
     print("req user_id : ")
     print(int(user_id))
-    return getRecomm(client, (int(user_id)))
+    # recommend_first_init(mydb, client, (int(user_id)))
+    # return getRecomm(client, (int(user_id)))
 
 @app.get("/mongo/info")
 async def get_info():
