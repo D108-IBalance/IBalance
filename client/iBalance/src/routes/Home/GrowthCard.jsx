@@ -70,7 +70,7 @@ const Chart = (props) => {
       recordDate: "2024-03-13",
       startDate: "2024-03-10",
       endDate: "2024-03-16",
-      height: 10,
+      height: 30,
       weight: 36.8,
     },
     {
@@ -84,7 +84,7 @@ const Chart = (props) => {
       recordDate: "2024-03-11",
       startDate: "2024-03-10",
       endDate: "2024-03-16",
-      height: 137.0,
+      height: 90.0,
       weight: 36.0,
     },
     {
@@ -106,7 +106,34 @@ const Chart = (props) => {
         paddingLeft: "30px",
         paddingRight: "30px",
       }}>
-      <path />
+      <path
+        d={`M0 ${chartInfo[0]["height"]} ${chartInfo.map((data, idx) => {
+          return `${X_STEP * (idx + 0.5)} ${data.height} `;
+        })}`}
+        fill="white"
+        stroke="#fe724c"
+        opacity={0.5}
+        strokeWidth={2.5}
+      />
+      <line x1={0} y1={90} x2={180} y2={90} stroke="gray" opacity={0.5} />
+      <line x1={0} y1={0} x2={180} y2={0} stroke="gray" opacity={0.5} />
+      <line
+        x1={X_STEP * (clickStep + 0.5)}
+        x2={X_STEP * (clickStep + 0.5)}
+        y1={0}
+        y2={chartInfo[clickStep]["height"]}
+        stroke="#fe724c"
+        strokeWidth={2}
+        strokeDasharray={4}
+      />
+      <rect
+        x={X_STEP * (clickStep + 0.5) - 15}
+        y={chartInfo[clickStep]["height"] + 8}
+        fill="black"
+        opacity={0.8}
+        width={30}
+        height={20}
+      />
       {chartInfo.map((data, idx) => {
         return (
           <circle
