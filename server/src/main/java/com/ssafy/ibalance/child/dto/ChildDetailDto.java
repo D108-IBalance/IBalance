@@ -2,11 +2,10 @@ package com.ssafy.ibalance.child.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.ssafy.ibalance.child.entity.Child;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.growth.entity.Growth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
 @Getter

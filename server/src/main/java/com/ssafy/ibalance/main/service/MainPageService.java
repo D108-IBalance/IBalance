@@ -1,10 +1,10 @@
 package com.ssafy.ibalance.main.service;
 
 import com.ssafy.ibalance.child.dto.response.ChildDetailResponse;
-import com.ssafy.ibalance.child.dto.response.GrowthResponse;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.growth.dto.response.GrowthResponse;
+import com.ssafy.ibalance.growth.entity.Growth;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
-import com.ssafy.ibalance.child.repository.GrowthRepository;
+import com.ssafy.ibalance.growth.repository.GrowthRepository;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.main.dto.response.MainPageResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class MainPageService {
     }
 
     public List<GrowthResponse> getGrowth(Integer childId) {
-        return growthRepository.findTop3ByChildIdOrderByIdDesc(childId)
+        return growthRepository.findTop5ByChildIdOrderByIdDesc(childId)
                 .stream()
                 .map(GrowthResponse::ConvertEntityToDto)
                 .collect(Collectors.toList());

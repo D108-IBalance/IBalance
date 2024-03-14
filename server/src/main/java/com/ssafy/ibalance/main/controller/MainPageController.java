@@ -1,6 +1,6 @@
 package com.ssafy.ibalance.main.controller;
 
-import com.ssafy.ibalance.child.dto.response.GrowthResponse;
+import com.ssafy.ibalance.growth.dto.response.GrowthResponse;
 import com.ssafy.ibalance.main.dto.response.MainPageResponse;
 import com.ssafy.ibalance.main.service.MainPageService;
 import lombok.RequiredArgsConstructor;

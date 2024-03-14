@@ -1,5 +1,6 @@
-package com.ssafy.ibalance.child.entity;
+package com.ssafy.ibalance.growth.entity;
 
+import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.common.util.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
