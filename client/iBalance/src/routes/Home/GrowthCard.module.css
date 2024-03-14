@@ -10,7 +10,7 @@
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
     margin-top: 10px;
     margin-bottom: 25px;
-    padding-top: 20px;
+    padding-top: 5px;
     padding-bottom: 20px;
   }
 
@@ -66,7 +66,7 @@
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
     margin-top: 10px;
     margin-bottom: 25px;
-    padding-top: 20px;
+    padding-top: 5px;
     padding-bottom: 20px;
     width: 270px;
   }
@@ -108,18 +108,44 @@
 }
 
 .svgAni {
-  stroke-dashoffset: 100;
+  stroke-dashoffset: 500;
+  stroke-dasharray: 500;
   animation: move 3s forwards;
 }
 
 @keyframes move {
   from {
-    stroke-dasharray: 100;
+    stroke-dasharray: 500;
   }
   to {
-    stroke-dasharray: 105;
+    stroke-dasharray: 800;
   }
 }
 .circle {
   cursor: pointer;
+}
+
+.selectIcon {
+  border-radius: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 3px solid #f75c31;
+  margin-right: 0.2rem;
+}
+.notSelectIcon {
+  border-radius: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 3px solid #fe724c;
+  opacity: 0.8;
+  margin-right: 0.2rem;
+}
+.legend {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  margin-left: 2rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  align-items: center;
 }

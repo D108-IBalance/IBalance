@@ -5,7 +5,7 @@
   }
   .homeContentBack {
     position: relative;
-    background: #f7f8f9;
+    background: white;
     margin-bottom: 20px;
     padding: 280px 15px 50px 15px;
     overflow-y: scroll;
@@ -212,7 +212,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    background: #f7f8f9;
+    background: white;
     margin-bottom: 20px;
     padding: 30px 15px 50px 15px;
     height: 100vh;

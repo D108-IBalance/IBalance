@@ -55,7 +55,18 @@ const GrowthCard = () => {
               ) : null}
             </div>
             <div className={classes.card}>
-              <Chart></Chart>
+              <div className={classes.legend}>
+                <div className={classes.selectIcon} />
+                <p>선택된 요소</p>
+              </div>
+              <div className={classes.legend}>
+                <div className={classes.notSelectIcon} />
+                <p>선택되지 않은 요소</p>
+              </div>
+              <Chart
+                isHeight={
+                  (idx === 0 && !toggle) || idx === 1 ? "height" : "weight"
+                }></Chart>
             </div>
           </div>
         );
@@ -65,6 +76,7 @@ const GrowthCard = () => {
 };
 
 const Chart = (props) => {
+  let { isHeight } = props;
   let chartInfo = [
     {
       recordDate: "2024-03-13",
@@ -100,46 +112,78 @@ const Chart = (props) => {
   const X_STEP = Math.round(180 / chartInfo.length + 2);
   return (
     <svg
-      viewBox="0 0 180 180"
+      viewBox="0 0 200 200"
       style={{
         transform: "scaleY(-1)",
         paddingLeft: "30px",
         paddingRight: "30px",
       }}>
       <path
-        d={`M0 ${chartInfo[0]["height"]} ${chartInfo.map((data, idx) => {
-          return `${X_STEP * (idx + 0.5)} ${data.height} `;
+        className={classes.svgAni}
+        d={`M0 ${chartInfo[0][isHeight] + 30} ${chartInfo.map((data, idx) => {
+          return `${X_STEP * (idx + 0.5)} ${data[isHeight] + 30} `;
         })}`}
         fill="white"
         stroke="#fe724c"
         opacity={0.5}
         strokeWidth={2.5}
       />
-      <line x1={0} y1={90} x2={180} y2={90} stroke="gray" opacity={0.5} />
-      <line x1={0} y1={0} x2={180} y2={0} stroke="gray" opacity={0.5} />
+      <line x1={0} y1={105} x2={180} y2={105} stroke="gray" opacity={0.5} />
+      <line x1={0} y1={30} x2={180} y2={30} stroke="gray" opacity={0.5} />
       <line
         x1={X_STEP * (clickStep + 0.5)}
         x2={X_STEP * (clickStep + 0.5)}
-        y1={0}
-        y2={chartInfo[clickStep]["height"]}
+        y1={30}
+        y2={chartInfo[clickStep][isHeight] + 30}
         stroke="#fe724c"
         strokeWidth={2}
         strokeDasharray={4}
       />
       <rect
         x={X_STEP * (clickStep + 0.5) - 15}
-        y={chartInfo[clickStep]["height"] + 8}
+        y={chartInfo[clickStep][isHeight] + 35}
         fill="black"
         opacity={0.8}
-        width={30}
+        rx={5}
+        width={35}
         height={20}
       />
+      <text
+        style={{ transform: "scaleY(-1)" }}
+        x={X_STEP * (clickStep + 0.5) - 12}
+        fill="white"
+        y={-(chartInfo[clickStep][isHeight] + 42)}
+        fontSize={9}
+        fontWeight="600">
+        {chartInfo[clickStep][isHeight] +
+          `${isHeight === "height" ? "cm" : "kg"}`}
+      </text>
+      <text
+        style={{ transform: "scaleY(-1)" }}
+        x={X_STEP * (clickStep + 0.5) - 21}
+        fill="black"
+        y={-20}
+        fontSize={8}
+        fontWeight={500}>
+        <tspan>{chartInfo[clickStep]["startDate"]}</tspan>
+        <tspan
+          x={X_STEP * (clickStep + 0.5) - 3}
+          y={-11}
+          fontSize={13}
+          fontWeight={"light"}>
+          ~
+        </tspan>
+        <tspan x={X_STEP * (clickStep + 0.5) - 21} y={-4}>
+          {chartInfo[clickStep]["endDate"]}
+        </tspan>
+      </text>
+
       {chartInfo.map((data, idx) => {
         return (
           <circle
             key={idx}
             cx={X_STEP * (idx + 0.5)}
-            cy={data["height"]}
+            cy={data[isHeight] + 30}
             fill="white"
             stroke={clickStep === idx ? "#f75c31" : "#f7ae9a"}
             strokeWidth={2}
