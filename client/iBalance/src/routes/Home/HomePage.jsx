@@ -7,10 +7,9 @@ import NavbarModule from "../../modules/Navbar/NavbarModule";
 import classes from "./HomePage.module.css";
 import profileImgfile from "../../assets/auth/img/default_profile1.png";
 import { useEffect, useState } from "react";
+import GrowthCard from "./GrowthCard";
 
-const HomePage = (props) => {
-  let { displaySize } = props;
-
+const HomePage = () => {
   return (
     <>
       <div className={classes.gridSet}>
@@ -19,8 +18,7 @@ const HomePage = (props) => {
           <ProfileView />
           <div className={classes.homeContentBack}>
             <TodayDiet />
-            <TodayDiet />
-            <TodayDiet />
+            <GrowthCard />
             {/* <div>우라아이 성장곡선</div> */}
             {/* <div className={classes.growthBox}></div> */}
           </div>

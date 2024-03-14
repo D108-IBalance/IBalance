@@ -1,0 +1,125 @@
+@media screen and (max-width: 576px) {
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 335px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .cardTitle {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+
+  .cardTitle span {
+    font-weight: 600;
+  }
+  .cardIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .cardTitle {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+  }
+  .cardTitle span {
+    font-weight: 600;
+  }
+  .category {
+    display: flex;
+  }
+  .cardIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 330px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 270px;
+  }
+  .category > .toggle {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .height {
+    display: none;
+  }
+  .weight {
+    display: none;
+  }
+  .category {
+    display: flex;
+    justify-content: space-between;
+  }
+  .category > .toggle {
+    display: inline;
+    margin-top: 25px;
+    padding-right: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .bold {
+    font-weight: bold;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .total {
+    display: none;
+  }
+  .category {
+    display: flex;
+  }
+}
+
+.svgAni {
+  stroke-dashoffset: 100;
+  animation: move 3s forwards;
+}
+
+@keyframes move {
+  from {
+    stroke-dasharray: 100;
+  }
+  to {
+    stroke-dasharray: 105;
+  }
+}
+.circle {
+  cursor: pointer;
+}

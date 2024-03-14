@@ -304,7 +304,6 @@
     margin-top: 5px;
   }
   .dietBox {
-    width: 30%;
   }
   .dietTitle {
     display: flex;
@@ -324,6 +323,7 @@
     margin-right: 10px;
   }
   .todayDietBox {
+    flex: none;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -336,6 +336,7 @@
     margin-bottom: 25px;
     padding-top: 20px;
     padding-bottom: 20px;
+    width: 270px;
   }
   .emptyIcon {
     background: url("../../assets/home/empty_diet.png");
@@ -344,5 +345,11 @@
     background-size: contain;
     width: 100px;
     height: 100px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .homeContentBack > div:last-child {
+    display: none;
   }
 }
