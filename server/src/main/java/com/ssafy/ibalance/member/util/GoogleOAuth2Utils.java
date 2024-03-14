@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@PropertySource("classpath:oauth.properties")
 public class GoogleOAuth2Utils {
 
     @Value("${google.user-info-url}")
