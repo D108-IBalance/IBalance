@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@PropertySource("classpath:oauth.properties")
 public class NaverOAuth2Utils {
 
     @Value("${naver.client-id}")

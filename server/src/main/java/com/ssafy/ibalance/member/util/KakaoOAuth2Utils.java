@@ -13,7 +13,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-@PropertySource("classpath:oauth.properties")
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoOAuth2Utils {
