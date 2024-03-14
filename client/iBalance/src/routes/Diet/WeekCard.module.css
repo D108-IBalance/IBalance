@@ -1,0 +1,55 @@
+.weekCardBox {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  height: 130px;
+  padding-right: 10px;
+  margin-bottom: 30px;
+  /* transition: 0.3s ease; */
+  /* padding-left: 10px; */
+}
+.weekCard {
+  /* flex: none; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  height: 110px;
+  width: 90px;
+  border-radius: 10px;
+  box-shadow:
+    0px 4px 4px rgba(0, 0, 0, 25%),
+    -2px 1px 4px rgba(0, 0, 0, 25%);
+  margin-top: 2px;
+  margin-right: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.weekCardClicked {
+  /* flex: none; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  height: 110px;
+  width: 90px;
+  background-color: #fe724c;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 25%);
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.dayFont {
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.dateFont {
+  font-size: 2em;
+  font-weight: 700;
+}

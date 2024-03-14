@@ -1,0 +1,54 @@
+.dayDietBox {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.dayTitleBox {
+  display: flex;
+  justify-content: space-between;
+}
+.dayTitle {
+  font-weight: 600;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+.addTitle {
+  font-weight: 600;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+  color: #fe724c;
+}
+
+.dayCard {
+  display: flex;
+  /* display: inline-block; */
+  flex-direction: row;
+  background-color: #fe724c;
+  height: 200px;
+  width: 250px;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  box-shadow: 18px 18px 36px rgba(0, 0, 0, 25%);
+  padding: 20px;
+}
+.cardIcon {
+  background: url("../../assets/diet/diet_icon_white.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  height: 50px;
+  width: 30px;
+}
+.cardLine {
+  height: 50px;
+  width: 10px;
+  border-right: 2px solid rgba(225, 225, 225, 20%);
+  border-radius: 20px;
+}
+.dietContentBox {
+  padding-left: 15px;
+  padding-top: 10px;
+}
+.dietContentBox p {
+  color: #fff;
+  margin-bottom: 5px;
+}
