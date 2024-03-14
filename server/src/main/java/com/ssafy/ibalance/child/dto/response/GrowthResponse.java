@@ -1,6 +1,6 @@
-package com.ssafy.ibalance.growth.dto.response;
+package com.ssafy.ibalance.child.dto.response;
 
-import com.ssafy.ibalance.growth.entity.Growth;
+import com.ssafy.ibalance.child.entity.Growth;
 import lombok.Builder;
 import lombok.Getter;
 

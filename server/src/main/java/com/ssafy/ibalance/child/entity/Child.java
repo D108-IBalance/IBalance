@@ -2,6 +2,7 @@ package com.ssafy.ibalance.child.entity;
 
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.type.Gender;
+import com.ssafy.ibalance.common.util.BaseTime;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @DynamicInsert
-public class Child {
+public class Child extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
