@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.test.controller;
 
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
+import com.ssafy.ibalance.common.dto.response.StringWrapper;
 import com.ssafy.ibalance.test.dto.request.TestSaveRequest;
 import com.ssafy.ibalance.test.entity.TesterEntity;
 import com.ssafy.ibalance.test.service.TestService;
@@ -17,8 +18,8 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/hello/{name}")
-    public String hello(@PathVariable String name){
-        return "hello " + name;
+    public StringWrapper hello(@PathVariable String name){
+        return StringWrapper.wrap("Hello " + name);
     }
 
     @GetMapping("/jpa/{address}")

@@ -23,7 +23,7 @@ public class TestApiTest extends ApiTest {
 
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("hello " + name))
+                .andExpect(jsonPath("$.data.value").value("Hello " + name))
                 .andDo(
                         document(DEFAULT_RESTDOC_PATH, "Swagger 기본 기능을 검증합니다.",
                                 "스웨거검증")
@@ -59,11 +59,11 @@ public class TestApiTest extends ApiTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.data.length()").value(1))
                 .andReturn();
 
         String result = mvcResult.getResponse().getContentAsString();
-        String name = JsonPath.parse(result).read("$.[0].address");
+        String name = JsonPath.parse(result).read("$.data.[0].address");
         assertThat(name).contains(dongwooAddr);
     }
 
