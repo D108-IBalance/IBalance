@@ -11,4 +11,6 @@ public interface DietCustomRepository {
     List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date);
 
     List<ChildDietResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate);
+
+    List<Integer> getMenuIdByDietId(Long dietId);
 }
