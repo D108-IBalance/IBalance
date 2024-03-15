@@ -6,14 +6,21 @@ import com.ssafy.ibalance.child.dto.response.DeleteChildResponse;
 import com.ssafy.ibalance.child.dto.response.GrowthResponse;
 import com.ssafy.ibalance.child.dto.response.RegistChildResponse;
 import com.ssafy.ibalance.child.service.ChildService;
+import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * @author 박성진, 김주이
+ */
 @RestController
 @RequestMapping("/child")
 @RequiredArgsConstructor
@@ -41,6 +48,18 @@ public class ChildController {
     }
 
     /**
+     * 메인 페이지에서 자녀 정보와 오늘의 식단 조회
+     *
+     * @param childId
+     * @return
+     */
+    @GetMapping("/{childId}")
+    public ChildDietResponse getMain(@PathVariable Integer childId,
+                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        return childService.getMain(childId, date);
+    }
+
+    /**
      * 성장 데이터 조회
      *
      * @param childId 자녀 아이디
@@ -48,7 +67,7 @@ public class ChildController {
      * @return 자녀의 키, 몸무게와 기록 날짜, 기록 날짜의 일요일과 토요일 날짜
      */
     @GetMapping("/growth/{childId}")
-    public List<GrowthResponse> getGrowthList(@PathVariable Integer childId, Pageable pageable) {
+    public Page<GrowthResponse> getGrowthList(@PathVariable Integer childId, Pageable pageable) {
         return childService.getGrowthList(childId, pageable);
     }
 
