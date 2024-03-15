@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.main.dto.response;
+package com.ssafy.ibalance.child.dto.response;
 
 import com.ssafy.ibalance.child.dto.response.ChildDetailResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class MainPageResponse {
+public class ChildDietResponse {
     private ChildDetailResponse childDetailResponse;
     private List<DietByDateResponse> dietList;
 }
