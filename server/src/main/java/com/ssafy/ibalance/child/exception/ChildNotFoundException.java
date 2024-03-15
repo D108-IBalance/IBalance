@@ -1,7 +1,10 @@
 package com.ssafy.ibalance.child.exception;
 
-public class ChildNotFoundException extends RuntimeException {
+import com.ssafy.ibalance.common.exception.CustomException;
+import org.springframework.http.HttpStatus;
+
+public class ChildNotFoundException extends CustomException {
     public ChildNotFoundException(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

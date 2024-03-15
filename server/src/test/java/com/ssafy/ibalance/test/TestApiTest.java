@@ -42,7 +42,8 @@ public class TestApiTest extends ApiTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andDo(handler -> System.out.println(handler.getResponse().getContentAsString()));
     }
 
     @Test
@@ -64,6 +65,21 @@ public class TestApiTest extends ApiTest {
         String result = mvcResult.getResponse().getContentAsString();
         String name = JsonPath.parse(result).read("$.[0].address");
         assertThat(name).contains(dongwooAddr);
+    }
+
+    @Test
+    void exception_test() throws Exception{
+        mockMvc
+                .perform(
+                get("/test/exceptional")
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.data").isNotEmpty())
+                .andDo(handler -> {
+                    System.out.println(handler.getResponse().getHeader("Content-Type"));
+                    System.out.println(handler.getResponse().getContentAsString());
+                });
     }
 
     void test_entity_save(String name, String address) throws Exception {
