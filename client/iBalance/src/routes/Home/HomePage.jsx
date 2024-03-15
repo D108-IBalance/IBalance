@@ -19,8 +19,6 @@ const HomePage = () => {
           <div className={classes.homeContentBack}>
             <TodayDiet />
             <GrowthCard />
-            {/* <div>우라아이 성장곡선</div> */}
-            {/* <div className={classes.growthBox}></div> */}
           </div>
         </div>
       </div>

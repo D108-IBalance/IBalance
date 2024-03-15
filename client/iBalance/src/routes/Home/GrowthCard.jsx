@@ -1,11 +1,31 @@
 /* eslint-disable */
 
 // 내부 모듈
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./GrowthCard.module.css";
+import prevArrow from "../../assets/home/prevArrow.svg";
+import nextArrow from "../../assets/home/nextArrow.svg";
+import { getUserChart } from "./ServerConnect";
 
 const GrowthCard = () => {
   const [toggle, setToggle] = useState(false);
+  const [heightPage, setHeightPage] = useState(0);
+  const [weightPage, setWeightPage] = useState(0);
+  let heightChart = {};
+  let weightChart = {};
+  useEffect(() => {
+    const getChart = async () => {
+      try {
+        const value = await getUserChart(0);
+        heightChart = value.data;
+        weightChart = value.data;
+      } catch {
+        // alert("에러");
+      }
+    };
+    getChart();
+  }, []);
+  let isHeightPrev = true;
   const COMPONENT_INFO = [
     {
       title: "우리 아이 성장 곡선",
@@ -55,14 +75,23 @@ const GrowthCard = () => {
               ) : null}
             </div>
             <div className={classes.card}>
-              <div className={classes.legend}>
-                <div className={classes.selectIcon} />
-                <p>선택된 요소</p>
+              <div className={classes.chartMeta}>
+                <div className={classes.legends}>
+                  <div className={classes.legend}>
+                    <div className={classes.selectIcon} />
+                    <p>선택된 요소</p>
+                  </div>
+                  <div className={classes.legend}>
+                    <div className={classes.notSelectIcon} />
+                    <p>선택되지 않은 요소</p>
+                  </div>
+                </div>
+                <div className={classes.controller}>
+                  <img src={prevArrow} alt="prev" className={classes.prev} />
+                  <img src={nextArrow} alt="next" className={classes.next} />
+                </div>
               </div>
-              <div className={classes.legend}>
-                <div className={classes.notSelectIcon} />
-                <p>선택되지 않은 요소</p>
-              </div>
+
               <Chart
                 isHeight={
                   (idx === 0 && !toggle) || idx === 1 ? "height" : "weight"
@@ -188,6 +217,7 @@ const Chart = (props) => {
             stroke={clickStep === idx ? "#f75c31" : "#f7ae9a"}
             strokeWidth={2}
             r={3}
+            cursor="pointer"
             onClick={() => {
               setClickStep(idx);
             }}

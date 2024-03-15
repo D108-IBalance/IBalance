@@ -7,7 +7,7 @@
     height: 335px;
     background: #fff;
     border-radius: 15px;
-    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    box-shadow: 5px 5px 5px 5px rgba(160, 160, 160, 30%);
     margin-top: 10px;
     margin-bottom: 25px;
     padding-top: 5px;
@@ -57,10 +57,10 @@
   }
   .card {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-direction: column;
-    height: 330px;
+    height: 25rem;
     background: #fff;
     border-radius: 15px;
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
@@ -68,7 +68,7 @@
     margin-bottom: 25px;
     padding-top: 5px;
     padding-bottom: 20px;
-    width: 270px;
+    width: 300px;
   }
   .category > .toggle {
     display: none;
@@ -148,4 +148,23 @@
   font-size: 0.6rem;
   font-weight: 600;
   align-items: center;
+}
+
+.controller {
+  width: 30%;
+  display: flex;
+  justify-content: space-around;
+}
+.chartMeta {
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.prev {
+  cursor: pointer;
+}
+.next {
+  cursor: pointer;
 }
