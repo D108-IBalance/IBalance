@@ -10,7 +10,6 @@ import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.flogger.Flogger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -92,5 +91,15 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
         }
 
         return childDietResponseList;
+    }
+
+    @Override
+    public List<Integer> getMenuIdByDietId(Long dietId) {
+        return jpaQueryFactory.select(dietMenu.menuId)
+                .from(diet)
+                .join(dietMenu)
+                .on(diet.id.eq(dietMenu.diet.id))
+                .where(diet.id.eq(dietId))
+                .fetch();
     }
 }
