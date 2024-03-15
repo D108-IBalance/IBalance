@@ -105,6 +105,9 @@ const GrowthCard = () => {
 };
 
 const Chart = (props) => {
+  const Y_START = 30;
+  const MAX_HEIGHT = 150;
+  const DIVIDE_MAX = MAX_HEIGHT / 2;
   let { isHeight } = props;
   let chartInfo = [
     {
@@ -136,9 +139,10 @@ const Chart = (props) => {
       weight: 35.0,
     },
   ];
-  chartInfo = chartInfo.reverse();
   const [clickStep, setClickStep] = useState(3);
   const X_STEP = Math.round(180 / chartInfo.length + 2);
+  chartInfo = chartInfo.reverse();
+
   return (
     <svg
       viewBox="0 0 200 200"
@@ -149,20 +153,36 @@ const Chart = (props) => {
       }}>
       <path
         className={classes.svgAni}
-        d={`M0 ${chartInfo[0][isHeight] + 30} ${chartInfo.map((data, idx) => {
-          return `${X_STEP * (idx + 0.5)} ${data[isHeight] + 30} `;
-        })}`}
+        d={`M0 ${chartInfo[0][isHeight] + Y_START} ${chartInfo.map(
+          (data, idx) => {
+            return `${X_STEP * (idx + 0.5)} ${data[isHeight] + Y_START} `;
+          },
+        )}`}
         fill="white"
         stroke="#fe724c"
         opacity={0.5}
         strokeWidth={2.5}
       />
-      <line x1={0} y1={105} x2={180} y2={105} stroke="gray" opacity={0.5} />
-      <line x1={0} y1={30} x2={180} y2={30} stroke="gray" opacity={0.5} />
+      <line
+        x1={0}
+        y1={DIVIDE_MAX + Y_START}
+        x2={MAX_HEIGHT + Y_START}
+        y2={DIVIDE_MAX + Y_START}
+        stroke="gray"
+        opacity={0.5}
+      />
+      <line
+        x1={0}
+        y1={Y_START}
+        x2={MAX_HEIGHT}
+        y2={Y_START}
+        stroke="gray"
+        opacity={0.5}
+      />
       <line
         x1={X_STEP * (clickStep + 0.5)}
         x2={X_STEP * (clickStep + 0.5)}
-        y1={30}
+        y1={Y_START}
         y2={chartInfo[clickStep][isHeight] + 30}
         stroke="#fe724c"
         strokeWidth={2}
