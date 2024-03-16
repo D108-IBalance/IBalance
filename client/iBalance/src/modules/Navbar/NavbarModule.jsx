@@ -4,7 +4,7 @@
 import { useNavigate } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./NavbarModule.module.css";
@@ -21,8 +21,6 @@ const NavbarModule = (props) => {
   let movePage = (idx) => {
     navigate(LINK[idx]);
   };
-  let arr = [0, 0, 0, 0];
-  arr[isClick] = 1;
 
   return (
     <>
@@ -32,6 +30,7 @@ const NavbarModule = (props) => {
           {ICON.map((icon, idx) => {
             return (
               <Nav.Link
+                key={idx}
                 className={classes[icon]}
                 onClick={() => {
                   movePage(idx);
@@ -48,6 +47,7 @@ const NavbarModule = (props) => {
           {ICON.map((icon, idx) => {
             return (
               <Nav.Link
+                key={idx}
                 className={classes.IconBox}
                 style={
                   isClick == idx ? { color: "#FF5D30" } : { color: "#FFB8A5" }
@@ -70,6 +70,7 @@ const NavbarModule = (props) => {
           {ICON.map((icon, idx) => {
             return (
               <Nav.Link
+                key={idx}
                 className={classes[icon]}
                 style={{ margin: "30px" }}
                 onClick={() => {

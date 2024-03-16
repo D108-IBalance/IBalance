@@ -146,10 +146,7 @@
   }
 }
 
-@media screen and (min-width: 576px) {
-  .smallDesktop {
-    display: none;
-  }
+@media screen and (min-width: 1350px) {
   .body {
     margin: 0;
     padding: 0;
@@ -162,7 +159,9 @@
     padding-left: 2%;
     padding-right: 2%;
   }
-
+  .smallDesktop {
+    display: none;
+  }
   .iconBox {
     display: none;
   }
@@ -334,7 +333,7 @@
   }
 }
 
-@media (min-width: 576px) and (max-width: 1528px) {
+@media (min-width: 576px) and (max-width: 1350px) {
   .navBox {
     width: 75px;
     height: 100vh;
@@ -343,7 +342,9 @@
   .texticonBox {
     display: none;
   }
-
+  .iconBox {
+    display: none;
+  }
   .smallDesktop {
     width: 100%;
     height: 100%;
