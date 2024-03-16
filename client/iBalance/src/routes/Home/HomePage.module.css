@@ -5,7 +5,7 @@
   }
   .homeContentBack {
     position: relative;
-    background: #f7f8f9;
+    background: white;
     margin-bottom: 20px;
     padding: 280px 15px 50px 15px;
     overflow-y: scroll;
@@ -210,36 +210,41 @@
   }
   .homeContentBack {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-around;
-    background: #f7f8f9;
+    background: white;
     margin-bottom: 20px;
     padding: 30px 15px 50px 15px;
-    height: 100vh;
+    height: 65%;
     width: 100%;
+    overflow-y: auto;
   }
 
   .profileBox {
     display: flex;
     background: #fe724c;
-    height: 228px;
+    justify-content: center;
+    align-items: center;
+    height: 35%;
     width: 100%;
     border-radius: 0px 0px 15px 15px;
     box-shadow: 5px 0px 5px rgba(160, 160, 160, 30%);
-    padding-top: 40px;
     z-index: 20;
   }
   .profileContentBox {
     display: flex;
     flex-direction: row;
     width: 100%;
+    padding-left: 1.5rem;
   }
   .profileImg {
+    flex: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 170px;
-    height: 170px;
+    width: 230px;
+    height: 230px;
     border-radius: 12px;
     background-color: #fff;
     margin-left: 20px;
@@ -247,15 +252,15 @@
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
   }
   .profileImg img {
-    width: 155px;
-    height: 155px;
+    width: 210px;
+    height: 210px;
     background-color: #ffefe9;
     border-radius: 12px;
     border: #fe724c solid 2px;
   }
   .profileName {
     color: #fff;
-    font-size: 2em;
+    font-size: 3rem;
     font-weight: bold;
   }
   .profileName span {
@@ -267,6 +272,8 @@
     display: flex;
     flex-direction: column;
     width: 76%;
+    padding-left: 3rem;
+    padding-right: 2rem;
   }
   .growthBack {
     margin-top: 20px;
@@ -276,8 +283,8 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: space-around;
-    font-size: 0.9em;
+    justify-content: space-between;
+    font-size: 1.3rem;
   }
   .profiletextBox div {
     display: flex;
@@ -304,7 +311,6 @@
     margin-top: 5px;
   }
   .dietBox {
-    width: 30%;
   }
   .dietTitle {
     display: flex;
@@ -324,11 +330,12 @@
     margin-right: 10px;
   }
   .todayDietBox {
+    flex: none;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 330px;
+    height: 25rem;
     background: #fff;
     border-radius: 15px;
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
@@ -336,6 +343,7 @@
     margin-bottom: 25px;
     padding-top: 20px;
     padding-bottom: 20px;
+    width: 300px;
   }
   .emptyIcon {
     background: url("../../assets/home/empty_diet.png");
@@ -344,5 +352,11 @@
     background-size: contain;
     width: 100px;
     height: 100px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .homeContentBack > div:last-child {
+    display: none;
   }
 }
