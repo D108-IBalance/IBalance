@@ -9,98 +9,75 @@ import { useState } from "react";
 // 내부 모듈
 import classes from "./NavbarModule.module.css";
 
+// props로 넘겨줘야 할 사항 : isClick (이 컴포넌트가 호출된 위치가 어느 아이콘이 불이 들어와야하는지)
 const NavbarModule = (props) => {
-  let { isClick } = props;
+  const { isClick } = props;
   let navigate = useNavigate();
+  const LINK = ["/home", "/recipe", "/diet", "/diary"];
+  const icons = ["home", "recipe", "diet", "diary"];
+  const ICON = icons.map(
+    (icon, idx) => `${icon}Icon${isClick === idx ? "Active" : ""}`,
+  );
+  let movePage = (idx) => {
+    navigate(LINK[idx]);
+  };
   let arr = [0, 0, 0, 0];
   arr[isClick] = 1;
 
   return (
     <>
       <Navbar className={classes.navBox} style={{ backgroundColor: "white" }}>
-        {/* <Container> */}
+        {/* 모바일 */}
         <Nav className={classes.iconBox}>
-          <Nav.Link
-            className={arr[0] == 1 ? classes.homeIconActive : classes.homeIcon}
-            active
-            onClick={() => {
-              navigate("/home");
-            }}></Nav.Link>
-          <Nav.Link
-            className={
-              arr[1] == 1 ? classes.recipeIconActive : classes.recipeIcon
-            }
-            onClick={() => {
-              navigate("/recipe");
-            }}></Nav.Link>
-          <Nav.Link
-            className={arr[2] == 1 ? classes.dietIconActive : classes.dietIcon}
-            onClick={() => {
-              navigate("/diet");
-            }}></Nav.Link>
-          <Nav.Link
-            className={
-              arr[3] == 1 ? classes.diaryIconActive : classes.diaryIcon
-            }
-            onClick={() => {
-              navigate("/diary");
-            }}></Nav.Link>
+          {ICON.map((icon, idx) => {
+            return (
+              <Nav.Link
+                className={classes[icon]}
+                onClick={() => {
+                  movePage(idx);
+                }}></Nav.Link>
+            );
+          })}
         </Nav>
+
+        {/* 데스크톱 전체화면 */}
         <Nav
           className={classes.texticonBox}
           style={{ flexDirection: "column" }}>
           <div className={classes.logoBox}></div>
-          <Nav.Link
-            className={classes.IconBox}
-            style={arr[0] == 1 ? { color: "#FF5D30" } : { color: "#FFB8A5" }}
-            active
-            onClick={() => {
-              navigate("/home");
-            }}>
-            <p
-              className={
-                arr[0] == 1 ? classes.homeIconActive : classes.homeIcon
-              }></p>
-            <span>Home</span>
-          </Nav.Link>
-          <Nav.Link
-            className={classes.IconBox}
-            style={arr[1] == 1 ? { color: "#FF5D30" } : { color: "#FFB8A5" }}
-            onClick={() => {
-              navigate("/recipe");
-            }}>
-            <p
-              className={
-                arr[1] == 1 ? classes.recipeIconActive : classes.recipeIcon
-              }></p>
-            <span>Recipe</span>
-          </Nav.Link>
-          <Nav.Link
-            className={classes.IconBox}
-            style={arr[2] == 1 ? { color: "#FF5D30" } : { color: "#FFB8A5" }}
-            onClick={() => {
-              navigate("/diet");
-            }}>
-            <p
-              className={
-                arr[2] == 1 ? classes.dietIconActive : classes.dietIcon
-              }></p>
-            <span>Diet</span>
-          </Nav.Link>
-          <Nav.Link
-            className={classes.IconBox}
-            style={arr[3] == 1 ? { color: "#FF5D30" } : { color: "#FFB8A5" }}
-            onClick={() => {
-              navigate("/diary");
-            }}>
-            <p
-              className={
-                arr[3] == 1 ? classes.diaryIconActive : classes.diaryIcon
-              }></p>
-            <span>Diary</span>
-          </Nav.Link>
+          {ICON.map((icon, idx) => {
+            return (
+              <Nav.Link
+                className={classes.IconBox}
+                style={
+                  isClick == idx ? { color: "#FF5D30" } : { color: "#FFB8A5" }
+                }
+                onClick={() => {
+                  movePage(idx);
+                }}>
+                <p className={classes[icon]}></p>
+                <span>{icons[idx]}</span>
+              </Nav.Link>
+            );
+          })}
         </Nav>
-        {/* </Container> */}
+
+        {/* 데스크톱 축소화면 */}
+
+        <Nav
+          className={classes.smallDesktop}
+          style={{ flexDirection: "column" }}>
+          {ICON.map((icon, idx) => {
+            return (
+              <Nav.Link
+                className={classes[icon]}
+                style={{ margin: "30px" }}
+                onClick={() => {
+                  movePage(idx);
+                }}></Nav.Link>
+            );
+          })}
+        </Nav>
       </Navbar>
     </>
   );
