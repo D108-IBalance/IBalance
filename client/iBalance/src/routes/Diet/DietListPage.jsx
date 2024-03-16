@@ -6,107 +6,95 @@ import { useEffect, useRef, useState } from "react";
 // 내부 모듈
 import classes from "./DietListPage.module.css";
 import Load from "../../modules/Load/Load";
+import WeekCard from "./WeekCard";
+import DayDiet from "./DayDiet";
 
 const DietListPage = () => {
-  const TODAY = new Date();
-  const DATE = TODAY.getDate(); //날짜
-  const DAY = TODAY.getDay(); //요일
+  // 식단 받을 오늘부터 일주일치 날짜리스트 생성
   const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
   let weekList = [...new Array(7)].map((_, idx) => {
-    return { date: DATE + idx, day: WEEKDAY[(DAY + idx) % 7] };
+    const newDate = new Date();
+    newDate.setDate(newDate.getDate() + idx);
+    return { date: newDate.getDate(), day: WEEKDAY[newDate.getDay()] };
   });
 
-  let [step, setStep] = useState(2);
-  const timeout = () => {
-    setTimeout(() => {
-      setStep(1);
-    }, 2000);
-  };
+  const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
+  let weekListKo = [...new Array(7)].map((_, idx) => {
+    const newDate = new Date();
+    newDate.setDate(newDate.getDate() + idx);
+    const month = newDate.getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1
+    const date = newDate.getDate();
+    const dayOfWeek = arrDayStr[newDate.getDay()];
+    return `${month}월 ${date}일 (${dayOfWeek})`;
+  });
+
+  // 식단 페이지를 보여주기 전 로딩페이지 (2초간 유지)
+  const [step, setStep] = useState(2);
 
   useEffect(() => {
-    timeout();
+    const timeout = setTimeout(() => {
+      setStep(1);
+    }, 2000);
+
     return () => {
       // clear 해줌
       clearTimeout(timeout);
     };
-  });
+  }, []);
+  // 카드 클릭 시 카드 색 변환
+  const [isClick, setIsclick] = useState(0);
+
+  // 기존 7일치 식단 생성
+  const initialDietData = weekListKo.map(() => [
+    {
+      riceMenu: "현미밥",
+      mainMenu: "수제 함박 스테이크",
+      sideMenu: "어묵볶음",
+      soupMenu: "두부 계란탕",
+    },
+  ]);
+  // 식단 상태 변경을 위한 설정
+  const [dietData, setDietData] = useState(initialDietData);
+  // console.log(dietData);
+
+  //식단 추가시
+  const addDietCard = (dayIndex) => {
+    const newDietData = [...dietData];
+    newDietData[dayIndex].push({
+      riceMenu: "치즈밥",
+      mainMenu: "갈치구이",
+      sideMenu: "김계란말이",
+      soupMenu: "오징어무국",
+    });
+    setDietData(newDietData);
+  };
+
   return (
     <div>
       <Load step={step}></Load>
-      <div>{step === 1 ? <WeekCard weekList={weekList}></WeekCard> : null}</div>
+      {step === 1 ? (
+        <>
+          <WeekCard
+            weekList={weekList}
+            isClick={isClick}
+            setIsclick={setIsclick}></WeekCard>
+
+          <div className={classes.DietListBack}>
+            {weekListKo.map((day, idx) => {
+              return (
+                <div key={idx}>
+                  <DayDiet
+                    day={day}
+                    diets={dietData[idx]}
+                    addDietCard={() => addDietCard(idx)}></DayDiet>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };
-const WeekCard = (props) => {
-  // 유저가 접속 시 해당 화면이 모바일인지 혹은 데스크탑인지 점검
-  const IS_MOBILE = window.matchMedia(
-    "(hover: none) and (pointer: coarse)",
-  ).matches;
-  let { weekList } = props;
-  let [isClick, setIsclick] = useState(0);
-  // 드래그 중인지 여부를 체크
-  let [isDrag, setIsDrag] = useState(false);
-  // 이전 마우스 드래그 좌표
-  let [prevPoint, setPrevPoint] = useState(0);
-  let [trans, setTrans] = useState(0);
-  let onDragStart = (e) => {
-    let pointX = null;
-    pointX = e.changedTouches[0]["screenX"];
-    setPrevPoint(pointX);
-    setIsDrag(true);
-  };
 
-  let onDragging = (e) => {
-    if (!isDrag) return;
-    let pointX = null;
-    pointX = e.changedTouches[0]["screenX"];
-    if (prevPoint < pointX && trans !== 0) {
-      console.log("gg");
-      setTrans(trans + 50);
-    }
-    if (prevPoint > pointX && trans !== -100) {
-      setTrans(trans - 50);
-    }
-    setPrevPoint(pointX);
-    setIsDrag(false);
-  };
-
-  let onDragEnd = () => {};
-
-  return (
-    <div style={{ width: "100vw", overflow: "hidden" }}>
-      <div
-        style={{ transform: `translateX(${trans}%)` }}
-        className={classes.weekCardBox}
-        onTouchStart={onDragStart}
-        onTouchMove={onDragging}
-        onTouchEnd={onDragEnd}>
-        <div
-          className={isClick === 0 ? classes.weekCardClicked : classes.weekCard}
-          onClick={(e) => {
-            setIsclick(0);
-          }}>
-          <p className={classes.dayFont}>All</p>
-          <p className={classes.dateFont}>Day</p>
-        </div>
-        {weekList.map((data, key) => {
-          return (
-            <div
-              key={key}
-              className={
-                isClick === key + 1 ? classes.weekCardClicked : classes.weekCard
-              }
-              onClick={() => {
-                setIsclick(key + 1);
-              }}>
-              <p className={classes.dayFont}>{data["day"]}</p>
-              <p className={classes.dateFont}>{data["date"]}</p>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
 export default DietListPage;
