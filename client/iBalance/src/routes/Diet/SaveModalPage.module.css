@@ -1,0 +1,69 @@
+.ModalBack {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(6, 6, 6, 50%);
+  z-index: 20;
+}
+.ModalBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  background: #fff;
+  height: 30%;
+  width: 90%;
+  border-radius: 10px;
+}
+
+.ModalBox p {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.btnList {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+.cancleBtn {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 140px;
+  text-align: center;
+  border-radius: 30px;
+  border: 0.1px #bdb4b4 solid;
+  box-shadow: 5px 5px 10px rgba(6, 6, 6, 10%);
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.cancleBtn:hover,
+.confirmBtn:hover {
+  transform: scale(1.1);
+}
+
+.confirmBtn {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 140px;
+  text-align: center;
+  border-radius: 30px;
+  border: 1px red solid;
+  box-shadow: 5px 5px 10px rgba(6, 6, 6, 10%);
+  margin-left: 10px;
+  margin-right: 10px;
+  color: #fff;
+  background-color: #fe724c;
+  cursor: pointer;
+}

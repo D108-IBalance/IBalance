@@ -57,15 +57,15 @@ const WeekCard = (props) => {
             <p className={classes.dateFont}>Day</p>
           </div>
         </div>
-        {weekList.map((data, key) => {
+        {weekList.map((data, idx) => {
           return (
-            <div key={key}>
+            <div key={idx}>
               <div
                 onClick={() => {
-                  setIsclick(key + 1);
+                  setIsclick(idx + 1);
                 }}
                 className={
-                  isClick === key + 1
+                  isClick === idx + 1
                     ? classes.weekCardClicked
                     : classes.weekCard
                 }>

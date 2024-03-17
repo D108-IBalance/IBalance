@@ -20,14 +20,13 @@
 
 .dayCard {
   display: flex;
-  /* display: inline-block; */
   flex-direction: row;
   background-color: #fe724c;
-  height: 200px;
-  width: 250px;
-  margin-bottom: 30px;
+  height: 190px;
+  width: 270px;
+  margin-bottom: 25px;
   border-radius: 15px;
-  box-shadow: 18px 18px 36px rgba(0, 0, 0, 25%);
+  box-shadow: 18px 18px 20px rgba(0, 0, 0, 15%);
   padding: 20px;
 }
 .cardIcon {
@@ -50,5 +49,5 @@
 }
 .dietContentBox p {
   color: #fff;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }

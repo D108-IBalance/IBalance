@@ -8,6 +8,7 @@ import classes from "./DietListPage.module.css";
 import Load from "../../modules/Load/Load";
 import WeekCard from "./WeekCard";
 import DayDiet from "./DayDiet";
+import SaveModalPage from "./SaveModalPage";
 
 const DietListPage = () => {
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
@@ -69,6 +70,10 @@ const DietListPage = () => {
     setDietData(newDietData);
   };
 
+  //식단 저장 상태 관리
+  const [saveDiet, setSaveDiet] = useState(false);
+  const [saveModal, setSaveModal] = useState(false);
+
   return (
     <div>
       <Load step={step}></Load>
@@ -81,16 +86,34 @@ const DietListPage = () => {
 
           <div className={classes.DietListBack}>
             {weekListKo.map((day, idx) => {
-              return (
-                <div key={idx}>
-                  <DayDiet
-                    day={day}
-                    diets={dietData[idx]}
-                    addDietCard={() => addDietCard(idx)}></DayDiet>
-                </div>
-              );
+              // 해당 요일카드 선택에 해당하는 식단만 보여줌
+              if (isClick === 0 || isClick === idx + 1) {
+                return (
+                  <div key={idx}>
+                    <DayDiet
+                      day={day}
+                      diets={dietData[idx]}
+                      saveDiet={saveDiet}
+                      addDietCard={() => addDietCard(idx)}></DayDiet>
+                  </div>
+                );
+              }
             })}
           </div>
+          {saveDiet === false ? (
+            <div
+              className={classes.saveBtn}
+              onClick={() => {
+                setSaveModal(true);
+              }}>
+              식단 저장
+            </div>
+          ) : null}
+          {saveModal === true && saveDiet === false ? (
+            <SaveModalPage
+              setSaveModal={setSaveModal}
+              setSaveDiet={setSaveDiet}></SaveModalPage>
+          ) : null}
         </>
       ) : null}
     </div>

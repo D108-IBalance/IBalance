@@ -12,16 +12,13 @@ import { useEffect, useState } from "react";
 
 const DietPage = (props) => {
   let [emptyDiet, setEmptyDiet] = useState(true);
-  let { displaySize } = props;
-  useEffect(() => {
-    // console.log(displaySize);
-  }, [displaySize]);
+
   return (
     <div>
       <Header></Header>
-      <NavbarModule isClick={2}></NavbarModule>
       {emptyDiet === true ? (
         <div className={classes.gridSet}>
+          <NavbarModule isClick={2}></NavbarModule>
           <div className={classes.dietContentBox}>
             <EmptyDiet setEmptyDiet={setEmptyDiet}></EmptyDiet>
           </div>

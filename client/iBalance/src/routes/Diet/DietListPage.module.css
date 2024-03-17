@@ -18,3 +18,14 @@
 .DietListBack::-webkit-scrollbar-track {
   background: #fff; /*스크롤바 뒷 배경 색상*/
 }
+.saveBtn {
+  position: fixed;
+  right: 15px;
+  bottom: 80px;
+  background-color: #fe724c;
+  color: #fff;
+  padding: 10px 25px;
+  border-radius: 30px;
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 25%);
+  border: 1px solid #fff;
+}
