@@ -14,7 +14,7 @@ const HomePage = () => {
     <>
       <div className={classes.gridSet}>
         <NavbarModule isClick={0}></NavbarModule>
-        <div style={{ width: "75%" }}>
+        <div style={{ width: "100%" }}>
           <ProfileView />
           <div className={classes.homeContentBack}>
             <TodayDiet />

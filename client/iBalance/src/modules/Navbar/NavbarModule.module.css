@@ -146,7 +146,7 @@
   }
 }
 
-@media screen and (min-width: 1350px) {
+@media screen and (min-width: 1200px) {
   .body {
     margin: 0;
     padding: 0;
@@ -333,7 +333,7 @@
   }
 }
 
-@media (min-width: 576px) and (max-width: 1350px) {
+@media (min-width: 576px) and (max-width: 1200px) {
   .navBox {
     width: 75px;
     height: 100vh;

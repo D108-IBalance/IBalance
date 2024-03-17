@@ -28,6 +28,7 @@
   }
 
   .profileBox {
+    flex: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -222,11 +223,12 @@
   }
 
   .profileBox {
+    flex: none;
     display: flex;
     background: #fe724c;
     justify-content: center;
     align-items: center;
-    height: 35%;
+    height: 300px;
     width: 100%;
     border-radius: 0px 0px 15px 15px;
     box-shadow: 5px 0px 5px rgba(160, 160, 160, 30%);
