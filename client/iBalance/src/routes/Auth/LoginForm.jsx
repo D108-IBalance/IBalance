@@ -1,22 +1,19 @@
 /* eslint-disable */
-
-import { useNavigate } from "react-router-dom";
 import classes from "./LoginForm.module.css";
 import { Container, Row } from "react-bootstrap";
-import { useEffect } from "react";
 
 const LoginForm = () => {
   const SocialLogin = (num) => {
     let server = "";
     if (num == 0) {
-      // server = process.env.GOOGLE_AUTH_URL;
-      server = "/home";
+      // 구글 로그인
+      server = import.meta.env.VITE_APP_GOOGLE_AUTH_URL;
     } else if (num == 1) {
-      // server = process.env.KAKAO_AUTH_URL;
-      server = "/home";
+      // 카카오 로그인
+      server = import.meta.env.VITE_APP_KAKAO_AUTH_URL;
     } else {
-      // server = process.env.NAVER_AUTH_URL;
-      server = "/home";
+      // 네이버 로그인
+      server = import.meta.env.VITE_APP_NAVER_AUTH_URL;
     }
     window.location.href = server;
   };

@@ -36,11 +36,7 @@ const App = () => {
         <Route path="/" element={<IntroPage></IntroPage>} />
         {/* 로그인 페이지 */}
         <Route path="/enter" element={<EnterPage></EnterPage>}>
-          <Route path="login" element={<LoginForm></LoginForm>}>
-            <Route
-              path="callback/:id"
-              element={<SocialLogin></SocialLogin>}></Route>
-          </Route>
+          <Route path="login" element={<LoginForm></LoginForm>}></Route>
         </Route>
         {/* 프로필 페이지 */}
         <Route path="/enter" element={<EnterPage></EnterPage>}>
@@ -55,15 +51,12 @@ const App = () => {
         <Route path="/diet" element={<DietPage />}></Route>
         {/* 일기장페이지 */}
         <Route path="/diary" element={<DiaryPage />}></Route>
-        {/* 오류 페이지 */}
+        {/* 소셜 로그인 페이지 */}
         <Route
-          path="*"
-          element={
-            <>
-              <Error />
-            </>
-          }
-        />
+          path="/auth/social/:provider"
+          element={<SocialLogin></SocialLogin>}></Route>
+        {/* 오류 페이지 */}
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );
