@@ -61,7 +61,7 @@ public class ChildService {
 
     private Child saveChild(RegistChildRequest registChildRequest, Member member) {
 
-        return Child.ConvertDtoToEntity(registChildRequest, member);
+        return childRepository.save(Child.ConvertDtoToEntity(registChildRequest, member));
     }
 
     private void saveGrowth(Child child) {

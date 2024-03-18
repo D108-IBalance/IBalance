@@ -1,6 +1,6 @@
-package com.ssafy.ibalance.diet.dto;
+package com.ssafy.ibalance.diet.dto.response;
 
-import com.ssafy.ibalance.diet.entity.DietMenu;
+import com.ssafy.ibalance.diet.dto.MenuDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,12 +8,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
-@Builder
-public class DietByDateDto {
+public class ChildDietResponse {
+
     private Long dietId;
     private LocalDate dietDate;
-    private Integer sequence;
-    private List<DietMenu> dietMenuList;
+    private int sequence;
+    private List<MenuDto> menuList;
 }
