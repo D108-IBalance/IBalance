@@ -1,7 +1,7 @@
 package com.ssafy.ibalance.diet.service;
 
 import com.ssafy.ibalance.diet.dto.MenuDetailDto;
-import com.ssafy.ibalance.diet.dto.response.ChildDietResponse;
+import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class DietService {
 
     private final DietRepository dietRepository;
 
-    public List<ChildDietResponse> getChildDiet(Integer childId, LocalDate today) {
+    public List<RecommendedDietResponse> getChildDiet(Integer childId, LocalDate today) {
 
         LocalDate endday = today.plusDays(6);
         return dietRepository.getDietMenuByDate(childId, today, endday);
