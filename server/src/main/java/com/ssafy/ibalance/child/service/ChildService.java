@@ -2,15 +2,9 @@ package com.ssafy.ibalance.child.service;
 
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
-import com.ssafy.ibalance.child.entity.Allergy;
-import com.ssafy.ibalance.child.entity.Child;
-import com.ssafy.ibalance.child.entity.ChildAllergy;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
-import com.ssafy.ibalance.child.repository.AllergyRepository;
-import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
-import com.ssafy.ibalance.child.repository.ChildRepository;
-import com.ssafy.ibalance.child.repository.GrowthRepository;
+import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
@@ -35,6 +29,7 @@ public class ChildService {
     private final AllergyRepository allergyRepository;
     private final ChildAllergyRepository childAllergyRepository;
     private final DietRepository dietRepository;
+    private final AverageGrowthRepository averageGrowthRepository;
     private final RedisUtil redisUtil;
 
     public List<ChildListResponse> getChildList(Integer memberId) {
@@ -105,8 +100,28 @@ public class ChildService {
         return ChildDetailResponse.convertEntityToDto(growth);
     }
 
-    public Page<GrowthResponse> getGrowthList(Integer childId, Pageable pageable) {
-        return growthRepository.findByChildIdOrderByIdDesc(childId, pageable)
+    public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable) {
+        Page<GrowthResponse> growthResponsePage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable)
                 .map(GrowthResponse::ConvertEntityToDto);
+
+        List<GrowthResponse> growthResponseList = growthResponsePage.getContent();
+
+        List<Long> monthList = new ArrayList<>();
+        for(GrowthResponse growth : growthResponseList) {
+            monthList.add(growth.getMonth());
+        }
+
+        // 평균 성장 데이터 조회
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndMonthIn(growthResponsePage.getContent().getFirst().getGender(), monthList)
+                .stream()
+                .map(AverageGrowthResponse::ConvertEntityToDto)
+                .toList();
+
+        return GrowthPageResponse.builder()
+                .last(growthResponsePage.isLast())
+                .growthList(growthResponseList)
+                .averageList(averageGrowthList)
+                .build();
     }
+
 }
