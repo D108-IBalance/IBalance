@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class AverageGrowthResponse {
     private Integer month;
-    private Double averageHeight;
-    private Double averageWeight;
+    private double averageHeight;
+    private double averageWeight;
 
     public static AverageGrowthResponse ConvertEntityToDto(AverageGrowth averageGrowth) {
         return builder()
