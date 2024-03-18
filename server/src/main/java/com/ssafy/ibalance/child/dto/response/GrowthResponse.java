@@ -17,12 +17,12 @@ import java.time.temporal.TemporalAdjusters;
 public class GrowthResponse {
     private Gender gender;
     private LocalDate birthDate;
-    private Long month;
+    private long month;
     private LocalDate recordDate;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Double height;
-    private Double weight;
+    private double height;
+    private double weight;
 
     public static GrowthResponse ConvertEntityToDto(Growth growth) {
         LocalDate recordDate = growth.getCreatedTime().toLocalDate();
