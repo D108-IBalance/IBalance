@@ -206,13 +206,14 @@
   .emptyModalBack {
     display: flex;
     top: 0;
+    left: 0;
     justify-content: center;
     align-items: center;
     position: absolute;
     background-color: rgba(6, 6, 6, 50%);
     z-index: 20;
     height: calc(var(--vh, 1vh) * 100 + 90px);
-    width: 75%;
+    width: 100%;
 
     .emptyModal {
       display: flex;

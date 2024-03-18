@@ -1,11 +1,8 @@
-/* eslint-disable */
-
 //내부 모듈
 import classes from "./SaveModalPage.module.css";
 
 const SaveModalPage = (props) => {
-  const { setSaveModal } = props;
-  const { setSaveDiet } = props;
+  const { setSaveModal, setSaveDiet } = props;
   return (
     <div
       className={classes.ModalBack}

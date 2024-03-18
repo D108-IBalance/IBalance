@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 // 외부 모듈
 import { useState } from "react";
 

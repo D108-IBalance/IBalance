@@ -1,7 +1,5 @@
-/* eslint-disable */
-
 // 외부 모듈
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./DietListPage.module.css";
@@ -30,7 +28,7 @@ const DietListPage = () => {
   });
 
   // 식단 페이지를 보여주기 전 로딩페이지 (2초간 유지)
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -75,10 +73,10 @@ const DietListPage = () => {
   const [saveModal, setSaveModal] = useState(false);
 
   return (
-    <div>
+    <div style={{ width: "100%", height: "100%" }}>
       <Load step={step}></Load>
       {step === 1 ? (
-        <>
+        <div>
           <WeekCard
             weekList={weekList}
             isClick={isClick}
@@ -114,7 +112,7 @@ const DietListPage = () => {
               setSaveModal={setSaveModal}
               setSaveDiet={setSaveDiet}></SaveModalPage>
           ) : null}
-        </>
+        </div>
       ) : null}
     </div>
   );

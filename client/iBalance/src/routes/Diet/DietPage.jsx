@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 // 외부 모듈
 import NavbarModule from "../../modules/Navbar/NavbarModule";
 
@@ -8,24 +6,24 @@ import classes from "./DietPage.module.css";
 import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const DietPage = (props) => {
+const DietPage = () => {
   let [emptyDiet, setEmptyDiet] = useState(true);
 
   return (
-    <div>
+    <div className={classes.gridSet}>
       <Header></Header>
-      {emptyDiet === true ? (
-        <div className={classes.gridSet}>
-          <NavbarModule isClick={2}></NavbarModule>
-          <div className={classes.dietContentBox}>
-            <EmptyDiet setEmptyDiet={setEmptyDiet}></EmptyDiet>
-          </div>
-        </div>
-      ) : (
-        <DietListPage></DietListPage>
-      )}
+      {/* <div className={classes.gridSet}> */}
+      <NavbarModule isClick={2}></NavbarModule>
+      <div className={classes.dietContentBox}>
+        {emptyDiet === true ? (
+          <EmptyDiet setEmptyDiet={setEmptyDiet}></EmptyDiet>
+        ) : (
+          <DietListPage></DietListPage>
+        )}
+      </div>
+      {/* </div> */}
     </div>
   );
 };

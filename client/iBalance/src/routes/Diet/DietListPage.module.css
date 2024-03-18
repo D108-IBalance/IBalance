@@ -1,31 +1,79 @@
-.DietListBack {
-  position: relative;
-  width: 100vw;
-  height: calc(var(--vh, 1vh) * 100);
-  overflow: scroll;
-  padding-bottom: 30px;
-}
-.DietListBack::-webkit-scrollbar {
-  width: 10px; /* 스크롤바의 너비 */
-}
+@media screen and (max-width: 576px) {
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+  .DietListBack {
+    position: relative;
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: scroll;
+    padding-bottom: 30px;
+  }
+  .DietListBack::-webkit-scrollbar {
+    width: 10px; /* 스크롤바의 너비 */
+  }
 
-.DietListBack::-webkit-scrollbar-thumb {
-  height: 10%; /* 스크롤바의 길이 */
-  background: #ffd1b5; /* 스크롤바의 색상 */
-  border-radius: 10px;
-}
+  .DietListBack::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: #ffd1b5; /* 스크롤바의 색상 */
+    border-radius: 10px;
+  }
 
-.DietListBack::-webkit-scrollbar-track {
-  background: #fff; /*스크롤바 뒷 배경 색상*/
+  .DietListBack::-webkit-scrollbar-track {
+    background: #fff; /*스크롤바 뒷 배경 색상*/
+  }
+  .saveBtn {
+    position: fixed;
+    right: 15px;
+    bottom: 80px;
+    background-color: #fe724c;
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 30px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 25%);
+    border: 1px solid #fff;
+  }
+  .saveBtn:hover {
+    transform: scale(1.1);
+  }
 }
-.saveBtn {
-  position: fixed;
-  right: 15px;
-  bottom: 80px;
-  background-color: #fe724c;
-  color: #fff;
-  padding: 10px 25px;
-  border-radius: 30px;
-  box-shadow: 2px 4px 4px rgba(0, 0, 0, 25%);
-  border: 1px solid #fff;
+@media screen and (min-width: 576px) {
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+  .DietListBack {
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: scroll;
+    padding-bottom: 15%;
+  }
+  .DietListBack::-webkit-scrollbar {
+    width: 10px; /* 스크롤바의 너비 */
+  }
+
+  .DietListBack::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: #ffd1b5; /* 스크롤바의 색상 */
+    border-radius: 10px;
+  }
+
+  .DietListBack::-webkit-scrollbar-track {
+    background: #fff; /*스크롤바 뒷 배경 색상*/
+  }
+  .saveBtn {
+    position: fixed;
+    right: 20px;
+    bottom: 15px;
+    background-color: #fe724c;
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 30px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 25%);
+    border: 1px solid #fff;
+  }
+  .saveBtn:hover {
+    transform: scale(1.1);
+  }
 }
