@@ -1,12 +1,8 @@
 package com.ssafy.ibalance.child.controller;
 
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
-import com.ssafy.ibalance.child.dto.response.ChildListResponse;
-import com.ssafy.ibalance.child.dto.response.DeleteChildResponse;
-import com.ssafy.ibalance.child.dto.response.GrowthResponse;
-import com.ssafy.ibalance.child.dto.response.RegistChildResponse;
+import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.service.ChildService;
-import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -64,10 +60,12 @@ public class ChildController {
      *
      * @param childId 자녀 아이디
      * @param pageable ?page=0&size=5
-     * @return 자녀의 키, 몸무게와 기록 날짜, 기록 날짜의 일요일과 토요일 날짜
+     * @return 마지막 페이지 여부,
+     *         자녀 성장 데이터(자녀의 키, 몸무게와 기록 날짜, 기록 날짜의 일요일과 토요일 날짜) 리스트,
+     *         평균 성장 데이터 리스트
      */
     @GetMapping("/growth/{childId}")
-    public Page<GrowthResponse> getGrowthList(@PathVariable Integer childId, Pageable pageable) {
+    public GrowthPageResponse getGrowthList(@PathVariable Integer childId, Pageable pageable) {
         return childService.getGrowthList(childId, pageable);
     }
 
