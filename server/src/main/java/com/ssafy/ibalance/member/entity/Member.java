@@ -32,9 +32,12 @@ public class Member extends BaseTime implements UserDetails {
 
     @Column(length = 10)
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_roles", joinColumns = @JoinColumn(name = "member_id"),
+            foreignKey = @ForeignKey(name = "FK_member_roles_member",
+            foreignKeyDefinition = "FOREIGN KEY (member_id) REFERENCES member (id) ON DELETE CASCADE"))
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles = Set.of(Role.USER);
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
