@@ -5,9 +5,11 @@ import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.MenuDto;
+import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
+import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -76,7 +78,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     @Override
-    public List<ChildDietResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate) {
+    public List<RecommendedDietResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate) {
         Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
                 .from(diet)
                 .join(dietMenu)
@@ -95,9 +97,9 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .sequence(entry.getKey().getSequence())
                         .dietMenuList(entry.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
-        List<ChildDietResponse> childDietResponseList = new ArrayList<>();
+        List<RecommendedDietResponse> childDietResponseList = new ArrayList<>();
 
         // TODO : MongoDB에서 메뉴 데이터 가져오기
         for(DietByDateDto dto : dietByDateDtoList) {
@@ -111,7 +113,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .build());
             }
 
-            childDietResponseList.add(ChildDietResponse.builder()
+            childDietResponseList.add(RecommendedDietResponse.builder()
                     .dietId(dto.getDietId())
                     .dietDate(dto.getDietDate())
                     .sequence(dto.getSequence())

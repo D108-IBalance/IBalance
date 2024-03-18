@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class ChildDietResponse {
+public class RecommendedDietResponse {
 
     private Long dietId;
     private LocalDate dietDate;
