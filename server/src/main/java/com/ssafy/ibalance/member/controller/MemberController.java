@@ -31,7 +31,7 @@ public class MemberController {
      */
     @PostMapping(value = "/login/{provider}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public JwtTokenResponse login(@RequestBody LoginRequest request, @PathVariable String provider, HttpServletResponse response) {
-        Member memberInfo = memberService.getMemberInfo(provider, request.code());
+        Member memberInfo = memberService.getMemberInfo(provider, request.getCode());
 
         jwtTokenProvider.setRefreshTokenForClient(response, memberInfo);
         return jwtTokenProvider.makeJwtTokenResponse(memberInfo);

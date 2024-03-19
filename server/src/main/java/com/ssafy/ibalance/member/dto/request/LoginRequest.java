@@ -1,12 +1,12 @@
 package com.ssafy.ibalance.member.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class LoginRequest{
     private String code;
 }
