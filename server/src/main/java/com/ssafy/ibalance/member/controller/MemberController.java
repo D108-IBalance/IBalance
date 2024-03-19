@@ -31,7 +31,7 @@ public class MemberController {
      */
     @PostMapping(value = "/login/{provider}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public JwtTokenResponse login(@RequestBody LoginRequest request, @PathVariable String provider, HttpServletResponse response) {
-        Member memberInfo = memberService.getMemberInfo(provider, request.getCode());
+        Member memberInfo = memberService.getMemberInfo(provider, request.getCode(), request.getUrl());
 
         jwtTokenProvider.setRefreshTokenForClient(response, memberInfo);
         return jwtTokenProvider.makeJwtTokenResponse(memberInfo);
@@ -46,9 +46,11 @@ public class MemberController {
      * @return 로그인 한 회원 JWT token 정보
      */
     @GetMapping("/login/{provider}")
-    public JwtTokenResponse testLogin(@RequestParam String code, @PathVariable String provider, HttpServletResponse response){
+    public JwtTokenResponse testLogin(@RequestParam String code,
+                                      @RequestParam(required = false) String redirectUri,
+                                      @PathVariable String provider, HttpServletResponse response){
 
-        Member memberInfo = memberService.getMemberInfo(provider, code);
+        Member memberInfo = memberService.getMemberInfo(provider, code, redirectUri);
 
         jwtTokenProvider.setRefreshTokenForClient(response, memberInfo);
         return jwtTokenProvider.makeJwtTokenResponse(memberInfo);

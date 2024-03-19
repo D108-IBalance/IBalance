@@ -9,4 +9,5 @@ import lombok.*;
 @Setter
 public class LoginRequest{
     private String code;
+    private String url;
 }

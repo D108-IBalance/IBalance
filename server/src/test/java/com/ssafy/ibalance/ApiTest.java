@@ -42,6 +42,7 @@ public class ApiTest {
         }
         databaseCleanup.truncateAllTables();
 
-        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.code)).thenReturn(MemberTestUtil.mockOAuthInfo());
+        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.code, MemberTestUtil.redirectUri))
+                .thenReturn(MemberTestUtil.mockOAuthInfo());
     }
 }

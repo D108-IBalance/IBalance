@@ -24,10 +24,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member getMemberInfo(String inputProvider, String code){
+    public Member getMemberInfo(String inputProvider, String code, String redirectUri){
 
         OAuthProvider provider = OAuthProvider.getOAuthProvider(inputProvider);
-        OAuthMemberInfo oAuthMemberInfo = getOAuthMemberInfo(provider, code);
+        OAuthMemberInfo oAuthMemberInfo = getOAuthMemberInfo(provider, code, redirectUri);
 
         if(oAuthMemberInfo == null){
             throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
@@ -41,12 +41,12 @@ public class MemberService {
                         .build()));
     }
 
-    public OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code) {
+    public OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code, String redirectUrl) {
         log.info("코드 : {} code 로 {} 에 요청 시도", code, provider.toString());
         return switch(provider){
-            case GOOGLE -> googleUtil.getUserInfo(code);
-            case KAKAO -> kakaoUtil.getKakaoInfo(code);
-            case NAVER -> naverUtil.getUserInfo(code);
+            case GOOGLE -> googleUtil.getUserInfo(code, redirectUrl);
+            case KAKAO -> kakaoUtil.getUserInfo(code, redirectUrl);
+            case NAVER -> naverUtil.getUserInfo(code, redirectUrl);
         };
     }
 }

@@ -32,8 +32,13 @@ public class NaverOAuth2Utils {
     @Value("${naver.redirect-uri}")
     private String redirectUri;
 
-    public OAuthMemberInfo getUserInfo(String code){
-        String accessToken = getAccessToken(code);
+    public OAuthMemberInfo getUserInfo(String code, String redirect){
+
+        if(redirect == null){
+            redirect = redirectUri;
+        }
+
+        String accessToken = getAccessToken(code, redirect);
         String bearerToken = "Bearer " + accessToken;
 
         return WebClient.create()
@@ -46,12 +51,13 @@ public class NaverOAuth2Utils {
                 .block();
     }
 
-    private String getAccessToken(String code){
+    private String getAccessToken(String code, String redirect){
+
         NaverTokenResponse tokenResponse = WebClient.create()
                 .post()
                 .uri(tokenUri)
                 .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
-                .bodyValue(makeNaverTokenRequest(code))
+                .bodyValue(makeNaverTokenRequest(code, redirect))
                 .retrieve()
                 .bodyToMono(NaverTokenResponse.class)
                 .block();
@@ -63,7 +69,7 @@ public class NaverOAuth2Utils {
         return null; // TODO : custom exception & exception handler 처리
     }
 
-    private MultiValueMap<String, String>  makeNaverTokenRequest(String code){
+    private MultiValueMap<String, String>  makeNaverTokenRequest(String code, String redirectUri){
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("grant_type", "authorization_code");
