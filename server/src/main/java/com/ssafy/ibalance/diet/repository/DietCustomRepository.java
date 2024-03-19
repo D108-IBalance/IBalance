@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.diet.repository;
 
+import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 
@@ -12,4 +13,6 @@ public interface DietCustomRepository {
     List<RecommendedDietResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate);
 
     List<Integer> getMenuIdByDietId(Long dietId);
+
+    List<CalendarResponse> getCalendarList(Integer childId, int year, int month);
 }

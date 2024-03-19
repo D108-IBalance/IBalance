@@ -1,7 +1,10 @@
 package com.ssafy.ibalance.diet.repository;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
+import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.MenuDto;
@@ -131,6 +134,29 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                 .join(dietMenu)
                 .on(diet.id.eq(dietMenu.diet.id))
                 .where(diet.id.eq(dietId))
+                .fetch();
+    }
+
+    @Override
+    public List<CalendarResponse> getCalendarList(Integer childId, int year, int month) {
+        JPQLQuery<LocalDate> allReviewed = JPAExpressions.select(diet.dietDate)
+                .from(diet)
+                .where(diet.child.id.eq(childId)
+                        .and(diet.dietDate.year().eq(year))
+                        .and(diet.dietDate.month().eq(month))
+                        .and(diet.isReviewed.eq(false)))
+                .groupBy(diet.dietDate);
+
+        return jpaQueryFactory.select(
+                        Projections.fields(CalendarResponse.class,
+                                diet.dietDate,
+                                diet.dietDate.in(allReviewed).not().as("allReviewed"))
+                )
+                .from(diet)
+                .where(diet.child.id.eq(childId)
+                        .and(diet.dietDate.year().eq(year))
+                        .and(diet.dietDate.month().eq(month)))
+                .groupBy(diet.dietDate)
                 .fetch();
     }
 }
