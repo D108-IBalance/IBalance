@@ -2,8 +2,11 @@ package com.ssafy.ibalance.test;
 
 import com.jayway.jsonpath.JsonPath;
 import com.ssafy.ibalance.ApiTest;
+import com.ssafy.ibalance.common.CommonDocument;
+import com.ssafy.ibalance.common.MemberTestUtil;
 import com.ssafy.ibalance.test.dto.request.TestSaveRequest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -13,6 +16,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class TestApiTest extends ApiTest {
+
+    @Autowired
+    private MemberTestUtil memberTestUtil;
 
     @Test
     void helloTest() throws Exception {
@@ -80,6 +86,32 @@ public class TestApiTest extends ApiTest {
                     System.out.println(handler.getResponse().getHeader("Content-Type"));
                     System.out.println(handler.getResponse().getContentAsString());
                 });
+    }
+
+    @Test
+    void login_test_200() throws Exception{
+
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                get("/test/login")
+                        .header(AUTH_HEADER, token)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(
+                        document(DEFAULT_RESTDOC_PATH, "Swagger 기본 기능을 검증합니다.",
+                                "로그인검증", CommonDocument.AccessTokenHeader)
+                );;
+    }
+
+    @Test
+    void login_test_401() throws Exception{
+        mockMvc.perform(
+                        get("/test/login")
+                )
+                .andExpect(status().is(401))
+                .andDo(handler -> System.out.println(handler.getResponse().getContentAsString()));
     }
 
     void test_entity_save(String name, String address) throws Exception {
