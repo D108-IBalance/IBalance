@@ -58,14 +58,27 @@ public class TestApiTest extends ApiTest {
         test_entity_save("dongwoo", dongwooAddr);
         test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
 
-        String targetUrl = "/test/querydsl/" + "dongwoo";
-
         MvcResult mvcResult = mockMvc.perform(
-                        get(targetUrl)
+                        get("/test/querydsl/{name}", "dongwoo")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()").value(1))
+                .andDo(handler ->
+                        System.out.println(handler.getResponse().getContentAsString()))
+                .andDo(
+                        document(DEFAULT_RESTDOC_PATH, "여기에 설명을 적습니다." +
+                                "<br>br 태그를 통해 한 칸 띄워적을 수 있습니다." +
+                                "<br>지금 내용처럼 섦명을 쭉쭉 이어나가면 됩니다." +
+                                "<br>아래에는, Document 라는 클래스를 새로 만들고, static 으로 만들어 주면 됩니다. " +
+                                "<br>pathField 에 들어가는 required() 는 필요할 때만 넣어 주고, required 가 아닐 경우" +
+                                "<br> 뒤에 .isOptional() 과 같이 써서 반드시 받는 것은 아니라고 표기해 줄 수 있습니다." +
+                                "<br>'[]' 는 배열을 표시할 때 사용할 수 있습니다. 배열이 아니라면 그냥 'data.abc' 와 같이" +
+                                "<br>기술해 주면 됩니다." +
+                                "<br>Header, Query String, Path Parameter, Response 다 따로 나눠 적어줍니다.",
+                                "Swagger 설명",
+                                TestDocument.testPathField, TestDocument.queryDslResponseField)
+                )
                 .andReturn();
 
         String result = mvcResult.getResponse().getContentAsString();
@@ -102,7 +115,7 @@ public class TestApiTest extends ApiTest {
                 .andDo(
                         document(DEFAULT_RESTDOC_PATH, "Swagger 기본 기능을 검증합니다.",
                                 "로그인검증", CommonDocument.AccessTokenHeader)
-                );;
+                );
     }
 
     @Test
