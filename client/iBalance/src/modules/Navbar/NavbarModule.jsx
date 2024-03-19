@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 // 외부 모듈
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -84,4 +85,4 @@ const NavbarModule = (props) => {
   );
 };
 
-export default NavbarModule;
+export default React.memo(NavbarModule);

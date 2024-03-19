@@ -1,24 +1,43 @@
+// 외부 모듈
+import React from "react";
+
 //내부 모듈
 import classes from "./Calendar.module.css";
 import selectImg from "../../assets/diary/img/select.svg";
 import { useCallback, useMemo, useState } from "react";
-const Calendar = () => {
+const Calendar = (props) => {
+  // const MONTHS = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
   const MONTHS = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "1월",
+    "2월",
+    "3월",
+    "4월",
+    "5월",
+    "6월",
+    "7월",
+    "8월",
+    "9월",
+    "10월",
+    "11월",
+    "12월",
   ];
-  const WEEKS = ["Su", "Mo", "Tu", "Wed", "Th", "Fr", "Sa"];
+  const { setSelectedDate } = props;
+  const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
+
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   // 달력의 범위 변경 시 하위 IS_NEXT 및 IS_PREV 변경 시 변경 가능
@@ -42,6 +61,7 @@ const Calendar = () => {
     }
     setMonth(month + 1);
   };
+
   const createPrevMonthDays = useCallback(
     (days, firstWeekDay) => {
       for (let noDay = 0; noDay < firstWeekDay; noDay++) {
@@ -61,6 +81,7 @@ const Calendar = () => {
     },
     [year, month],
   );
+
   const dayArr = useMemo(() => {
     let days = [];
     const firstWeekDay = new Date(year, month, 1).getDay();
@@ -71,6 +92,7 @@ const Calendar = () => {
     createCurrentMonthDays(days, lastDay);
     return days;
   }, [month, year, createCurrentMonthDays, createPrevMonthDays]);
+
   const weekArr = useMemo(() => {
     const weeks = [];
     for (let i = 0; i < dayArr.length; i += 7) {
@@ -78,11 +100,10 @@ const Calendar = () => {
     }
     return weeks;
   }, [dayArr]);
-  // month값은 0부터 시작 12는 다음달 1월을 의미
   return (
     <div className={classes.container}>
       <header className={classes.controller}>
-        <span className={classes.nowDate}>{`${MONTHS[month]} ${year}`}</span>
+        <span className={classes.nowDate}>{`${year}년 ${MONTHS[month]}`}</span>
         <section>
           {IS_PREV ? (
             <img
@@ -117,7 +138,12 @@ const Calendar = () => {
                 <tr key={idx}>
                   {week.map((day, id) => {
                     return (
-                      <td key={id} className={classes[day["style"]]}>
+                      <td
+                        key={id}
+                        className={classes[day["style"]]}
+                        onClick={() => {
+                          setSelectedDate(day["날짜"]);
+                        }}>
                         {day["날짜"]}
                       </td>
                     );
@@ -132,4 +158,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default React.memo(Calendar);
