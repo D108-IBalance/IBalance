@@ -142,7 +142,9 @@ const Calendar = (props) => {
                         key={id}
                         className={classes[day["style"]]}
                         onClick={() => {
-                          setSelectedDate(day["날짜"]);
+                          setSelectedDate(
+                            `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
+                          );
                         }}>
                         {day["날짜"]}
                       </td>
