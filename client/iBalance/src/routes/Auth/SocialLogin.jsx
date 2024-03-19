@@ -24,7 +24,7 @@ const SocialLogin = () => {
         const accessToken = value.data.data.accessToken;
         dispatch(setToken(accessToken));
         console.log("accessToken:", accessToken);
-        navigate("/home");
+        navigate("/enter/profile");
       } catch (err) {
         console.log("Login error:", err);
       }

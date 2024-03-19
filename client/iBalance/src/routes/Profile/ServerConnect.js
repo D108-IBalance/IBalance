@@ -2,20 +2,22 @@
 
 import axios from "axios";
 
-const getProfile = async () => {
+const getProfile = async (TOKEN) => {
   const headers = {
-    // "Authorization" : `Bearer ${token}`,
+    Authorization: `Bearer ${TOKEN}`,
   };
-  return axios.get("http://localhost:8080/api/child", { headers });
+  return axios.get("https://j10d108.p.ssafy.io/api/child", {
+    headers,
+  });
 };
 
-const addProfile = async (profile) => {
+const addProfile = async (profile, TOKEN) => {
   const headers = {
-    // "Authorization" : `Bearer ${token}`,
+    Authorization: `Bearer ${TOKEN}`,
     "Content-Type": `application/json`,
   };
   return axios.post(
-    "http://localhost:8080/api/child",
+    "https://j10d108.p.ssafy.io/api/child",
     JSON.stringify(profile),
     {
       headers,
@@ -23,9 +25,9 @@ const addProfile = async (profile) => {
   );
 };
 
-const deleteProfile = async (id) => {
+const deleteProfile = async (id, TOKEN) => {
   const headers = {
-    // "Authorization" : `Bearer ${token}`,
+    Authorization: `Bearer ${TOKEN}`,
     "Content-Type": `application/json`,
   };
   return axios.delete(`http://localhost:8080/api/child/${id}`, { headers });

@@ -1,30 +1,49 @@
 /* eslint-disable */
 
 // 내부 모듈
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import classes from "./GrowthCard.module.css";
 import prevArrow from "../../assets/home/prevArrow.svg";
 import nextArrow from "../../assets/home/nextArrow.svg";
 import { getUserChart } from "./ServerConnect";
+import { useSelector } from "react-redux";
 
 const GrowthCard = () => {
   const [toggle, setToggle] = useState(false);
   const [heightPage, setHeightPage] = useState(0);
   const [weightPage, setWeightPage] = useState(0);
+  const TOKEN = useSelector((state) => {
+    return state.token;
+  });
   let heightChart = {};
   let weightChart = {};
+
   useEffect(() => {
-    const getChart = async () => {
+    const getHeightChart = async () => {
       try {
-        const value = await getUserChart(0);
+        const value = await getUserChart(heightPage, TOKEN);
         heightChart = value.data;
-        weightChart = value.data;
+        console.log(heightChart);
       } catch {
         // alert("에러");
       }
     };
-    getChart();
-  }, []);
+    getHeightChart();
+  }, [heightPage]);
+
+  useEffect(() => {
+    const getWeightChart = async () => {
+      try {
+        const value = await getUserChart(heightPage, TOKEN);
+        weightChart = value.data;
+        console.log(weightChart);
+      } catch {
+        // alert("에러");
+      }
+    };
+    getWeightChart();
+  }, [weightPage]);
+
   let isHeightPrev = true;
   const COMPONENT_INFO = [
     {

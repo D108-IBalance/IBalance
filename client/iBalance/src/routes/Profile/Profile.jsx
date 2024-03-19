@@ -4,6 +4,7 @@
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./Profile.module.css";
@@ -13,9 +14,23 @@ import warningImg from "../../assets/profile/Img/warning.svg";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [profileList, setProfileList] = useState([{ name: "김동현" }]);
+  const TOKEN = useSelector((state) => {
+    return state.token;
+  });
+  const [profileList, setProfileList] = useState([]);
   const [isSetting, setIsSetting] = useState(false);
   const [deleteIdx, setDeleteIdx] = useState(-1);
+  useEffect(() => {
+    const getProfileList = async () => {
+      try {
+        let value = await getProfile(TOKEN);
+        console.log(value);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProfileList();
+  }, []);
 
   const onDelete = async (deleteIdx) => {
     if (deleteIdx === -1) {
