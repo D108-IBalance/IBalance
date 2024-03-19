@@ -22,7 +22,7 @@ public class AverageGrowth {
     private Gender gender;
 
     @Column(nullable = false)
-    private int month;
+    private int growMonth;
 
     @Column(nullable = false)
     private double height;

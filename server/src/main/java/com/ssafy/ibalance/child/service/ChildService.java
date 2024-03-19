@@ -112,7 +112,7 @@ public class ChildService {
         }
 
         // 평균 성장 데이터 조회
-        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndMonthIn(growthResponsePage.getContent().getFirst().getGender(), monthList)
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponsePage.getContent().getFirst().getGender(), monthList)
                 .stream()
                 .map(AverageGrowthResponse::ConvertEntityToDto)
                 .toList();

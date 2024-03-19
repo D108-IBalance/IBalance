@@ -13,7 +13,7 @@ public class AverageGrowthResponse {
 
     public static AverageGrowthResponse ConvertEntityToDto(AverageGrowth averageGrowth) {
         return builder()
-                .month(averageGrowth.getMonth())
+                .month(averageGrowth.getGrowMonth())
                 .averageHeight(averageGrowth.getHeight())
                 .averageWeight(averageGrowth.getWeight())
                 .build();
