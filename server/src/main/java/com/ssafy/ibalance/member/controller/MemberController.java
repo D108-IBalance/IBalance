@@ -2,6 +2,7 @@ package com.ssafy.ibalance.member.controller;
 
 import com.ssafy.ibalance.auth.config.JwtTokenProvider;
 import com.ssafy.ibalance.auth.response.JwtTokenResponse;
+import com.ssafy.ibalance.member.dto.request.LoginRequest;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,8 +29,8 @@ public class MemberController {
      * @return 로그인 한 회원 JWT token 정보
      */
     @PostMapping("/login/{provider}")
-    public JwtTokenResponse login(@RequestBody String code, @PathVariable String provider, HttpServletResponse response) {
-        Member memberInfo = memberService.getMemberInfo(provider, code);
+    public JwtTokenResponse login(@RequestBody LoginRequest request, @PathVariable String provider, HttpServletResponse response) {
+        Member memberInfo = memberService.getMemberInfo(provider, request.code());
 
         jwtTokenProvider.setRefreshTokenForClient(response, memberInfo);
         return jwtTokenProvider.makeJwtTokenResponse(memberInfo);
