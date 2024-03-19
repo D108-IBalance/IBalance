@@ -106,6 +106,7 @@ dependencies {
 
 openapi3 {
 	servers = [
+			{url = "https://j10d108.p.ssafy.io/api"},
 			{url = "http://localhost:8080"}
 	]
 	title = "SSAFY D108 IBalance API"
