@@ -49,6 +49,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/test/login").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/child").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/child").hasRole("USER")
+                        .requestMatchers("/docs/**").permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(config ->
                         config.authenticationEntryPoint(authenticationEntryPoint())
