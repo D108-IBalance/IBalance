@@ -42,7 +42,7 @@ public class MemberService {
     }
 
     public OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code) {
-        log.info("코드로 {} 에 요청 시도", provider.toString());
+        log.info("코드 : {} code 로 {} 에 요청 시도", code, provider.toString());
         return switch(provider){
             case GOOGLE -> googleUtil.getUserInfo(code);
             case KAKAO -> kakaoUtil.getKakaoInfo(code);
