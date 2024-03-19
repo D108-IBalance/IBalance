@@ -30,7 +30,9 @@ public class CommonControllerAdvice implements ResponseBodyAdvice<Object> {
     }
 
     private boolean isErrorResponse(Object body){
-        return body instanceof List<?> list && list.getFirst() instanceof ErrorResponse;
+        return body instanceof List<?> list
+                && !list.isEmpty()
+                && list.getFirst() instanceof ErrorResponse;
     }
 
     private CommonWrapperResponse wrapResponse(Object response, HttpStatus status){
