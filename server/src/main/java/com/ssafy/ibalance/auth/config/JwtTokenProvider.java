@@ -7,6 +7,7 @@ import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import com.ssafy.ibalance.member.type.Role;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -108,16 +109,14 @@ public class JwtTokenProvider {
     }
 
     public void setRefreshTokenForClient(HttpServletResponse response, Member member) {
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", makeRefreshToken(member.getCode(), member.getProvider()))
-                .maxAge(refreshTokenValidTime / 1000)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("None")
-                .build();
+        Cookie cookie = new Cookie("refreshToken", makeRefreshToken(member.getCode(), member.getProvider()));
+        cookie.setMaxAge((int)(refreshTokenValidTime / 1000));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
 
         // TODO : Refresh Token 생성하고, Redis 에 저장하는 코드 생성하기
-        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addCookie(cookie);
     }
 
     public void removeRefreshTokenForClient(HttpServletResponse response) {
