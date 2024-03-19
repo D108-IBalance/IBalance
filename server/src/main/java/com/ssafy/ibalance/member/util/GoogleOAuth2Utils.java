@@ -31,8 +31,13 @@ public class GoogleOAuth2Utils {
     @Value("${google.client-secret}")
     private String clientSecret;
 
-    public GoogleMemberInfoResponse getUserInfo(String code) {
-        String accessToken = getAccessToken(code);
+    public GoogleMemberInfoResponse getUserInfo(String code, String redirect) {
+
+        if(redirect == null){
+            redirect = redirectUri;
+        }
+
+        String accessToken = getAccessToken(code, redirect);
         String bearerToken = "Bearer " + accessToken;
 
         return WebClient.create()
@@ -45,12 +50,12 @@ public class GoogleOAuth2Utils {
                 .block();
     }
 
-    private String getAccessToken(String code){
+    private String getAccessToken(String code, String redirectUri){
         GoogleTokenResponse accessTokenAnswer = WebClient.create()
                 .post()
                 .uri(tokenUri)
                 .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
-                .bodyValue(makeGoogleTokenRequest(code))
+                .bodyValue(makeGoogleTokenRequest(code, redirectUri))
                 .retrieve()
                 .bodyToMono(GoogleTokenResponse.class)
                 .block();
@@ -63,7 +68,7 @@ public class GoogleOAuth2Utils {
     }
 
 
-    private MultiValueMap<String, String> makeGoogleTokenRequest(String code){
+    private MultiValueMap<String, String> makeGoogleTokenRequest(String code, String redirectUri){
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", clientId);

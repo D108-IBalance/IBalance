@@ -6,7 +6,6 @@ import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,10 +28,14 @@ public class KakaoOAuth2Utils {
     @Value("${kakao.token-url}")
     private String kakaoTokenUrl;
 
-    public KakaoMemberInfoResponse getKakaoInfo(String code) {
+    public KakaoMemberInfoResponse getUserInfo(String code, String redirect) {
         log.info("getKakaoInfo 호출 : {}", code);
 
-        String kakaoAccessToken = getKakaoToken(code);
+        if(redirect == null){
+            redirect = redirectUri;
+        }
+
+        String kakaoAccessToken = getKakaoToken(code, redirect);
 
         log.info("유저 정보 가져오기 : {}", kakaoAccessToken);
 
@@ -48,7 +51,7 @@ public class KakaoOAuth2Utils {
                 .block();
     }
 
-    public String getKakaoToken(String code) throws KakaoTokenIsNullException {
+    public String getKakaoToken(String code, String redirect) throws KakaoTokenIsNullException {
         log.info("getKakaoToken 호출 : {}", code);
 
         WebClient webClient = WebClient.builder()
@@ -59,7 +62,7 @@ public class KakaoOAuth2Utils {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("grant_type", "authorization_code");
         requestBody.add("client_id", clientId);
-        requestBody.add("redirect_uri", redirectUri);
+        requestBody.add("redirect_uri", redirect);
         requestBody.add("code", code);
 
         KakaoTokenResponse kakaoTokenResponse = webClient.post()
