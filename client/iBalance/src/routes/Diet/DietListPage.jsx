@@ -1,5 +1,6 @@
 // 외부 모듈
 import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./DietListPage.module.css";
@@ -7,7 +8,6 @@ import Load from "../../modules/Load/Load";
 import WeekCard from "./WeekCard";
 import DayDiet from "./DayDiet";
 import SaveModalPage from "./SaveModalPage";
-
 const DietListPage = () => {
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
   const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -73,48 +73,51 @@ const DietListPage = () => {
   const [saveModal, setSaveModal] = useState(false);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <Load step={step}></Load>
-      {step === 1 ? (
-        <div>
-          <WeekCard
-            weekList={weekList}
-            isClick={isClick}
-            setIsclick={setIsclick}></WeekCard>
+    <>
+      <div style={{ width: "100%", height: "100%" }}>
+        <Load step={step}></Load>
+        {step === 1 ? (
+          <div>
+            <WeekCard
+              weekList={weekList}
+              isClick={isClick}
+              setIsclick={setIsclick}></WeekCard>
 
-          <div className={classes.DietListBack}>
-            {weekListKo.map((day, idx) => {
-              // 해당 요일카드 선택에 해당하는 식단만 보여줌
-              if (isClick === 0 || isClick === idx + 1) {
-                return (
-                  <div key={idx}>
-                    <DayDiet
-                      day={day}
-                      diets={dietData[idx]}
-                      saveDiet={saveDiet}
-                      addDietCard={() => addDietCard(idx)}></DayDiet>
-                  </div>
-                );
-              }
-            })}
-          </div>
-          {saveDiet === false ? (
-            <div
-              className={classes.saveBtn}
-              onClick={() => {
-                setSaveModal(true);
-              }}>
-              식단 저장
+            <div className={classes.DietListBack}>
+              {weekListKo.map((day, idx) => {
+                // 해당 요일카드 선택에 해당하는 식단만 보여줌
+                if (isClick === 0 || isClick === idx + 1) {
+                  return (
+                    <div key={idx}>
+                      <DayDiet
+                        day={day}
+                        diets={dietData[idx]}
+                        saveDiet={saveDiet}
+                        addDietCard={() => addDietCard(idx)}></DayDiet>
+                    </div>
+                  );
+                }
+              })}
             </div>
-          ) : null}
-          {saveModal === true && saveDiet === false ? (
-            <SaveModalPage
-              setSaveModal={setSaveModal}
-              setSaveDiet={setSaveDiet}></SaveModalPage>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
+            {saveDiet === false ? (
+              <div
+                className={classes.saveBtn}
+                onClick={() => {
+                  setSaveModal(true);
+                }}>
+                식단 저장
+              </div>
+            ) : null}
+            {saveModal === true && saveDiet === false ? (
+              <SaveModalPage
+                setSaveModal={setSaveModal}
+                setSaveDiet={setSaveDiet}></SaveModalPage>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      <Outlet></Outlet>
+    </>
   );
 };
 

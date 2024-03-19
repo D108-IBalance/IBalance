@@ -16,6 +16,7 @@ import RecipePage from "./routes/Recipe/RecipePage.jsx";
 import DietPage from "./routes/Diet/DietPage.jsx";
 import DiaryPage from "./routes/Diary/DiaryPage.jsx";
 import Profile from "./routes/Profile/Profile.jsx";
+import DietSummary from "./routes/DietDetail/DietSummary.jsx";
 import DietDetail from "./routes/DietDetail/DietDetail.jsx";
 
 const App = () => {
@@ -49,9 +50,10 @@ const App = () => {
         {/* 레시피페이지 */}
         <Route path="/recipe" element={<RecipePage />}></Route>
         {/* 식단페이지 */}
-        <Route path="/diet" element={<DietPage />}>
-          <Route path="detail" element={<DietDetail></DietDetail>}></Route>
-        </Route>
+        <Route path="/diet" element={<DietPage />}></Route>
+        {/* 식단상세페이지 */}
+        <Route path="/detail" element={<DietSummary></DietSummary>}></Route>
+        <Route path="/detail/:menu" element={<DietDetail></DietDetail>}></Route>
         {/* 일기장페이지 */}
         <Route path="/diary" element={<DiaryPage />}></Route>
         {/* 소셜 로그인 페이지 */}
