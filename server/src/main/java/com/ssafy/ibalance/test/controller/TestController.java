@@ -2,10 +2,12 @@ package com.ssafy.ibalance.test.controller;
 
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.common.dto.response.StringWrapper;
+import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.test.dto.request.TestSaveRequest;
 import com.ssafy.ibalance.test.entity.TesterEntity;
 import com.ssafy.ibalance.test.service.TestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +37,11 @@ public class TestController {
     @GetMapping("/exceptional")
     public void exceptionHandlerTest(){
         throw new ChildNotFoundException("한번 아무 것으로 테스트 해 봅시다.");
+    }
+
+    @GetMapping("/login")
+    public Member loginTest(@AuthenticationPrincipal Member member){
+        return member;
     }
 
     @PostMapping("/save")

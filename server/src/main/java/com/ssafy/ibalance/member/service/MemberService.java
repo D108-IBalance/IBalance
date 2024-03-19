@@ -38,7 +38,7 @@ public class MemberService {
                         .build()));
     }
 
-    private OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code) {
+    public OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code) {
         return switch(provider){
             case GOOGLE -> googleUtil.getUserInfo(code);
             case KAKAO -> kakaoUtil.getKakaoInfo(code);
