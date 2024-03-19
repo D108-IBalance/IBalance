@@ -91,7 +91,6 @@ const GrowthCard = () => {
                   <img src={nextArrow} alt="next" className={classes.next} />
                 </div>
               </div>
-
               <Chart
                 isHeight={
                   (idx === 0 && !toggle) || idx === 1 ? "height" : "weight"
