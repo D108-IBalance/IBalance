@@ -7,6 +7,7 @@ import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,7 +29,7 @@ public class MemberController {
      * @param response 쿠키 저장을 위한 response
      * @return 로그인 한 회원 JWT token 정보
      */
-    @PostMapping("/login/{provider}")
+    @PostMapping(value = "/login/{provider}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public JwtTokenResponse login(@RequestBody LoginRequest request, @PathVariable String provider, HttpServletResponse response) {
         Member memberInfo = memberService.getMemberInfo(provider, request.code());
 
