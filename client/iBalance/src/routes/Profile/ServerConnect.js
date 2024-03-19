@@ -3,6 +3,7 @@
 import axios from "axios";
 
 const getProfile = async (TOKEN) => {
+  console.log(TOKEN);
   const headers = {
     Authorization: `Bearer ${TOKEN}`,
   };

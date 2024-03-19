@@ -23,6 +23,7 @@ const Profile = () => {
   useEffect(() => {
     const getProfileList = async () => {
       try {
+        console.log(TOKEN);
         let value = await getProfile(TOKEN);
         console.log(value);
       } catch (err) {
