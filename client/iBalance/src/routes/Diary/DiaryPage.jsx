@@ -10,6 +10,7 @@ import DiaryCards from "./DiaryCards";
 import notSelectIcon from "../../assets/diary/img/notselect.svg";
 const DiaryPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
+
   return (
     <>
       <div className={classes.gridSet}>

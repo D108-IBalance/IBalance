@@ -7,7 +7,7 @@
     font-weight: 600;
   }
   .dateDiary {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
     flex: none;
   }
@@ -75,6 +75,12 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     font-weight: 600;
+  }
+  .dateDiary {
+    font-size: 1rem;
+    font-weight: 600;
+    flex: none;
+    padding-left: 0.5rem;
   }
   .card {
     margin-top: 1.5rem;
