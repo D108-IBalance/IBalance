@@ -158,6 +158,9 @@
   thead {
     color: #fe724c;
   }
+  td {
+    font-size: 1rem;
+  }
   .able {
     font-weight: 600;
     color: black;
