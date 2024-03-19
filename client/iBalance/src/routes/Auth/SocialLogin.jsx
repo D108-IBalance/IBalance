@@ -1,8 +1,5 @@
-/* eslint-disable */
-
 // 외부 모듈
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { useEffect } from "react";
 
 // 내부 모듈
@@ -18,27 +15,21 @@ const SocialLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async () => {
-      const value = await getToken(code, provider);
-      // navigate("/home");
-      // .then((res) => {
-      //   const accessToken = res.data;
-      //   console.log(res);
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
+    let login = async () => {
+      try {
+        const value = await getToken(code, provider);
+        console.log(value.data);
+        const accessToken = value.data.data.accessToken;
+        console.log("accessToken:", accessToken);
+        navigate("/home");
+      } catch (err) {
+        console.log("Login error:", err);
+      }
     };
-  });
+    login();
+  }, [code, navigate, provider]); // 의존성 배열 축
 
-  return (
-    <>
-      <Loading step={2}></Loading>
-
-      <div>사이트 : {provider}</div>
-      <div>인가코드 : {code}</div>
-    </>
-  );
+  return <Loading step={2} />;
 };
 
 export default SocialLogin;

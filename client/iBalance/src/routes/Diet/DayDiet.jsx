@@ -1,7 +1,12 @@
+// 외부 모듈
+import { useNavigate } from "react-router-dom";
+
 // 내부 모듈
 import classes from "./DayDiet.module.css";
 
 const DayDiet = (props) => {
+  const navigate = useNavigate();
+
   const { day, diets, addDietCard, saveDiet } = props;
   return (
     <div className={classes.dayDietBox}>
@@ -17,7 +22,12 @@ const DayDiet = (props) => {
         {diets.map((diet, index) => {
           return (
             // <div >
-            <div className={classes.dayCard} key={index}>
+            <div
+              className={classes.dayCard}
+              key={index}
+              onClick={() => {
+                navigate("/detail");
+              }}>
               <div className={classes.cardIcon}></div>
               <div className={classes.cardLine}></div>
               <div className={classes.dietContentBox}>

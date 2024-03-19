@@ -8,6 +8,7 @@ import Load from "../../modules/Load/Load";
 import WeekCard from "./WeekCard";
 import DayDiet from "./DayDiet";
 import SaveModalPage from "./SaveModalPage";
+
 const DietListPage = () => {
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
   const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];

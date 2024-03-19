@@ -1,12 +1,12 @@
 // 외부 모듈
 import NavbarModule from "../../modules/Navbar/NavbarModule";
+import { useState } from "react";
 
 // 내부 모듈
 import classes from "./DietPage.module.css";
 import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
-import { useState } from "react";
 
 const DietPage = () => {
   let [emptyDiet, setEmptyDiet] = useState(true);
@@ -15,7 +15,6 @@ const DietPage = () => {
     <>
       <div className={classes.gridSet}>
         <Header></Header>
-        {/* <div className={classes.gridSet}> */}
         <NavbarModule isClick={2}></NavbarModule>
         <div className={classes.dietContentBox}>
           {emptyDiet === true ? (
@@ -24,7 +23,6 @@ const DietPage = () => {
             <DietListPage></DietListPage>
           )}
         </div>
-        {/* </div> */}
       </div>
     </>
   );

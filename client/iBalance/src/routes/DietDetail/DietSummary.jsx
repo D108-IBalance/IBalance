@@ -1,23 +1,30 @@
 // 외부 모듈
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./DietSummary.module.css";
+import NavbarModule from "../../modules/Navbar/NavbarModule";
+import { useState } from "react";
+
 import sample1 from "../../assets/diet/sample1.png";
 import sample2 from "../../assets/diet/sample2.png";
 import sample3 from "../../assets/diet/sample3.png";
 import sample4 from "../../assets/diet/sample4.png";
 
 const DietSummary = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dietList = [
     {
+      foodId: 0,
       name: "현미밥",
       kcal: "321kcal",
       ingredient: ["현미", "흰쌀"],
       img: sample1,
     },
     {
+      foodId: 1,
+
       name: "수제함박 스테이크",
       kcal: "561kcal",
       ingredient: [
@@ -31,6 +38,8 @@ const DietSummary = () => {
       img: sample2,
     },
     {
+      foodId: 2,
+
       name: "어묵볶음",
       kcal: "137kcal",
       ingredient: [
@@ -46,6 +55,8 @@ const DietSummary = () => {
       img: sample3,
     },
     {
+      foodId: 3,
+
       name: "두부 계란탕",
       kcal: "83kcal",
       ingredient: [
@@ -62,13 +73,15 @@ const DietSummary = () => {
     },
   ];
   return (
-    <>
+    <div className={classes.gridSet}>
+      <NavbarModule isClick={2}></NavbarModule>
+
       <div className={classes.container}>
         <div className={classes.titleBox}>
           <div
             className={classes.backIcon}
             onClick={() => {
-              navigate(-1);
+              navigate("/diet");
             }}></div>
           <div className={classes.titleTextBox}>
             <div className={classes.titleIcon}></div>
@@ -84,7 +97,8 @@ const DietSummary = () => {
                 className={classes.card}
                 style={{ zIndex: idx }}
                 onClick={() => {
-                  navigate(`/detail/${menu.name}`);
+                  setIsOpen(true);
+                  navigate(`/detail/menu`);
                 }}>
                 <img src={menu.img} className={classes.cardImg}></img>
                 <div className={classes.cardContent}>
@@ -103,8 +117,9 @@ const DietSummary = () => {
             );
           })}
         </div>
+        <Outlet context={{ isOpen, setIsOpen }}></Outlet>
       </div>
-    </>
+    </div>
   );
 };
 export default DietSummary;

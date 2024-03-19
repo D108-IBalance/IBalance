@@ -52,8 +52,9 @@ const App = () => {
         {/* 식단페이지 */}
         <Route path="/diet" element={<DietPage />}></Route>
         {/* 식단상세페이지 */}
-        <Route path="/detail" element={<DietSummary></DietSummary>}></Route>
-        <Route path="/detail/:menu" element={<DietDetail></DietDetail>}></Route>
+        <Route path="/detail" element={<DietSummary></DietSummary>}>
+          <Route path="menu" element={<DietDetail></DietDetail>}></Route>
+        </Route>
         {/* 일기장페이지 */}
         <Route path="/diary" element={<DiaryPage />}></Route>
         {/* 소셜 로그인 페이지 */}
