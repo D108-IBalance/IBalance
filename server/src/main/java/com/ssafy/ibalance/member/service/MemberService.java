@@ -9,10 +9,12 @@ import com.ssafy.ibalance.member.util.GoogleOAuth2Utils;
 import com.ssafy.ibalance.member.util.KakaoOAuth2Utils;
 import com.ssafy.ibalance.member.util.NaverOAuth2Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final GoogleOAuth2Utils googleUtil;
@@ -30,6 +32,7 @@ public class MemberService {
         if(oAuthMemberInfo == null){
             throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
         }
+        log.info("code : {}, provider : {}", oAuthMemberInfo.code(), provider);
 
         return memberRepository.findByCodeAndProvider(oAuthMemberInfo.code(), provider)
                 .orElseGet(() -> memberRepository.save(Member.builder()
@@ -39,6 +42,7 @@ public class MemberService {
     }
 
     public OAuthMemberInfo getOAuthMemberInfo(OAuthProvider provider, String code) {
+        log.info("코드로 {} 에 요청 시도", provider.toString());
         return switch(provider){
             case GOOGLE -> googleUtil.getUserInfo(code);
             case KAKAO -> kakaoUtil.getKakaoInfo(code);
