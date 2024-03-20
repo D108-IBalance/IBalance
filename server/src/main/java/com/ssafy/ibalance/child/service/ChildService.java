@@ -2,16 +2,9 @@ package com.ssafy.ibalance.child.service;
 
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
-import com.ssafy.ibalance.child.entity.Allergy;
-import com.ssafy.ibalance.child.entity.Child;
-import com.ssafy.ibalance.child.entity.ChildAllergy;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
-import com.ssafy.ibalance.child.repository.AllergyRepository;
-import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
-import com.ssafy.ibalance.child.repository.ChildRepository;
-import com.ssafy.ibalance.child.repository.GrowthRepository;
-import com.ssafy.ibalance.common.util.RedisUtil;
+import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
@@ -35,7 +28,7 @@ public class ChildService {
     private final AllergyRepository allergyRepository;
     private final ChildAllergyRepository childAllergyRepository;
     private final DietRepository dietRepository;
-    private final RedisUtil redisUtil;
+    private final RedisChildAllergyRepository redisChildAllergyRepository;
 
     public List<ChildListResponse> getChildList(Integer memberId) {
 
@@ -48,14 +41,17 @@ public class ChildService {
         Child child = saveChild(registChildRequest, member);
         saveGrowth(child);
         List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
-        redisUtil.setChildAllergy(child.getId(), childAllergyList);
+        redisChildAllergyRepository.save(RedisChildAllergy.builder()
+                .childId(child.getId())
+                .childAllergyId(childAllergyList)
+                .build());
         return RegistChildResponse.convertEntityToDto(child);
     }
 
     public DeleteChildResponse deleteChild(Integer childId) {
         Child child = childRepository.findById(childId).orElseThrow(IllegalArgumentException::new);
         childRepository.delete(child);
-        redisUtil.deleteChildAllergy(childId);
+        redisChildAllergyRepository.deleteById(childId);
         return DeleteChildResponse.ConvertEntityToDto(child);
     }
 

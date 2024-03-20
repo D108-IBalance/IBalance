@@ -1,8 +1,10 @@
 package com.ssafy.ibalance.diet.service;
 
+import com.ssafy.ibalance.child.entity.ChildAllergy;
+import com.ssafy.ibalance.child.entity.RedisChildAllergy;
 import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
-import com.ssafy.ibalance.common.util.RedisUtil;
+import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.diet.dto.MenuDetailDto;
 import com.ssafy.ibalance.diet.dto.MenuDto;
 import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,9 +26,9 @@ import java.util.List;
 public class DietService {
 
     private final DietRepository dietRepository;
-    private final RedisUtil redisUtil;
     private final ChildAllergyRepository childAllergyRepository;
-    public final ChildRepository childRepository;
+    private final ChildRepository childRepository;
+    private final RedisChildAllergyRepository redisChildAllergyRepository;
 
     public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
@@ -38,16 +41,19 @@ public class DietService {
     }
 
     public List<Integer> getAllergy(Integer childId) {
-        List<Long> childAllergyId = redisUtil.getChildAllergy(childId);
+        Optional<RedisChildAllergy> redisChildAllergy = redisChildAllergyRepository.findById(childId);
         List<Integer> allergyList = new ArrayList<>();
-        if(!childAllergyId.isEmpty()) {
-            allergyList.addAll(childAllergyRepository.findAllergyIdByIdIn(childAllergyId));
+        if(redisChildAllergy.isPresent()) {
+            List<ChildAllergy> childAllergyList = childAllergyRepository.findByIdIn(redisChildAllergy.get().getChildAllergyId());
+            for(ChildAllergy childAllergy : childAllergyList) {
+                allergyList.add(childAllergy.getAllergy().getId());
+            }
         }
         return allergyList;
     }
 
     public List<Integer> getPastMenu(Integer childId) {
-        return childRepository.getMenuIdByCHildIdAndDate(childId, LocalDate.now());
+        return childRepository.getMenuIdByChildIdAndDate(childId, LocalDate.now());
     }
 
     public List<InitDietResponse> getInitDiet(Integer childId, List<Integer> allergyList, List<Integer> pastMenu) {
@@ -91,5 +97,4 @@ public class DietService {
         }
         return initDietResponseList;
     }
-
 }

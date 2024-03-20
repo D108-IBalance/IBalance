@@ -4,5 +4,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ChildCustomRepository {
-    List<Integer> getMenuIdByCHildIdAndDate(Integer childId, LocalDate today);
+    List<Integer> getMenuIdByChildIdAndDate(Integer childId, LocalDate today);
 }

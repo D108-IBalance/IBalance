@@ -46,7 +46,7 @@ public class DietController {
             sb.append(targetInt);
             sb.append("|");
         }
-        
+
         Cookie cookie = new Cookie(cookieName, sb.toString());
         cookie.setPath(cookiePath);
         response.addCookie(cookie);

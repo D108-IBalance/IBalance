@@ -16,12 +16,12 @@ public class ChildCustomRepositoryImpl implements ChildCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Integer> getMenuIdByCHildIdAndDate(Integer childId, LocalDate today) {
+    public List<Integer> getMenuIdByChildIdAndDate(Integer childId, LocalDate today) {
         return jpaQueryFactory.select(dietMenu.menuId)
                 .from(child)
                 .join(diet)
-                .join(dietMenu)
                 .on(child.id.eq(diet.child.id))
+                .join(dietMenu)
                 .on(diet.id.eq(dietMenu.diet.id))
                 .where(child.id.eq(childId))
                 .where(diet.dietDate.between(today.minusWeeks(2), today))
