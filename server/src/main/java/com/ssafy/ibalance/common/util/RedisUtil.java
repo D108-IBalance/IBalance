@@ -15,7 +15,7 @@ public class RedisUtil {
 
     public void setChildAllergy(Integer key, List<Long> values) {
 
-        childAllergyTemplate.opsForList().rightPushAll("child_allergy_" + Integer.toString(key), values);
+        childAllergyTemplate.opsForList().rightPushAll("child_allergy_" + key, values);
     }
 
     public List<Long> getChildAllergy(Integer key) {

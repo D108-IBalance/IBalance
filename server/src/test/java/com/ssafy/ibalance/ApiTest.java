@@ -2,6 +2,7 @@ package com.ssafy.ibalance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.common.MemberTestUtil;
+import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.member.util.GoogleOAuth2Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
@@ -31,6 +32,9 @@ public class ApiTest {
     @MockBean
     private GoogleOAuth2Utils googleOAuth2Utils;
 
+    @MockBean
+    protected RedisUtil redisUtil;
+
     protected final String AUTH_HEADER = "Authorization";
 
     protected static final String DEFAULT_RESTDOC_PATH = "{class_name}/{method_name}";
@@ -44,5 +48,7 @@ public class ApiTest {
 
         Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.code, MemberTestUtil.redirectUri))
                 .thenReturn(MemberTestUtil.mockOAuthInfo());
+
+        Mockito.doNothing().when(redisUtil).setChildAllergy(Mockito.anyInt(), Mockito.any());
     }
 }

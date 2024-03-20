@@ -126,7 +126,8 @@ public class TestApiTest extends ApiTest {
         mockMvc.perform(
                         get("/test/login")
                 )
-                .andExpect(status().is(401))
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.status").value(401))
                 .andDo(handler -> System.out.println(handler.getResponse().getContentAsString()));
     }
 
