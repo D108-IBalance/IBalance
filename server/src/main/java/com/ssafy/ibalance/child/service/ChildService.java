@@ -11,7 +11,6 @@ import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -99,7 +98,7 @@ public class ChildService {
                 .findTopByChildIdOrderByCreatedTimeDesc(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
-        if(member == null || !member.equals(growth.getChild().getMember())) {
+        if(!member.equals(growth.getChild().getMember())) {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
@@ -109,7 +108,7 @@ public class ChildService {
     public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
         Page<Growth> growthPage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable);
 
-        if(member == null || !member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
+        if(!member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
