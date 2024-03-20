@@ -72,7 +72,7 @@ public class TestApiTest extends ApiTest {
                                 "<br>지금 내용처럼 섦명을 쭉쭉 이어나가면 됩니다." +
                                 "<br>아래에는, Document 라는 클래스를 새로 만들고, static 으로 만들어 주면 됩니다. " +
                                 "<br>pathField 에 들어가는 required() 는 필요할 때만 넣어 주고, required 가 아닐 경우" +
-                                "<br> 뒤에 .isOptional() 과 같이 써서 반드시 받는 것은 아니라고 표기해 줄 수 있습니다." +
+                                "<br> 뒤에 .optional() 과 같이 써서 반드시 받는 것은 아니라고 표기해 줄 수 있습니다." +
                                 "<br>'[]' 는 배열을 표시할 때 사용할 수 있습니다. 배열이 아니라면 그냥 'data.abc' 와 같이" +
                                 "<br>기술해 주면 됩니다." +
                                 "<br>Header, Query String, Path Parameter, Response 다 따로 나눠 적어줍니다." +
