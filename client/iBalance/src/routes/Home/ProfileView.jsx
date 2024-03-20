@@ -1,14 +1,16 @@
 import classes from "./ProfileView.module.css";
 import profileImgfile from "../../assets/auth/img/default_profile1.png";
+import HomeHeader from "../../modules/Header/HomeHeader";
 
 const ProfileView = () => {
   return (
     <div className={classes.profileBox}>
-      <div className={classes.headerBox}>
+      {/* <div className={classes.headerBox}>
         <div className={classes.tempIcon}></div>
         <div className={classes.homeLogo}></div>
         <div className={classes.toggleBtn}></div>
-      </div>
+      </div> */}
+      <HomeHeader></HomeHeader>
       <div className={classes.profileContentBox}>
         <div className={classes.profileImg}>
           <img src={profileImgfile} />

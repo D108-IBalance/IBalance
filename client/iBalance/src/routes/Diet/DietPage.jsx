@@ -9,16 +9,16 @@ import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
 
 const DietPage = () => {
-  let [emptyDiet, setEmptyDiet] = useState(true);
+  let [isEmptyDiet, setIsEmptyDiet] = useState(true);
 
   return (
     <>
       <div className={classes.gridSet}>
-        <Header></Header>
-        <NavbarModule isClick={2}></NavbarModule>
+        <Header />
+        <NavbarModule isClick={2} />
         <div className={classes.dietContentBox}>
-          {emptyDiet === true ? (
-            <EmptyDiet setEmptyDiet={setEmptyDiet}></EmptyDiet>
+          {isEmptyDiet ? (
+            <EmptyDiet setIsEmptyDiet={setIsEmptyDiet}></EmptyDiet>
           ) : (
             <DietListPage></DietListPage>
           )}
