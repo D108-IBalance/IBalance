@@ -50,8 +50,8 @@ public class Child extends BaseTime {
 
         return builder()
                 .name(registChildRequest.getName())
-                .birthDate(registChildRequest.getBirthDate())
-                .gender(registChildRequest.getGender())
+                .birthDate(LocalDate.parse(registChildRequest.getBirthDate()))
+                .gender(Gender.valueOf(registChildRequest.getGender()))
                 .height(registChildRequest.getHeight())
                 .weight(registChildRequest.getWeight())
                 .imageUrl(registChildRequest.getImageUrl())
