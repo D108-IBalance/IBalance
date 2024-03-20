@@ -27,8 +27,7 @@ public class DietService {
     private final ChildAllergyRepository childAllergyRepository;
     public final ChildRepository childRepository;
 
-    public List<RecommendedDietResponse> getChildDiet(Integer childId, LocalDate today) {
-
+    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
         return dietRepository.getDietMenuByDate(childId, today, endday);
     }

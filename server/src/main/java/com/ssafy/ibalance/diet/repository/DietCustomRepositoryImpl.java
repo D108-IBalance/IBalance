@@ -1,7 +1,6 @@
 package com.ssafy.ibalance.diet.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.MenuDto;
@@ -99,7 +98,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .build())
                 .toList();
 
-        List<RecommendedDietResponse> childDietResponseList = new ArrayList<>();
+        List<RecommendedDietResponse> recommendedDietResponseList = new ArrayList<>();
 
         // TODO : MongoDB에서 메뉴 데이터 가져오기
         for(DietByDateDto dto : dietByDateDtoList) {
@@ -113,7 +112,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .build());
             }
 
-            childDietResponseList.add(RecommendedDietResponse.builder()
+            recommendedDietResponseList.add(RecommendedDietResponse.builder()
                     .dietId(dto.getDietId())
                     .dietDate(dto.getDietDate())
                     .sequence(dto.getSequence())
@@ -121,7 +120,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                     .build());
         }
 
-        return childDietResponseList;
+        return recommendedDietResponseList;
     }
 
     @Override

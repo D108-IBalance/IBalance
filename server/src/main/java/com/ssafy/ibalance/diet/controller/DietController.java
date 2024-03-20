@@ -20,8 +20,8 @@ public class DietController {
     private final DietService dietService;
 
     @GetMapping("/{childId}")
-    public List<RecommendedDietResponse> getChildDiet(@PathVariable Integer childId, @RequestParam LocalDate today) {
-        return dietService.getChildDiet(childId, today);
+    public List<RecommendedDietResponse> getRecommendedDiet(@PathVariable Integer childId, @RequestParam LocalDate today) {
+        return dietService.getRecommendedDiet(childId, today);
     }
 
     @GetMapping("/detail/{dietId}")
