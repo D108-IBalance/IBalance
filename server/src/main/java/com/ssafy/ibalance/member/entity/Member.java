@@ -78,6 +78,7 @@ public class Member extends BaseTime implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o == null) return false;
         try {
             Member member = (Member) o;
             return Objects.equals(this.id, member.getId());
