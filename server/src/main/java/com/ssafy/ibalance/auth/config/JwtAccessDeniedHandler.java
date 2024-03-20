@@ -2,6 +2,7 @@ package com.ssafy.ibalance.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.auth.type.JwtCode;
+import com.ssafy.ibalance.common.dto.response.CommonWrapperResponse;
 import com.ssafy.ibalance.common.type.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +28,9 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         JwtCode jwtCode = jwtTokenProvider.validateToken(token);
 
         response.setContentType("application/json");
-        response.setStatus(getStatusInfo(jwtCode));
-        response.getWriter().write(objectMapper.writeValueAsString(getErrorResponse(jwtCode)));
+
+        int status = getStatusInfo(jwtCode);
+        response.getWriter().write(objectMapper.writeValueAsString(getErrorResponse(jwtCode, status)));
     }
 
     private int getStatusInfo(JwtCode jwtCode) {
@@ -38,20 +40,24 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         return HttpStatus.UNAUTHORIZED.value();
     }
 
-    private static ErrorResponse getErrorResponse(JwtCode jwtCode) {
-        return switch (jwtCode) {
-            case ACCESS -> errorResponseBuilder("AccessDeniedException", "권한이 없습니다.", "");
-            case EXPIRED -> errorResponseBuilder("TokenExpieredException", "토큰이 만료되었습니다.", "");
-            case DENIED -> errorResponseBuilder("TokenInvalidException", "토큰이 유효하지 않습니다.", "");
-            default -> null;
+    private static CommonWrapperResponse getErrorResponse(JwtCode jwtCode, int status) {
+        ErrorResponse errorResponse = switch (jwtCode) {
+            case ACCESS -> errorResponseBuilder("AccessDeniedException", "권한이 없습니다.");
+            case EXPIRED -> errorResponseBuilder("TokenExpieredException", "토큰이 만료되었습니다.");
+            case DENIED -> errorResponseBuilder("TokenInvalidException", "토큰이 유효하지 않습니다.");
         };
+
+        return CommonWrapperResponse.builder()
+                .status(status)
+                .data(errorResponse)
+                .build();
     }
 
-    private static ErrorResponse errorResponseBuilder(String errorType, String errorMessage, String fieldName) {
+    private static ErrorResponse errorResponseBuilder(String errorType, String errorMessage) {
         return ErrorResponse.builder()
                 .errorType(errorType)
                 .message(errorMessage)
-                .fieldName(fieldName)
+                .fieldName("")
                 .build();
     }
 }
