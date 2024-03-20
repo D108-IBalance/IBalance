@@ -1,8 +1,11 @@
 package com.ssafy.ibalance.child;
 
 import com.ssafy.ibalance.ApiTest;
+import com.ssafy.ibalance.child.util.AllergyTestUtil;
+import com.ssafy.ibalance.child.util.ChildTestUtil;
 import com.ssafy.ibalance.common.CommonDocument;
 import com.ssafy.ibalance.common.MemberTestUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +28,20 @@ public class ChildApiTest extends ApiTest {
     private AllergyTestUtil allergyTestUtil;
 
     @Autowired
+    private ChildTestUtil childTestUtil;
+
+    @Autowired
     private ChildSteps childSteps;
+
+    @BeforeEach
+    void settings(){
+        allergyTestUtil.알러지정보_저장();
+    }
 
 
     @Test
     void 아이_정보_등록_성공_200() throws Exception {
-        allergyTestUtil.알러지정보_저장();
+
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         mockMvc.perform(
@@ -74,7 +85,7 @@ public class ChildApiTest extends ApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(400))
-                .andDo(handler -> System.out.println(handler.getResponse().getContentAsString()))
+                .andDo(this::print)
                 .andDo(
                         document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader, ChildDocument.registerChildRequestField)
                 );
@@ -89,9 +100,7 @@ public class ChildApiTest extends ApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(401))
-                .andDo(
-                        handler -> System.out.println(handler.getResponse().getContentAsString())
-                )
+                .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH));
     }
 
@@ -105,7 +114,38 @@ public class ChildApiTest extends ApiTest {
                         .header(AUTH_HEADER, token)
         )
                 .andExpect(status().isOk())
-                .andDo(handler ->
-                        System.out.println(handler.getResponse().getContentAsString()));
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader));
+    }
+
+    @Test
+    void 아이_정보_가져오기_1명_200() throws Exception{
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                get("/child")
+                        .header(AUTH_HEADER, token)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.size()").value(1))
+                .andExpect(jsonPath("$.data.[0].childId").value(childId))
+                .andDo(document(DEFAULT_RESTDOC_PATH, "아이 정보를 가져오는 API 입니다. " +
+                        "<br>Header 에 유효한 JWT 토큰을 넣어 주면, 200 OK 와 함께 아이들의 정보 리스트가 반환됩니다." +
+                        "<br>유효하지 않은 JWT 토큰을 헤더에 입력하거나, 입력하지 않으면 401 Unauthorized 가 Body 내 status 에 반환됩니다.",
+                        "아이정보조회",
+                        CommonDocument.AccessTokenHeader,
+                        ChildDocument.findChildResponseField));
+    }
+
+    @Test
+    void 아이_정보_가져오기_토큰없음_401() throws Exception {
+        mockMvc.perform(
+                        get("/child")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH));
     }
 }

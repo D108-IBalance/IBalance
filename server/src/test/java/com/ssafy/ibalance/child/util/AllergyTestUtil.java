@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.child;
+package com.ssafy.ibalance.child.util;
 
 import com.ssafy.ibalance.child.entity.Allergy;
 import com.ssafy.ibalance.child.repository.AllergyRepository;
