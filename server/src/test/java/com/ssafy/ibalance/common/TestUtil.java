@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 public class TestUtil {
 
-    protected String getValueFromJSONBody(MvcResult result, String path) throws UnsupportedEncodingException {
+    protected <T> T getValueFromJSONBody(MvcResult result, String path, T targetClassObject) throws UnsupportedEncodingException {
         String resultString = result.getResponse().getContentAsString();
         return JsonPath.parse(resultString).read(path);
     }
