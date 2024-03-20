@@ -3,6 +3,7 @@ package com.ssafy.ibalance.child.service;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.entity.*;
+import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.common.util.RedisUtil;
@@ -43,7 +44,9 @@ public class ChildService {
         Child child = saveChild(registChildRequest, member);
         saveGrowth(child);
         List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
+
         redisUtil.setChildAllergy(child.getId(), childAllergyList);
+
         return RegistChildResponse.convertEntityToDto(child);
     }
 
@@ -72,18 +75,22 @@ public class ChildService {
 
     private List<Long> saveChildAllergy(RegistChildRequest registChildRequest, Child child) {
 
-        List<Long> childAllergyList = new ArrayList<>();
+        List<Integer> allergyIdList = registChildRequest.getHaveAllergies();
+        List<Allergy> allergies = allergyRepository.findAllById(allergyIdList);
 
-        for(Integer i : registChildRequest.getHaveAllergies()) {
-            Allergy allergy = allergyRepository.findById(i).orElseThrow(IllegalArgumentException::new);
-            ChildAllergy childAllergy = ChildAllergy.builder()
-                    .child(child)
-                    .allergy(allergy)
-                    .build();
-            childAllergyList.add(childAllergyRepository.save(childAllergy).getId());
+        if(allergies.size() != allergyIdList.size()){
+            throw new AllergyNotFoundException("리스트에 있는 알러지 ID 중 존재하지 않는 알러지 번호가 있습니다.");
         }
 
-        return childAllergyList;
+        List<ChildAllergy> allergiesHave = allergies.stream().map(
+                allergy -> ChildAllergy.builder()
+                .child(child)
+                .allergy(allergy)
+                .build()).toList();
+
+        List<ChildAllergy> savedAllergies = childAllergyRepository.saveAll(allergiesHave);
+
+        return savedAllergies.stream().map(ChildAllergy::getId).toList();
     }
 
     public ChildDietResponse getMain(Integer childId, LocalDate date) {
