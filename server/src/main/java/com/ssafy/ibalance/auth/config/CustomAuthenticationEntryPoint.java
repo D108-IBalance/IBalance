@@ -2,6 +2,7 @@ package com.ssafy.ibalance.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.auth.type.JwtCode;
+import com.ssafy.ibalance.common.dto.response.CommonWrapperResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,13 +31,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         JwtCode jwtCode = jwtTokenProvider.validateToken(token);
 
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        Map<String, String> errorMsg = getErrorMessageMap(jwtCode);
+        CommonWrapperResponse errorMsg = getErrorMessageMap(jwtCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorMsg));
     }
 
-    private static Map<String, String> getErrorMessageMap(JwtCode jwtCode) {
+    private static CommonWrapperResponse getErrorMessageMap(JwtCode jwtCode) {
         Map<String, String> errorMsg = new LinkedHashMap<>();
 
         switch (jwtCode) {
@@ -52,6 +53,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
 
         errorMsg.put("fieldName", "");
-        return errorMsg;
+
+        return CommonWrapperResponse.builder()
+                .status(HttpServletResponse.SC_UNAUTHORIZED)
+                .data(errorMsg)
+                .build();
     }
 }
