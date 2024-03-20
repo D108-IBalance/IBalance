@@ -3,6 +3,7 @@ package com.ssafy.ibalance.child.service;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.entity.*;
+import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.common.util.RedisUtil;
@@ -10,6 +11,7 @@ import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -86,23 +88,32 @@ public class ChildService {
         return childAllergyList;
     }
 
-    public ChildDietResponse getMain(Integer childId, LocalDate date) {
+    public ChildDietResponse getMain(Integer childId, LocalDate date, Member member) {
         return ChildDietResponse.builder()
-                .childDetailResponse(getChildDetail(childId))
+                .childDetailResponse(getChildDetail(childId, member))
                 .dietList(dietRepository.getDietByDate(childId, date)).build();
     }
 
-    public ChildDetailResponse getChildDetail(Integer childId) {
+    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
         Growth growth = growthRepository
                 .findTopByChildIdOrderByCreatedTimeDesc(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
+        if(!member.equals(growth.getChild().getMember())) {
+            throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
+        }
+
         return ChildDetailResponse.convertEntityToDto(growth);
     }
 
-    public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable) {
-        Page<GrowthResponse> growthResponsePage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable)
-                .map(GrowthResponse::ConvertEntityToDto);
+    public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
+        Page<Growth> growthPage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable);
+
+        if(!member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
+            throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
+        }
+
+        Page<GrowthResponse> growthResponsePage = growthPage.map(GrowthResponse::ConvertEntityToDto);
 
         List<GrowthResponse> growthResponseList = growthResponsePage.getContent();
 
@@ -112,7 +123,7 @@ public class ChildService {
         }
 
         // 평균 성장 데이터 조회
-        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponsePage.getContent().getFirst().getGender(), monthList)
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponseList.getFirst().getGender(), monthList)
                 .stream()
                 .map(AverageGrowthResponse::ConvertEntityToDto)
                 .toList();

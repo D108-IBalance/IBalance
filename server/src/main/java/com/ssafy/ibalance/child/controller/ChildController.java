@@ -49,10 +49,11 @@ public class ChildController {
      * @param childId
      * @return
      */
-    @GetMapping("/{childId}")
+    @GetMapping("/main/{childId}")
     public ChildDietResponse getMain(@PathVariable Integer childId,
-                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return childService.getMain(childId, date);
+                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                     @AuthenticationPrincipal Member member) {
+        return childService.getMain(childId, date, member);
     }
 
     /**
@@ -65,8 +66,9 @@ public class ChildController {
      *         평균 성장 데이터 리스트
      */
     @GetMapping("/growth/{childId}")
-    public GrowthPageResponse getGrowthList(@PathVariable Integer childId, Pageable pageable) {
-        return childService.getGrowthList(childId, pageable);
+    public GrowthPageResponse getGrowthList(@PathVariable Integer childId, Pageable pageable,
+                                            @AuthenticationPrincipal Member member) {
+        return childService.getGrowthList(childId, pageable, member);
     }
 
 }
