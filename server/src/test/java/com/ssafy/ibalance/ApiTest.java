@@ -13,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.io.UnsupportedEncodingException;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -35,7 +38,7 @@ public class ApiTest {
     @MockBean
     protected RedisUtil redisUtil;
 
-    protected final String AUTH_HEADER = "Authorization";
+    public static final String AUTH_HEADER = "Authorization";
 
     protected static final String DEFAULT_RESTDOC_PATH = "{class_name}/{method_name}";
 
@@ -50,5 +53,9 @@ public class ApiTest {
                 .thenReturn(MemberTestUtil.mockOAuthInfo());
 
         Mockito.doNothing().when(redisUtil).setChildAllergy(Mockito.anyInt(), Mockito.any());
+    }
+
+    protected void print(MvcResult result) throws UnsupportedEncodingException {
+        System.out.println(result.getResponse().getContentAsString());
     }
 }

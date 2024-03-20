@@ -38,7 +38,7 @@ public class MemberTestUtil extends TestUtil {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        return getValueFromJSONBody(mvcResult, "$.data.accessToken");
+        return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
     }
 
     public static GoogleMemberInfoResponse mockOAuthInfo(){
