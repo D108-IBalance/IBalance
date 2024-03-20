@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.child.handler;
 
 import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
+import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.common.type.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,5 +22,10 @@ public class ChildExceptionHandler {
     @ExceptionHandler(AllergyNotFoundException.class)
     public List<ErrorResponse> allergyNotFoundExceptionHandler(AllergyNotFoundException e){
         return makeErrorResponse(e, "allergyId");
+    }
+
+    @ExceptionHandler(ChildAccessDeniedException.class)
+    public List<ErrorResponse> childAccessDeniedExceptionHandler(ChildAccessDeniedException e) {
+        return makeErrorResponse(e, "childId");
     }
 }

@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.child.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.ibalance.child.entity.Growth;
 import com.ssafy.ibalance.child.type.Gender;
 import lombok.Builder;
@@ -16,10 +17,19 @@ import java.time.temporal.TemporalAdjusters;
 @Setter
 public class GrowthResponse {
     private Gender gender;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private long month;
+
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate recordDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private double height;
     private double weight;
