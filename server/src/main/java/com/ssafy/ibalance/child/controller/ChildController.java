@@ -27,7 +27,7 @@ public class ChildController {
     private final ChildService childService;
 
     @GetMapping("")
-    public List<ChildListResponse> getChildList(@AuthenticationPrincipal Member member) {
+    public List<ChildInfoResponse> getChildList(@AuthenticationPrincipal Member member) {
 
         return childService.getChildList(member.getId());
     }

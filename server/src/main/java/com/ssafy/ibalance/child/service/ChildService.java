@@ -33,10 +33,10 @@ public class ChildService {
     private final AverageGrowthRepository averageGrowthRepository;
     private final RedisUtil redisUtil;
 
-    public List<ChildListResponse> getChildList(Integer memberId) {
+    public List<ChildInfoResponse> getChildList(Integer memberId) {
 
         List<Child> children = childRepository.findAllByMemberId(memberId);
-        return children.stream().map(ChildListResponse::ConvertEntityToDto).toList();
+        return children.stream().map(ChildInfoResponse::ConvertEntityToDto).toList();
     }
 
     public RegistChildResponse registChild(RegistChildRequest registChildRequest, Member member) {

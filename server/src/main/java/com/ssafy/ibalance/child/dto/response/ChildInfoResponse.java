@@ -9,20 +9,20 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-public class ChildListResponse {
+public class ChildInfoResponse {
 
     private final Integer childId;
     private final String name;
     private final String imageUrl;
-    private Gender test;
+    private Gender gender;
 
 
-    public static ChildListResponse ConvertEntityToDto(Child child) {
+    public static ChildInfoResponse ConvertEntityToDto(Child child) {
         return builder()
                 .childId(child.getId())
                 .name(child.getName())
                 .imageUrl(child.getImageUrl())
-                .test(child.getGender())
+                .gender(child.getGender())
                 .build();
     }
 }
