@@ -1,17 +1,23 @@
 package com.ssafy.ibalance.diary.dto.response;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ssafy.ibalance.diary.dto.CalendarDto;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Builder
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CalendarResponse {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dietDate;
     private boolean allReviewed;
+
+    public static CalendarResponse convertEntityToDto(CalendarDto calendarDto) {
+        return CalendarResponse.builder()
+                .dietDate(calendarDto.getDietDate())
+                .allReviewed(calendarDto.isAllReviewed())
+                .build();
+    }
 }
