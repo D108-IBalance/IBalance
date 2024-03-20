@@ -29,4 +29,12 @@ public class ChildDocument {
             fieldWithPath("data.imageUrl").type(JsonFieldType.VARIES).description("자녀 이미지 URL"),
             fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("등록한 유저의 PK ID")
     );
+
+    public static final Snippet findChildResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data[].childId").type(JsonFieldType.NUMBER).description("자녀 PK 아이디"),
+            fieldWithPath("data[].name").type(JsonFieldType.STRING).description("자녀 이름"),
+            fieldWithPath("data[].imageUrl").type(JsonFieldType.VARIES).description("이미지 URL"),
+            fieldWithPath("data[].gender").type(JsonFieldType.STRING).description("성별")
+    );
 }
