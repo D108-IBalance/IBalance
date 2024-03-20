@@ -4,6 +4,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
+import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
@@ -13,6 +15,7 @@ import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.type.MenuType;
+import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -138,7 +141,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     @Override
-    public List<CalendarResponse> getCalendarList(Integer childId, int year, int month) {
+    public List<CalendarResponse> getCalendarList(Integer childId, int year, int month, Member member) {
         JPQLQuery<LocalDate> allReviewed = JPAExpressions.select(diet.dietDate)
                 .from(diet)
                 .where(diet.child.id.eq(childId)
@@ -147,8 +150,9 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .and(diet.isReviewed.eq(false)))
                 .groupBy(diet.dietDate);
 
-        return jpaQueryFactory.select(
-                        Projections.fields(CalendarResponse.class,
+        List<CalendarDto> calendarDtoList = jpaQueryFactory.select(
+                        Projections.fields(CalendarDto.class,
+                                diet.child.member,
                                 diet.dietDate,
                                 diet.dietDate.in(allReviewed).not().as("allReviewed"))
                 )
@@ -156,7 +160,13 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                 .where(diet.child.id.eq(childId)
                         .and(diet.dietDate.year().eq(year))
                         .and(diet.dietDate.month().eq(month)))
-                .groupBy(diet.dietDate)
+                .groupBy(diet.child.member, diet.dietDate)
                 .fetch();
+
+        if(!member.equals(calendarDtoList.getFirst().getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        return calendarDtoList.stream().map(CalendarResponse::convertEntityToDto).toList();
     }
 }

@@ -49,6 +49,9 @@ public class WebSecurityConfig {
                         .requestMatchers("/test/login").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/child").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/child").hasRole("USER")
+                        .requestMatchers("/child/main/**").hasRole("USER")
+                        .requestMatchers("/child/growth/**").hasRole("USER")
+                        .requestMatchers("/diary/calendar/**").hasRole("USER")
                         .requestMatchers("/docs/**").permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(config ->
