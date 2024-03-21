@@ -1,6 +1,8 @@
 package com.ssafy.ibalance.child;
 
 import com.ssafy.ibalance.ApiTest;
+import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
+import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.util.AllergyTestUtil;
 import com.ssafy.ibalance.child.util.ChildTestUtil;
 import com.ssafy.ibalance.common.CommonDocument;
@@ -10,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
@@ -33,6 +37,12 @@ public class ChildApiTest extends ApiTest {
     @Autowired
     private ChildSteps childSteps;
 
+    @Autowired
+    private ChildAllergyRepository childAllergyRepository;
+
+    @Autowired
+    private ChildRepository childRepository;
+
     @BeforeEach
     void settings(){
         allergyTestUtil.알러지정보_저장();
@@ -44,12 +54,12 @@ public class ChildApiTest extends ApiTest {
 
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
-        mockMvc.perform(
-                post("/child")
-                        .header(AUTH_HEADER, token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(childSteps.아이정보_생성()))
-        )
+        MvcResult mvcResult = mockMvc.perform(
+                        post("/child")
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이정보_생성()))
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andDo(
@@ -67,9 +77,13 @@ public class ChildApiTest extends ApiTest {
                                 CommonDocument.AccessTokenHeader,
                                 ChildDocument.registerChildRequestField,
                                 ChildDocument.registerChildResponseField)
-                );
+                )
+                .andReturn();
+
+        Integer childId = getValueFromJSONBody(mvcResult, "$.data.id", 0);
 
         Mockito.verify(redisUtil, times(1)).setChildAllergy(anyInt(), any());
+        assertThat(childAllergyRepository.findByChild_id(childId).size()).isEqualTo(2);
     }
 
     @Test
@@ -147,5 +161,95 @@ public class ChildApiTest extends ApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(document(DEFAULT_RESTDOC_PATH));
+    }
+
+    @Test
+    void 아이_정보_삭제_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        MvcResult mvcResult = mockMvc.perform(
+                        delete("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, "아이 정보를 삭제하는 API 입니다. " +
+                        "<br>성공적으로 아이 정보가 삭제되면 200 OK 와 함께 삭제된 아이의 대략적인 정보가 반환됩니다." +
+                        "<br>자녀의 Primary Key 는 1 이상의 정수로 입력해야 합니다." +
+                        "<br>0 이하의 정수를 입력하면 400 Bad Request 가 body 내에 들어가 반환됩니다." +
+                        "<br>JWT 토큰이 헤더에 올바르게 입력되지 않았을 때, 401 Unauthorized 가 반환됩니다." +
+                        "<br>해당 자녀 정보에 접근할 권한이 없을 때, 403 Forbidden 이 반환됩니다." +
+                        "<br>해당 아이디로 된 자녀를 찾을 수 없을 때, 404 Not Found 가 반환됩니다.",
+                        "자녀정보삭제", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField,
+                        ChildDocument.deletedChildResponseField
+                        ))
+                .andReturn();
+
+        Integer deletedChildId = getValueFromJSONBody(mvcResult, "$.data.id", 0);
+
+        assertThat(childRepository.findById(deletedChildId)).isEmpty();
+        assertThat(childAllergyRepository.findByChild_id(deletedChildId).size()).isEqualTo(0);
+    }
+
+    @Test
+    void 아이_정보_삭제_잘못된아이디_400() throws Exception{
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                        delete("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 아이_정보_삭제_토큰없음_401() throws Exception{
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        delete("/child/{childId}", childId)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 아이_정보_삭제_권한없음_403() throws Exception{
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        delete("/child/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 아이_정보_삭제_없는아이_404() throws Exception{
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 9999999;
+
+        mockMvc.perform(
+                        delete("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
     }
 }
