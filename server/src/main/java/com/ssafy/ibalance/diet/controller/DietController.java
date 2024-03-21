@@ -1,8 +1,8 @@
 package com.ssafy.ibalance.diet.controller;
 
 import com.ssafy.ibalance.diet.dto.MenuDetailDto;
+import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
-import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.service.DietService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ public class DietController {
     private final DietService dietService;
 
     @GetMapping("/{childId}")
-    public List<RecommendedDietResponse> getRecommendedDiet(@PathVariable Integer childId, @RequestParam LocalDate today) {
+    public List<DietByDateResponse> getRecommendedDiet(@PathVariable Integer childId, @RequestParam LocalDate today) {
         return dietService.getRecommendedDiet(childId, today);
     }
 

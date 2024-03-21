@@ -103,7 +103,7 @@ public class ChildService {
     public ChildDietResponse getMain(Integer childId, LocalDate date, Member member) {
         return ChildDietResponse.builder()
                 .childDetailResponse(getChildDetail(childId, member))
-                .dietList(dietRepository.getDietByDate(childId, date)).build();
+                .dietList(dietRepository.getDietByDate(childId, date, member)).build();
     }
 
     public ChildDetailResponse getChildDetail(Integer childId, Member member) {
