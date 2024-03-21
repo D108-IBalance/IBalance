@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from recommend import getRecomm
+from recommend import init_recommendations
 from pydantic_settings import BaseSettings
-from dbUtil.mongodb_api import mongodb_connect, find_all_attr
-from dbUtil.mysql_api import mysql_connect
+from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_typs
+from dbUtil.mysql_api import mysql_connect, find_all_rating
 from request.request_dto import ChildInfo
 
 
@@ -33,16 +33,16 @@ mongodb_connect(uri) # 몽고DB 연결
 mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE) # MySQL 연결
 
 
-@app.get("/recomm/init")
+"""
+초창기 식단 7개를 한번에 추천해주는 컨트롤러
+"""
+@app.post("/recomm/init")
 def init_recommend(request: ChildInfo):
-    """
-    :param: ChildInfo
-    :ChildInfo: childId: 아이 고유번호, allergyList: 그 아이가 갖고있는 알러지, cacheList: 그날 새로고침 되었던 menu_id
-    :return: List of Dictionary
-    :Diet:
-    """
-    return getRecomm((int(request.childId)),0)
+    return init_recommendations(request)
 
+"""
+db 테스트 컨트롤러
+"""
 @app.get("/recomm/test")
 def test():
-    return find_all_attr("menu", "_id")
+    return {}

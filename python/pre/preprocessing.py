@@ -1,4 +1,4 @@
-from dbUtil.mongodb_api import mongodb_connect, find_all_objec_id
+from dbUtil.mongodb_api import mongodb_connect, find_all_attr
 from dbUtil.mysql_api import mysql_connect, update_random_menu_id
 from pydantic_settings import BaseSettings
 import random
@@ -24,7 +24,7 @@ mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD,
 
 def change_menu_id():
     _id_list = list()
-    _id_list = find_all_objec_id("menu")
+    _id_list = find_all_attr("menu", "_id")
     for i in range(1, 48001):
         _id = random.choice(_id_list)
         update_random_menu_id("diet-menu", i, _id)

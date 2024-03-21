@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 """
 
 
-def menu_pre(menu_obj: dict):
+def menu_pre(menu_obj):
     if "_id" not in menu_obj.keys():
         return menu_obj
     menu_obj["menu_id"] = str(ObjectId(menu_obj["_id"]))

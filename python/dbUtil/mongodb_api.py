@@ -8,6 +8,7 @@ client = None
 collection_name_list = []
 last_uri = None
 
+
 def mongodb_connect(uri):
     global client
     global collection_name_list
@@ -24,7 +25,8 @@ def mongodb_connect(uri):
     except Exception as e:
         print(e)
 
-def validation_check(collection_name : None):
+
+def validation_check(collection_name: None):
     global client
     global collection_name_list
     global last_uri
@@ -42,10 +44,10 @@ def validation_check(collection_name : None):
         return False
     return True
 
+
 def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     result = dict()
-    print(query)
-    print(project)
+    # print('''query : {}, project {}'''.format(query, project))
     global client
     if is_multiple:
         result = list()
@@ -64,27 +66,42 @@ def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
             ret.append(menu_pre(res))
 
     else:
-        ret = menu_pre(result)
+        ret = menu_pre(result.next())
     return ret
 
 
-def find_by_object_id(collection_name, _id : str):
-    query = { "_id": ObjectId(_id)}
+def find_by_object_id(collection_name, _id: str):
+    query = {"_id": ObjectId(_id)}
     project = None
     result = _execute(collection_name, query, project, is_multiple=False)
     return result
 
+def find_all_data(collection_name):
+    query = {}
+    project = None
+    result = _execute(collection_name, query, project, is_multiple=True)
+    return result
 
 def find_all_attr(collection_name, attr_name):
     result = list()
     query = {}
     project = {
-        attr_name : 1
+        attr_name: 1
     }
     return _execute(collection_name, query, project, is_multiple=True)
 
+def find_attr_by_id(collection_name, attr_name, id):
+    query = {
+        "_id": ObjectId(id)
+    }
+    project = {
+        attr_name : 1
+    }
+    return _execute(collection_name, query, project, is_multiple=False)
 
+def find_typs(collection_name):
+    global client
+    global DATABASE_NAME
+    client[DATABASE_NAME][collection_name].delete_many({"$expr": {"$eq": ["$MEAL_NM", "$COOK_MTH_CONT"]}})
 
-
-
-
+    # print(client[DATABASE_NAME][collection_name].distinct("MEAL_CLSF_NM"))
