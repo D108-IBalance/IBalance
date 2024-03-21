@@ -16,5 +16,5 @@ public class DietByDateResponse {
     private LocalDate dietDate;
 
     private Integer sequence;
-    private List<DietMenuResponse> dietMenuList;
+    private List<DietMenuResponse> menuList;
 }
