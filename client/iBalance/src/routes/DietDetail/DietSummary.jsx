@@ -77,46 +77,51 @@ const DietSummary = () => {
       <NavbarModule isClick={2}></NavbarModule>
 
       <div className={classes.container}>
-        <div className={classes.titleBox}>
-          <div
-            className={classes.backIcon}
-            onClick={() => {
-              navigate("/diet");
-            }}></div>
-          <div className={classes.titleTextBox}>
-            <div className={classes.titleIcon}></div>
-            <div className={classes.titleText}>2024.03.04 (월)</div>
+        <div className={classes.leftBox}>
+          <div className={classes.titleBox}>
+            <div
+              className={classes.backIcon}
+              onClick={() => {
+                navigate("/diet");
+              }}></div>
+            <div className={classes.titleTextBox}>
+              <div className={classes.titleIcon}></div>
+              <div className={classes.titleText}>2024.03.04 (월)</div>
+            </div>
+            <div className={classes.tempIcon}></div>
           </div>
-          <div className={classes.tempIcon}></div>
-        </div>
-        <div className={classes.contentBox}>
-          {dietList.map((menu, idx) => {
-            return (
-              <div
-                key={idx}
-                className={classes.card}
-                style={{ zIndex: idx }}
-                onClick={() => {
-                  setIsOpen(true);
-                  navigate(`/detail/menu`);
-                }}>
-                <img src={menu.img} className={classes.cardImg}></img>
-                <div className={classes.cardContent}>
-                  <p className={classes.menuName}>{menu.name}</p>
-                  <p className={classes.menuKcal}>{menu.kcal}</p>
-                  <p className={classes.menuIngre}>
-                    {menu.ingredient.map((food, idx) => {
-                      return idx === menu.ingredient.length - 1
-                        ? `${food}`
-                        : `${food}, `;
-                    })}
-                  </p>
+          <div className={classes.contentBox}>
+            {dietList.map((menu, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className={classes.card}
+                  style={{ zIndex: idx }}
+                  onClick={() => {
+                    setIsOpen(true);
+                    navigate(`/detail/menu`);
+                  }}>
+                  <div className={classes.leftCard}>
+                    <img src={menu.img} className={classes.cardImg}></img>
+                    <div className={classes.cardContent}>
+                      <p className={classes.menuName}>{menu.name}</p>
+                      <p className={classes.menuKcal}>{menu.kcal}</p>
+                      <p className={classes.menuIngre}>
+                        {menu.ingredient.map((food, idx) => {
+                          return idx === menu.ingredient.length - 1
+                            ? `${food}`
+                            : `${food}, `;
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={classes.resetIcon}></div>
                 </div>
-                <div className={classes.resetIcon}></div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
+
         <Outlet context={{ isOpen, setIsOpen }}></Outlet>
       </div>
     </div>

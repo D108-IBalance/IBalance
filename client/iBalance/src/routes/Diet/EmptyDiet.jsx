@@ -5,8 +5,8 @@ import { useState } from "react";
 import classes from "./EmptyDiet.module.css";
 
 const EmptyDiet = (props) => {
-  let { setEmptyDiet } = props;
-  let [isModal, setIsmodal] = useState(false);
+  const { setIsEmptyDiet } = props;
+  const [isModal, setIsModal] = useState(false);
   return (
     <>
       <div className={classes.emptyBox}>
@@ -14,28 +14,28 @@ const EmptyDiet = (props) => {
         <div
           className={classes.emptyBtn}
           onClick={() => {
-            setIsmodal(true);
+            setIsModal(true);
           }}>
           식단 받기
         </div>
       </div>
-      {isModal === true ? (
+      {isModal && (
         <EmptyModal
-          setIsmodal={setIsmodal}
-          setEmptyDiet={setEmptyDiet}></EmptyModal>
-      ) : null}
+          setIsModal={setIsModal}
+          setIsEmptyDiet={setIsEmptyDiet}></EmptyModal>
+      )}
     </>
   );
 };
 
 const EmptyModal = (props) => {
-  let { setEmptyDiet } = props;
-  let { setIsmodal } = props;
+  const { setIsEmptyDiet } = props;
+  const { setIsModal } = props;
   return (
     <div
       className={classes.emptyModalBack}
       onClick={(e) => {
-        e.target === e.currentTarget ? setIsmodal(false) : null;
+        e.target === e.currentTarget ? setIsModal(false) : null;
       }}>
       <div className={classes.emptyModal}>
         <div className={classes.emptyModalImg}></div>
@@ -52,14 +52,14 @@ const EmptyModal = (props) => {
           <div
             className={classes.cancleBtn}
             onClick={() => {
-              setIsmodal(false);
+              setIsModal(false);
             }}>
             취소
           </div>
           <div
             className={classes.confirmBtn}
             onClick={() => {
-              setEmptyDiet(false);
+              setIsEmptyDiet(false);
             }}>
             확인
           </div>
