@@ -44,14 +44,12 @@ public class ChildApiTest extends ApiTest {
     private ChildRepository childRepository;
 
     @BeforeEach
-    void settings(){
+    void settings() {
         allergyTestUtil.알러지정보_저장();
     }
 
-
     @Test
     void 아이_정보_등록_성공_200() throws Exception {
-
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         MvcResult mvcResult = mockMvc.perform(
@@ -105,7 +103,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_등록_토큰없음_401() throws Exception{
+    void 아이_정보_등록_토큰없음_401() throws Exception {
         mockMvc.perform(
                         post("/child")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +117,6 @@ public class ChildApiTest extends ApiTest {
 
     @Test
     void 아이_정보_가져오기_비어있음_200() throws Exception {
-
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         mockMvc.perform(
@@ -131,7 +128,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_가져오기_1명_200() throws Exception{
+    void 아이_정보_가져오기_1명_200() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
@@ -193,7 +190,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_삭제_잘못된아이디_400() throws Exception{
+    void 아이_정보_삭제_잘못된아이디_400() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = -1;
 
@@ -208,7 +205,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_삭제_토큰없음_401() throws Exception{
+    void 아이_정보_삭제_토큰없음_401() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
@@ -221,7 +218,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_삭제_권한없음_403() throws Exception{
+    void 아이_정보_삭제_권한없음_403() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
@@ -238,7 +235,7 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 아이_정보_삭제_없는아이_404() throws Exception{
+    void 아이_정보_삭제_없는아이_404() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = 9999999;
 

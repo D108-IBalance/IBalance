@@ -24,7 +24,7 @@ public class MemberController {
     /**
      * 실제 회원 소셜 로그인
      *
-     * @param code Oauth에서 보내주는 인가 코드
+     * @param request Oauth에서 보내주는 인가 코드와 redirect_url
      * @param provider Oauth Provider (kakao, google, naver)
      * @param response 쿠키 저장을 위한 response
      * @return 로그인 한 회원 JWT token 정보
@@ -48,7 +48,7 @@ public class MemberController {
     @GetMapping("/login/{provider}")
     public JwtTokenResponse testLogin(@RequestParam String code,
                                       @RequestParam(required = false) String redirectUri,
-                                      @PathVariable String provider, HttpServletResponse response){
+                                      @PathVariable String provider, HttpServletResponse response) {
 
         Member memberInfo = memberService.getMemberInfo(provider, code, redirectUri);
 
@@ -66,4 +66,3 @@ public class MemberController {
         jwtTokenProvider.removeRefreshTokenForClient(response);
     }
 }
-

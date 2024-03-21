@@ -29,15 +29,15 @@ public class KakaoOAuth2Utils {
     private String kakaoTokenUrl;
 
     public KakaoMemberInfoResponse getUserInfo(String code, String redirect) {
-        log.info("getKakaoInfo 호출 : {}", code);
+        log.debug("getKakaoInfo 호출 : {}", code);
 
-        if(redirect == null){
+        if(redirect == null) {
             redirect = redirectUri;
         }
 
         String kakaoAccessToken = getKakaoToken(code, redirect);
 
-        log.info("유저 정보 가져오기 : {}", kakaoAccessToken);
+        log.debug("유저 정보 가져오기 : {}", kakaoAccessToken);
 
         WebClient webClient = WebClient.builder()
                 .baseUrl(kakaoInfoUrl)
@@ -52,7 +52,7 @@ public class KakaoOAuth2Utils {
     }
 
     public String getKakaoToken(String code, String redirect) throws KakaoTokenIsNullException {
-        log.info("getKakaoToken 호출 : {}", code);
+        log.debug("getKakaoToken 호출 : {}", code);
 
         WebClient webClient = WebClient.builder()
                 .baseUrl(kakaoTokenUrl)
@@ -71,12 +71,12 @@ public class KakaoOAuth2Utils {
                 .bodyToMono(KakaoTokenResponse.class)
                 .block();
 
-        log.info("kakaoTokenResponseDto : {}", kakaoTokenResponse);
+        log.debug("kakaoTokenResponseDto : {}", kakaoTokenResponse);
 
-        if(kakaoTokenResponse != null) {
-            return kakaoTokenResponse.getAccessToken();
+        if(kakaoTokenResponse == null) {
+            throw new KakaoTokenIsNullException("kakao accessToken이 없습니다.");
         }
 
-        throw new KakaoTokenIsNullException("kakao accessToken이 없습니다.");
+        return kakaoTokenResponse.getAccessToken();
     }
 }

@@ -81,7 +81,7 @@ public class DietService {
         return menuDetailDtoList;
     }
 
-    private List<InitDietResponse> getInitRecommendByChildId(Integer childId, List<Integer> allergyList, List<Integer>pastMenu) {
+    private List<InitDietResponse> getInitRecommendByChildId(Integer childId, List<Integer> allergyList, List<Integer> pastMenu) {
         // TODO : FastAPI에서 자녀 정보를 기준으로 일주일치 초기 추천 식단 받기
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
         for(int i = 1; i <= 7; i++) {

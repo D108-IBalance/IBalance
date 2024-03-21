@@ -53,7 +53,7 @@ public class TestApiTest extends ApiTest {
     }
 
     @Test
-    void QueryDSL_Test() throws Exception{
+    void QueryDSL_Test() throws Exception {
         String dongwooAddr = "Daegu Dalseo Bolli";
         test_entity_save("dongwoo", dongwooAddr);
         test_entity_save("whalesbob", "Daegu Bukgu Sangyeok");
@@ -90,7 +90,7 @@ public class TestApiTest extends ApiTest {
     }
 
     @Test
-    void exception_test() throws Exception{
+    void exception_test() throws Exception {
         mockMvc
                 .perform(
                 get("/test/exceptional")
@@ -105,8 +105,7 @@ public class TestApiTest extends ApiTest {
     }
 
     @Test
-    void login_test_200() throws Exception{
-
+    void login_test_200() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         mockMvc.perform(
@@ -122,7 +121,7 @@ public class TestApiTest extends ApiTest {
     }
 
     @Test
-    void login_test_401() throws Exception{
+    void login_test_401() throws Exception {
         mockMvc.perform(
                         get("/test/login")
                 )

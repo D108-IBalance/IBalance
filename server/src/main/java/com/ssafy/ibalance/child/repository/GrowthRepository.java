@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface GrowthRepository extends JpaRepository<Growth, Long> {
+
     Optional<Growth> findTopByChildIdOrderByCreatedTimeDesc(Integer childId);
     Page<Growth> findByChildIdOrderByIdDesc(Integer childId, Pageable pageable);
 }
-

@@ -30,11 +30,11 @@ public class MemberTestUtil extends TestBase {
         return 회원가입(mockMvc, oneCode);
     }
 
-    public String 회원가입_다른유저_토큰반환(MockMvc mockMvc) throws Exception{
+    public String 회원가입_다른유저_토큰반환(MockMvc mockMvc) throws Exception {
         return 회원가입(mockMvc, otherCode);
     }
 
-    private String 회원가입(MockMvc mockMvc, String code) throws Exception{
+    private String 회원가입(MockMvc mockMvc, String code) throws Exception {
         memberRepository.save(Member.builder()
                 .code(code)
                 .provider(OAuthProvider.GOOGLE)
@@ -49,7 +49,7 @@ public class MemberTestUtil extends TestBase {
         return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
     }
 
-    public static GoogleMemberInfoResponse mockOAuthInfo(String code){
+    public static GoogleMemberInfoResponse mockOAuthInfo(String code) {
         GoogleMemberInfoResponse response = new GoogleMemberInfoResponse();
         response.setSub(code);
         return response;

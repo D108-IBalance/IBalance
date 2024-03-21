@@ -18,5 +18,4 @@ public class Material {
 
     @Column(length = 100, nullable = false)
     private String materialName;
-
 }

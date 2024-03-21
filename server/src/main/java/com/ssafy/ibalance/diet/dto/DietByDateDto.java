@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 public class DietByDateDto {
+
     private Diet diet;
     private List<DietMenu> dietMenuList;
 }

@@ -32,8 +32,7 @@ public class GoogleOAuth2Utils {
     private String clientSecret;
 
     public GoogleMemberInfoResponse getUserInfo(String code, String redirect) {
-
-        if(redirect == null){
+        if(redirect == null) {
             redirect = redirectUri;
         }
 
@@ -50,7 +49,7 @@ public class GoogleOAuth2Utils {
                 .block();
     }
 
-    private String getAccessToken(String code, String redirectUri){
+    private String getAccessToken(String code, String redirectUri) {
         GoogleTokenResponse accessTokenAnswer = WebClient.create()
                 .post()
                 .uri(tokenUri)
@@ -60,7 +59,7 @@ public class GoogleOAuth2Utils {
                 .bodyToMono(GoogleTokenResponse.class)
                 .block();
 
-        if(accessTokenAnswer != null){
+        if(accessTokenAnswer != null) {
             return accessTokenAnswer.accessToken();
         }
 
@@ -68,7 +67,7 @@ public class GoogleOAuth2Utils {
     }
 
 
-    private MultiValueMap<String, String> makeGoogleTokenRequest(String code, String redirectUri){
+    private MultiValueMap<String, String> makeGoogleTokenRequest(String code, String redirectUri) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", clientId);
