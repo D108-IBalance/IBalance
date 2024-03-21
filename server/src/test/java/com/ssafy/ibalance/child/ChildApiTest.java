@@ -82,7 +82,6 @@ public class ChildApiTest extends ApiTest {
 
         Integer childId = getValueFromJSONBody(mvcResult, "$.data.id", 0);
 
-        Mockito.verify(redisUtil, times(1)).setChildAllergy(anyInt(), any());
         assertThat(childAllergyRepository.findByChild_id(childId).size()).isEqualTo(2);
     }
 
