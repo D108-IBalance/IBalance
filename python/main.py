@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from recommend import getRecomm
 from pydantic_settings import BaseSettings
-from dbUtil.mongodb_api import mongodb_connect
+from dbUtil.mongodb_api import mongodb_connect, find_all_attr
 from dbUtil.mysql_api import mysql_connect
 from request.request_dto import ChildInfo
+
 
 """
 @Author : 김회창
@@ -42,3 +43,6 @@ def init_recommend(request: ChildInfo):
     """
     return getRecomm((int(request.childId)),0)
 
+@app.get("/recomm/test")
+def test():
+    return find_all_attr("menu", "_id")

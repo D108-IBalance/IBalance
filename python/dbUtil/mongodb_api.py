@@ -1,6 +1,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
+from pre.data_preprocess import menu_pre
 
 DATABASE_NAME = "ibalance"
 client = None
@@ -41,28 +42,48 @@ def validation_check(collection_name : None):
         return False
     return True
 
-def find_by_object_id(collection_name, _id : str):
+def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     result = dict()
+    print(query)
+    print(project)
+    global client
+    if is_multiple:
+        result = list()
     if not validation_check(collection_name):
         return result
+
     collection = client[DATABASE_NAME][collection_name]
-    cursor = collection.find({"_id" : ObjectId(_id)})
-    for document in cursor:
-        _id = str(ObjectId(document["_id"]))
-        del document["_id"]
-        document["menu_id"] = _id
-        result = document
+    if project is None:
+        result = collection.find(query)
+    else:
+        result = collection.find(query, project)
+
+    ret = []
+    if is_multiple:
+        for res in result:
+            ret.append(menu_pre(res))
+
+    else:
+        ret = menu_pre(result)
+    return ret
+
+
+def find_by_object_id(collection_name, _id : str):
+    query = { "_id": ObjectId(_id)}
+    project = None
+    result = _execute(collection_name, query, project, is_multiple=False)
     return result
 
-def find_all_objec_id(collection_name):
+
+def find_all_attr(collection_name, attr_name):
     result = list()
-    if not validation_check(collection_name):
-        return result
-    collection = client[DATABASE_NAME][collection_name]
-    cursor = collection.find({}, {"_id" : 1})
-    for document in cursor:
-        result.append(str(ObjectId(document["_id"])))
-    return result
+    query = {}
+    project = {
+        attr_name : 1
+    }
+    return _execute(collection_name, query, project, is_multiple=True)
+
+
 
 
 
