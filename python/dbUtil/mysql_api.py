@@ -5,15 +5,17 @@ last_host = None
 last_user = None
 last_password = None
 last_database = None
+last_port = None
 
 
-def mysql_connect(host, user, password, database):
+def mysql_connect(host, user, password, database, port):
     global mysql_client
     mysql_client = mysql.connector.connect(
         host=host,
         user=user,
         password=password,
-        database=database
+        database=database,
+        port=port
     )
     if mysql_client.is_connected():
         print("mysql connected!!!")
@@ -21,10 +23,10 @@ def mysql_connect(host, user, password, database):
 
 def mysql_validation_check():
     global mysql_client
-    global last_host, last_user, last_password, last_database
+    global last_host, last_user, last_password, last_database, last_port
     if mysql_client is None or not mysql_client.is_connected():
         print("mysql_client is empty, mysql reconnect...")
-        mysql_connect(last_host, last_user, last_password, last_database)
+        mysql_connect(last_host, last_user, last_password, last_database, last_port)
     return mysql_client.cursor()
 
 

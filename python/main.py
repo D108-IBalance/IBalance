@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     MYSQL_USER: str # MySQL 접속 유저 명
     MYSQL_PASSWORD: str # MySQL 패스워드
     MYSQL_DATABASE: str # MySQL 접속 대상 스키마
-
+    MYSQL_PORT: str # MYSQL 접속 포트
 
 
 
@@ -30,7 +30,7 @@ app = FastAPI() # Fast API 앱 객체 생성
 uri = f'{settings.MONGO_HOST}'
 
 mongodb_connect(uri) # 몽고DB 연결
-mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE) # MySQL 연결
+mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE, settings.MYSQL_PORT) # MySQL 연결
 
 
 """
