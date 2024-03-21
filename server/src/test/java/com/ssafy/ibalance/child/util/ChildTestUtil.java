@@ -3,7 +3,7 @@ package com.ssafy.ibalance.child.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.ApiTest;
 import com.ssafy.ibalance.child.ChildSteps;
-import com.ssafy.ibalance.common.TestUtil;
+import com.ssafy.ibalance.common.TestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Component
-public class ChildTestUtil extends TestUtil {
+public class ChildTestUtil extends TestBase {
 
     @Autowired
     private ChildSteps childSteps;

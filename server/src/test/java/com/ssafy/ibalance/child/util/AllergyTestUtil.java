@@ -2,7 +2,7 @@ package com.ssafy.ibalance.child.util;
 
 import com.ssafy.ibalance.child.entity.Allergy;
 import com.ssafy.ibalance.child.repository.AllergyRepository;
-import com.ssafy.ibalance.common.TestUtil;
+import com.ssafy.ibalance.common.TestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Component
-public class AllergyTestUtil extends TestUtil {
+public class AllergyTestUtil extends TestBase {
 
     private static final List<String> allergyNameList = List.of("대두", "땅콩", "호두", "잣", "아황산류",
             "복숭아", "토마토", "난류", "우유", "새우", "고등어", "오징어", "게", "조개류", "돼지고기", "쇠고기"
