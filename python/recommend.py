@@ -235,6 +235,7 @@ def _diet_converter(diet):
             new_menu_obj["type"] = "반찬"
         new_menu_obj["img_url"] = menu["MEAL_PICTR_FILE_NM"]
         new_menu_obj["menu_id"] = menu["menu_id"]
+        new_menu_obj["menu_name"] = menu["MEAL_NM"]
         new_diet.append(new_menu_obj)
     return new_diet
 
