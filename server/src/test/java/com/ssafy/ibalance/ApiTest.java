@@ -3,7 +3,6 @@ package com.ssafy.ibalance;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.common.MemberTestUtil;
 import com.ssafy.ibalance.common.TestBase;
-import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.member.util.GoogleOAuth2Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
@@ -36,9 +35,6 @@ public class ApiTest extends TestBase {
     @MockBean
     private GoogleOAuth2Utils googleOAuth2Utils;
 
-    @MockBean
-    protected RedisUtil redisUtil;
-
     public static final String AUTH_HEADER = "Authorization";
 
     protected static final String DEFAULT_RESTDOC_PATH = "{class_name}/{method_name}";
@@ -55,8 +51,6 @@ public class ApiTest extends TestBase {
 
         Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.otherCode, MemberTestUtil.redirectUri))
                 .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.otherCode));
-
-        Mockito.doNothing().when(redisUtil).setChildAllergy(Mockito.anyInt(), Mockito.any());
     }
 
     protected void print(MvcResult result) throws UnsupportedEncodingException {
