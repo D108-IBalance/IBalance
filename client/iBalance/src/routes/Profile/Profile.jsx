@@ -4,28 +4,31 @@
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./Profile.module.css";
 import { getProfile, deleteProfile } from "./ServerConnect.js";
 import settingImg from "../../assets/profile/Img/setting.svg";
 import warningImg from "../../assets/profile/Img/warning.svg";
+import { setChildId } from "../../store.js";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const TOKEN = useSelector((state) => {
-    return state.token;
-  });
+  const dispatch = useDispatch();
   const [profileList, setProfileList] = useState([]);
   const [isSetting, setIsSetting] = useState(false);
   const [deleteIdx, setDeleteIdx] = useState(-1);
+
+  const goToHome = (idx) => {
+    dispatch(setChildId(profileList[idx].childId));
+    navigate("/home");
+  };
   useEffect(() => {
     const getProfileList = async () => {
       try {
-        console.log(TOKEN);
-        let value = await getProfile(TOKEN);
-        console.log(value);
+        let value = await getProfile();
+        setProfileList(value.data.data);
       } catch (err) {
         console.log(err);
       }
@@ -40,7 +43,7 @@ const Profile = () => {
     }
     const { childId } = profileList[deleteIdx];
     const value = await deleteProfile(childId);
-    if (value.status === "200") {
+    if (value.status == "200") {
       setProfileList(profileList.filter((_, idx) => idx !== deleteIdx));
       setDeleteIdx(-1);
     } else {
@@ -60,7 +63,7 @@ const Profile = () => {
       <article className={classes.profileWrap}>
         <div className={classes.logo} />
         <Container
-          className={`${classes.profileForm} ${profileList >= 4 ? classes.formStart : classes.formCenter}`}>
+          className={`${classes.profileForm} ${profileList.length >= 3 ? classes.formStart : classes.formCenter}`}>
           {profileList.map((profile, idx) => {
             return (
               <div
@@ -68,6 +71,7 @@ const Profile = () => {
                 className={classes.profile}
                 onClick={() => {
                   isSetting && setDeleteIdx(idx);
+                  !isSetting && goToHome(idx);
                 }}>
                 {isSetting ? (
                   <div className={classes.deleteBox}>

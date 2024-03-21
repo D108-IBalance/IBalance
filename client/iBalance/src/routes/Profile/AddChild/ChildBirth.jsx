@@ -25,7 +25,11 @@ const ChildBirth = (props) => {
   };
   let setBirth = () => {
     let data = Object.assign({}, profileData);
-    data.birthDate = year + "-" + month + "-" + day;
+    let tempMonth = "" + month;
+    let tempDay = "" + day;
+    if (tempMonth.length < 2) tempMonth = "0" + tempMonth;
+    if (tempDay.length < 2) tempDay = "0" + tempDay;
+    data.birthDate = year + "-" + tempMonth + "-" + tempDay;
     setProfileData(data);
   };
   useEffect(() => {

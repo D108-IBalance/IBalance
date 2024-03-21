@@ -1,7 +1,10 @@
 import classes from "./ProfileView.module.css";
 import profileImgfile from "../../assets/auth/img/default_profile1.png";
 
-const ProfileView = () => {
+const ProfileView = (props) => {
+  const { userProfile } = props;
+  let calcBmi = (userProfile.weight / Math.pow(userProfile.height, 2)) * 10000;
+  const BMI = calcBmi.toString().slice(0, 5);
   return (
     <div className={classes.profileBox}>
       <div className={classes.headerBox}>
@@ -15,25 +18,23 @@ const ProfileView = () => {
         </div>
         <div className={classes.profileContent}>
           <p className={classes.profileName}>
-            박서준<span>(만 11세)</span>
+            {userProfile.name}
+            <span>(만 11세)</span>
           </p>
           <div className={classes.growthBack}>
             <div className={classes.growthLine}></div>
             <div className={classes.profiletextBox}>
               <div>
                 <p className={classes.profiletext}>신장</p>
-                <p className={classes.profiledata}>135cm</p>
-                <div className={classes.normal}></div>
+                <p className={classes.profiledata}>{userProfile.height}cm</p>
               </div>
               <div>
                 <p className={classes.profiletext}>몸무게</p>
-                <p className={classes.profiledata}>30kg</p>
-                <div className={classes.normal}></div>
+                <p className={classes.profiledata}>{userProfile.weight}kg</p>
               </div>
               <div>
                 <p className={classes.profiletext}>BMI</p>
-                <p className={classes.profiledata}>20.71</p>
-                <div className={classes.normal}></div>
+                <p className={classes.profiledata}>{BMI}</p>
               </div>
             </div>
           </div>

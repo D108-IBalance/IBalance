@@ -6,8 +6,12 @@ import classes from "./ChildAllergy.module.css";
 import allergy from "./allergy.js";
 import { useNavigate } from "react-router-dom";
 import { addProfile } from "../ServerConnect.js";
+import { useSelector } from "react-redux";
 
 const ChildAllergy = (props) => {
+  const TOKEN = useSelector((state) => {
+    return state.token;
+  });
   let { setProfileData, profileData } = props;
   let [animation, setAnimation] = useState("fadeIn");
   let [current, setCurrent] = useState(0);
@@ -34,8 +38,12 @@ const ChildAllergy = (props) => {
     let temp = Object.assign({}, profileData);
     temp.haveAllergies = select;
     setProfileData(temp);
-    await addProfile(temp);
-    setCurrent(1);
+    try {
+      await addProfile(temp, TOKEN);
+      setCurrent(1);
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     let timer = null;

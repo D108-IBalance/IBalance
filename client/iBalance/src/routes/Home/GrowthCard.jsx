@@ -28,7 +28,7 @@ const GrowthCard = () => {
         // alert("에러");
       }
     };
-    getHeightChart();
+    // getHeightChart();
   }, [heightPage]);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const GrowthCard = () => {
         // alert("에러");
       }
     };
-    getWeightChart();
+    // getWeightChart();
   }, [weightPage]);
 
   let isHeightPrev = true;

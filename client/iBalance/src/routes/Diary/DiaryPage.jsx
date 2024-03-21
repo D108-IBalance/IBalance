@@ -7,15 +7,30 @@ import classes from "./DiaryPage.module.css";
 import NavbarModule from "../../modules/Navbar/NavbarModule";
 import Calendar from "./Calendar";
 import DiaryCards from "./DiaryCards";
+import DiaryWrite from "./DiaryWrite";
 import notSelectIcon from "../../assets/diary/img/notselect.svg";
+
 const DiaryPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const [pageStep, setPageStep] = useState(0);
+  const cardComponent =
+    pageStep === 0 ? (
+      <DiaryCards
+        selectedDate={selectedDate}
+        pageStep={pageStep}
+        setPageStep={setPageStep}
+      />
+    ) : (
+      <DiaryWrite selectedDate={selectedDate} />
+    );
   return (
     <>
       <div className={classes.gridSet}>
         <NavbarModule isClick={3}></NavbarModule>
         <div className={classes.diaryContentBox}>
-          <Calendar setSelectedDate={setSelectedDate}></Calendar>
+          <Calendar
+            setSelectedDate={setSelectedDate}
+            setPageStep={setPageStep}></Calendar>
           <div className={classes.next}>
             {selectedDate === "" ? (
               <div className={classes.notSelectBox}>
@@ -25,7 +40,7 @@ const DiaryPage = () => {
                 </p>
               </div>
             ) : (
-              <DiaryCards selectedDate={selectedDate} />
+              cardComponent
             )}
           </div>
         </div>

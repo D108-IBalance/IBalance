@@ -150,6 +150,7 @@
 
   .profileContentBox {
     display: flex;
+    align-items: center;
     flex-direction: row;
     width: 100%;
     padding-left: 1.5rem;
@@ -158,7 +159,6 @@
     flex: none;
     display: flex;
     justify-content: center;
-    align-items: center;
     width: 160px;
     height: 160px;
     border-radius: 12px;
@@ -187,12 +187,13 @@
   .profileContent {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 76%;
     padding-left: 3rem;
     padding-right: 2rem;
   }
   .growthBack {
-    margin-top: 20px;
+    margin-top: 30px;
   }
   .profiletextBox {
     width: 100%;
@@ -216,6 +217,28 @@
     font-size: 1.5em;
   }
   .normal {
+    background: url("../../assets/home/normal.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 25%);
+    margin-top: 5px;
+  }
+  .row {
+    background: url("../../assets/home/normal.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 25%);
+    margin-top: 5px;
+  }
+  .over {
     background: url("../../assets/home/normal.png");
     background-position: center;
     background-size: cover;

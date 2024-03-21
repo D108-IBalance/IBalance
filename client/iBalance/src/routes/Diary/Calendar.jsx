@@ -6,20 +6,6 @@ import classes from "./Calendar.module.css";
 import selectImg from "../../assets/diary/img/select.svg";
 import { useCallback, useMemo, useState } from "react";
 const Calendar = (props) => {
-  // const MONTHS = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  //   "August",
-  //   "September",
-  //   "October",
-  //   "November",
-  //   "December",
-  // ];
   const MONTHS = [
     "1월",
     "2월",
@@ -34,7 +20,7 @@ const Calendar = (props) => {
     "11월",
     "12월",
   ];
-  const { setSelectedDate } = props;
+  const { setSelectedDate, setPageStep } = props;
   const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
 
@@ -60,6 +46,11 @@ const Calendar = (props) => {
       return;
     }
     setMonth(month + 1);
+  };
+
+  const onClickDay = (dateInfo) => {
+    setSelectedDate(dateInfo);
+    setPageStep(0);
   };
 
   const createPrevMonthDays = useCallback(
@@ -142,7 +133,7 @@ const Calendar = (props) => {
                         key={id}
                         className={classes[day["style"]]}
                         onClick={() => {
-                          setSelectedDate(
+                          onClickDay(
                             `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
                           );
                         }}>

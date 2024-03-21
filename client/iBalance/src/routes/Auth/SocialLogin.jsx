@@ -2,11 +2,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import secureLocalStorage from "react-secure-storage";
 
 // 내부 모듈
 import Loading from "../../modules/Load/Load.jsx";
 import { getToken } from "./ServerConnect.js";
-import { setToken } from "../../store.js";
 
 const SocialLogin = () => {
   // redierct URL 파싱
@@ -20,10 +20,8 @@ const SocialLogin = () => {
     let login = async () => {
       try {
         const value = await getToken(code, provider);
-        console.log(value.data);
         const accessToken = value.data.data.accessToken;
-        dispatch(setToken(accessToken));
-        console.log("accessToken:", accessToken);
+        secureLocalStorage.setItem("token", accessToken);
         navigate("/enter/profile");
       } catch (err) {
         console.log("Login error:", err);
