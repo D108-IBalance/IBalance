@@ -1,109 +1,35 @@
-import csv
+from dbUtil.mongodb_api import mongodb_connect, find_all_objec_id
+from dbUtil.mysql_api import mysql_connect, update_random_menu_id
 from pydantic_settings import BaseSettings
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+import random
 
 NAME_LIST = ["menu"]
-settings = None
-uri = None
-client = None
-db = None
+
 
 class Settings(BaseSettings):
-    MONGO_HOST: str
-    DATABASE_NAME : str
-
-def make_dict(keys):
-    d = dict()
-    for key in keys:
-        d.setdefault(key, None)
-    return d
+    MONGO_HOST: str  # 몽고DB 호스트 주소
+    MYSQL_HOST: str  # MySQL 호스트 주소
+    MYSQL_USER: str  # MySQL 접속 유저 명
+    MYSQL_PASSWORD: str  # MySQL 패스워드
+    MYSQL_DATABASE: str  # MySQL 접속 대상 스키마
 
 
-def get_environment_variables():
-    global settings
-    settings = Settings()
-    print("반갑습니다.")
-    print(settings)
+settings = Settings()  # 클래스 객체 생성
 
-def make_csv_path(collection):
-    return f'{collection}.csv'
+uri = f'{settings.MONGO_HOST}'
+
+mongodb_connect(uri)  # 몽고DB 연결
+mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE)  # MySQL 연결
 
 
-def connect_to_mongo():
-    global client
-    global uri
-    global settings
-    print(settings)
-    settings = Settings()
-
-    uri = f'{settings.MONGO_HOST}'
-    client = MongoClient(uri, server_api=ServerApi('1'))
-    try:
-        client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        print(e)
+def change_menu_id():
+    _id_list = list()
+    _id_list = find_all_objec_id("menu")
+    for i in range(1, 48001):
+        _id = random.choice(_id_list)
+        update_random_menu_id("diet-menu", i, _id)
+    pass
 
 
-def _init():
-    global uri
-    global settings
-    uri = None
-    settings = None
-
-
-def insert_data(data_list, collection):
-    collection.insert_many(data_list)
-
-
-def read_csv(path):
-    f = open(path, 'r', encoding='utf-8')
-    is_subject = True
-    lines = csv.reader(f)
-    keys = []
-    result = []
-    for line in lines:
-        if is_subject:
-            for title in line:
-                keys.append(title)
-            is_subject = not is_subject
-        prepare_data = make_dict(keys)
-        for idx in range(0, len(keys)):
-            prepare_data[keys[idx]] = line[idx]
-        result.append(prepare_data)
-    return result
-
-def db_init():
-    global client
-    global db
-    target = settings.DATABASE_NAME
-    present_db_names = client.list_database_names()
-    for present_db_name in present_db_names:
-        if present_db_name == target:
-            present_db_name.drop()
-            break;
-    db = client[settings.DATABASE_NAME]
-
-def collection_init(collection):
-    db = client[settings.DATABASE_NAME]
-    present_db_collections = db.list_collection_names()
-    for db_collection in present_db_collections:
-        if db_collection == collection:
-            db.drop_collection(db_collection)
-            break
-
-    present_cols = db[collection]
-    return present_cols
-
-
-if __name__ == "__main__":
-    _init()
-    get_environment_variables()
-    connect_to_mongo()
-    # db_init() database 자체를 초기화 하는 마법 !
-    for NAME in NAME_LIST:
-        col = collection_init(NAME)
-        csv_name = make_csv_path(NAME)
-        _data = read_csv(csv_name)
-        insert_data(_data, col)
+if __name__ == '__main__':
+    change_menu_id()

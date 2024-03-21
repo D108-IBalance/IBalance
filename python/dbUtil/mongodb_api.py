@@ -54,5 +54,16 @@ def find_by_object_id(collection_name, _id : str):
         result = document
     return result
 
+def find_all_objec_id(collection_name):
+    result = list()
+    if not validation_check(collection_name):
+        return result
+    collection = client[DATABASE_NAME][collection_name]
+    cursor = collection.find({}, {"_id" : 1})
+    for document in cursor:
+        result.append(str(ObjectId(document["_id"])))
+    return result
+
+
 
 

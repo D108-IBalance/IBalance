@@ -34,3 +34,13 @@ def find_all(table_name):
     result = cur.fetchall()
     cur.close()
     return result
+
+def update_random_menu_id(table_name, pk, change_id):
+    mysql_validation_check()
+    global mysql_client
+    cur = mysql_client.cursor()
+    sql = '''UPDATE `{}` set menu_id="{}" where id={}'''.format(table_name, change_id, pk)
+    print(f'prepareing sql: {sql}')
+    cur.execute(sql)
+    mysql_client.commit()
+    cur.close()

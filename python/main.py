@@ -4,7 +4,6 @@ from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect
 from dbUtil.mysql_api import mysql_connect
 from request.request_dto import ChildInfo
-from response.response_dto import Diet
 
 """
 @Author : 김회창
