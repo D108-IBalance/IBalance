@@ -51,8 +51,14 @@ public class ChildService {
         return RegistChildResponse.convertEntityToDto(child);
     }
 
-    public DeleteChildResponse deleteChild(Integer childId) {
-        Child child = childRepository.findById(childId).orElseThrow(IllegalArgumentException::new);
+    public DeleteChildResponse deleteChild(Member member, Integer childId) {
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 아이를 찾을 수 없습니다."));
+
+        if(!member.equals(child.getMember())){
+            throw new ChildAccessDeniedException("해당 아이 정보에 접근할 수 있는 권한이 없습니다.");
+        }
+
         childRepository.delete(child);
         redisUtil.deleteChildAllergy(childId);
         return DeleteChildResponse.ConvertEntityToDto(child);
@@ -122,11 +128,7 @@ public class ChildService {
         Page<GrowthResponse> growthResponsePage = growthPage.map(GrowthResponse::ConvertEntityToDto);
 
         List<GrowthResponse> growthResponseList = growthResponsePage.getContent();
-
-        List<Long> monthList = new ArrayList<>();
-        for(GrowthResponse growth : growthResponseList) {
-            monthList.add(growth.getMonth());
-        }
+        List<Long> monthList = growthResponseList.stream().map(GrowthResponse::getMonth).toList();
 
         // 평균 성장 데이터 조회
         List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponseList.getFirst().getGender(), monthList)
