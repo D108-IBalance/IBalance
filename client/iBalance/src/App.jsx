@@ -18,6 +18,7 @@ import DiaryPage from "./routes/Diary/DiaryPage.jsx";
 import Profile from "./routes/Profile/Profile.jsx";
 import DietSummary from "./routes/DietDetail/DietSummary.jsx";
 import DietDetail from "./routes/DietDetail/DietDetail.jsx";
+import EditProfile from "./routes/Profile/EditProfile.jsx";
 
 const App = () => {
   const setScreenSize = () => {
@@ -45,6 +46,9 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
         </Route>
         <Route path="/profile/add" element={<AddProfile></AddProfile>}></Route>
+        <Route
+          path="/profile/edit"
+          element={<EditProfile></EditProfile>}></Route>
         {/* 홈페이지 */}
         <Route path="/home" element={<HomePage />}></Route>
         {/* 레시피페이지 */}

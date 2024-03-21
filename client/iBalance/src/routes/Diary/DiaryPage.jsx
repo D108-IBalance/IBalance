@@ -8,6 +8,7 @@ import NavbarModule from "../../modules/Navbar/NavbarModule";
 import Calendar from "./Calendar";
 import DiaryCards from "./DiaryCards";
 import DiaryWrite from "./DiaryWrite";
+import Header from "../../modules/Header/Header";
 import notSelectIcon from "../../assets/diary/img/notselect.svg";
 
 const DiaryPage = () => {
@@ -26,6 +27,8 @@ const DiaryPage = () => {
   return (
     <>
       <div className={classes.gridSet}>
+        <Header />
+
         <NavbarModule isClick={3}></NavbarModule>
         <div className={classes.diaryContentBox}>
           <Calendar
