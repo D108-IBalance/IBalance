@@ -5,6 +5,7 @@ import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.service.ChildService;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,9 +41,10 @@ public class ChildController {
     }
 
     @DeleteMapping("/{childId}")
-    public DeleteChildResponse deleteChild(@PathVariable Integer childId) {
+    public DeleteChildResponse deleteChild(@AuthenticationPrincipal Member member,
+                                           @PathVariable @Min(value = 1, message = "자녀 아이디는 1 이상이어야 합니다.") Integer childId) {
 
-        return childService.deleteChild(childId);
+        return childService.deleteChild(member, childId);
     }
 
     /**

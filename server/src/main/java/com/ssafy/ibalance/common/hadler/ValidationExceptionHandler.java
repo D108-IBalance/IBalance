@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.common.hadler;
 
 import com.ssafy.ibalance.common.type.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,5 +25,22 @@ public class ValidationExceptionHandler {
                         .status(HttpStatus.BAD_REQUEST)
                         .build())
                 .toList();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public List<ErrorResponse> constraintViolationExceptionHandler(ConstraintViolationException e){
+
+        return e.getConstraintViolations().stream().map(error -> {
+            String[] propertyPath = error.getPropertyPath().toString().split("\\.");
+            String fieldName = propertyPath[propertyPath.length-1];
+
+            return ErrorResponse.builder()
+                    .message(e.getMessage().split(": ")[1])
+                    .errorType(e.getClass().getSimpleName())
+                    .fieldName(fieldName)
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }).toList();
+
     }
 }
