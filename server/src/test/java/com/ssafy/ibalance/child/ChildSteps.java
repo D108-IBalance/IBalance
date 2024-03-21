@@ -16,7 +16,7 @@ public class ChildSteps {
     public static List<Integer> haveAllergies = List.of(1,2);
     public static List<Integer> wrongAllergies = List.of(1,20);
 
-    public RegistChildRequest 아이정보_생성(){
+    public RegistChildRequest 아이정보_생성() {
         return RegistChildRequest.builder()
                 .name(name)
                 .birthDate(birthDate)
@@ -27,7 +27,7 @@ public class ChildSteps {
                 .build();
     }
 
-    public RegistChildRequest 아이정보_잘못_생성(){
+    public RegistChildRequest 아이정보_잘못_생성() {
         return RegistChildRequest.builder()
                 .name(name)
                 .birthDate(birthDate)

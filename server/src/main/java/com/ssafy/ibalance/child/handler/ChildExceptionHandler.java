@@ -20,7 +20,7 @@ public class ChildExceptionHandler {
     }
 
     @ExceptionHandler(AllergyNotFoundException.class)
-    public List<ErrorResponse> allergyNotFoundExceptionHandler(AllergyNotFoundException e){
+    public List<ErrorResponse> allergyNotFoundExceptionHandler(AllergyNotFoundException e) {
         return makeErrorResponse(e, "allergyId");
     }
 

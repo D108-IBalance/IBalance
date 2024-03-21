@@ -16,7 +16,6 @@ public class ChildInfoResponse {
     private final String imageUrl;
     private Gender gender;
 
-
     public static ChildInfoResponse ConvertEntityToDto(Child child) {
         return builder()
                 .childId(child.getId())

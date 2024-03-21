@@ -8,6 +8,7 @@ import java.util.List;
 @Builder
 @Getter
 public class InitDietResponse {
+
     private int dietDay;
     private List<DietMenuResponse> menuList;
 }

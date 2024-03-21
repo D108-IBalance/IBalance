@@ -23,5 +23,4 @@ public class DietMaterial {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Material material;
-
 }

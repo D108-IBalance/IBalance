@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 public class DietByDateResponse {
+
     private Long dietId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

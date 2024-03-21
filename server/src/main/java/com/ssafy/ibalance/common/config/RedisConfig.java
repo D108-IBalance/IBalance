@@ -25,7 +25,7 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
 
-        if(password != null && password.isBlank()){
+        if(password != null && password.isBlank()) {
             redisStandaloneConfiguration.setPassword(password);
         }
 

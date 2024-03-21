@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface DietCustomRepository {
+
     List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member);
 
     List<DietByDateResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate);

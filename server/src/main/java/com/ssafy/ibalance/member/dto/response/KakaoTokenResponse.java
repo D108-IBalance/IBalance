@@ -9,6 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class KakaoTokenResponse {
+
     @JsonProperty("token_type")
     private String tokenType;
 

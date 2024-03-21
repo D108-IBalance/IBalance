@@ -13,10 +13,9 @@ public class NaverMemberInfoResponse implements OAuthMemberInfo {
 
     @JsonProperty("resultcode")
     private String resultCode;
-
     private String message;
-
     private NaverDetailResponse response;
+
     @Override
     public String code() {
         return response.id();

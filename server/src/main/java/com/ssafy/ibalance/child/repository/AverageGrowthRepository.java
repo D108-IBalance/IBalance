@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AverageGrowthRepository extends JpaRepository<AverageGrowth, Integer> {
+
     List<AverageGrowth> findByGenderAndGrowMonthIn(Gender gender, List<Long> month);
 }

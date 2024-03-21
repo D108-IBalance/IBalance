@@ -23,10 +23,8 @@ public class DatabaseCleanup implements InitializingBean {
 
     public List<String> tableNames;
 
-
     @Value("${spring.datasource.username}")
     private String key;
-
 
     @Override
     public void afterPropertiesSet() {

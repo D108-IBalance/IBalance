@@ -27,5 +27,4 @@ public class DietMenu {
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Diet diet;
-
 }

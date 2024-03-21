@@ -100,5 +100,4 @@ public class WebSecurityConfig {
         providerManager.setEraseCredentialsAfterAuthentication(false);
         return providerManager;
     }
-
 }

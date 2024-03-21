@@ -19,7 +19,7 @@ public class AllergyTestUtil extends TestBase {
     @Autowired
     private AllergyRepository allergyRepository;
 
-    public void 알러지정보_저장(){
+    public void 알러지정보_저장() {
         List<Allergy> allergyList = allergyNameList.stream().map(s -> Allergy.builder()
                         .allergyName(s)
                         .build())

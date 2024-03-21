@@ -16,12 +16,12 @@ import java.time.temporal.TemporalAdjusters;
 @Getter
 @Setter
 public class GrowthResponse {
+
     private Gender gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private long month;
-
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate recordDate;

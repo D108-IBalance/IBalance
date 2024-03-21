@@ -14,7 +14,7 @@ public class TestService {
 
     private final TesterRepository testerRepository;
 
-    public void saveTestEntity(TestSaveRequest request){
+    public void saveTestEntity(TestSaveRequest request) {
         TesterEntity entity = TesterEntity.builder()
                 .name(request.name())
                 .address(request.address())
@@ -24,7 +24,7 @@ public class TestService {
         System.out.println(save);
     }
 
-    public List<TesterEntity> getTestUsingAddress(String address){
+    public List<TesterEntity> getTestUsingAddress(String address) {
         return testerRepository.findAllByAddressContaining(address);
     }
 

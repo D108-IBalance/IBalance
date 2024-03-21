@@ -11,7 +11,7 @@ import static com.ssafy.ibalance.diet.entity.QDiet.diet;
 import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
 
 @RequiredArgsConstructor
-public class ChildCustomRepositoryImpl implements ChildCustomRepository{
+public class ChildCustomRepositoryImpl implements ChildCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

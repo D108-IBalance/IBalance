@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class CalendarResponse {
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dietDate;
     private boolean allReviewed;

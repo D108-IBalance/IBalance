@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class DietMenuResponse {
+
     private Integer menuId;
     private String menuName;
     private MenuType menuType;
