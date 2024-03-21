@@ -2,6 +2,7 @@ package com.ssafy.ibalance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.common.MemberTestUtil;
+import com.ssafy.ibalance.common.TestBase;
 import com.ssafy.ibalance.common.util.RedisUtil;
 import com.ssafy.ibalance.member.util.GoogleOAuth2Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class ApiTest {
+public class ApiTest extends TestBase {
 
     @Autowired
     protected MockMvc mockMvc;
@@ -49,8 +50,11 @@ public class ApiTest {
         }
         databaseCleanup.truncateAllTables();
 
-        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.code, MemberTestUtil.redirectUri))
-                .thenReturn(MemberTestUtil.mockOAuthInfo());
+        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.oneCode, MemberTestUtil.redirectUri))
+                .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.oneCode));
+
+        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.otherCode, MemberTestUtil.redirectUri))
+                .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.otherCode));
 
         Mockito.doNothing().when(redisUtil).setChildAllergy(Mockito.anyInt(), Mockito.any());
     }

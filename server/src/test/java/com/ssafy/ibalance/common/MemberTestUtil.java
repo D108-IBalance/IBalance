@@ -15,18 +15,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @Component
-public class MemberTestUtil extends TestUtil {
+public class MemberTestUtil extends TestBase {
 
     @Autowired
     private MemberRepository memberRepository;
 
-    public static String code = "3387150673";
+    public static String oneCode = "3387150673";
+    public static String otherCode = "1234567812345";
 
     @Value("${google.redirect-uri}")
     public static String redirectUri;
 
     public String 회원가입_토큰반환(MockMvc mockMvc) throws Exception {
+        return 회원가입(mockMvc, oneCode);
+    }
 
+    public String 회원가입_다른유저_토큰반환(MockMvc mockMvc) throws Exception{
+        return 회원가입(mockMvc, otherCode);
+    }
+
+    private String 회원가입(MockMvc mockMvc, String code) throws Exception{
         memberRepository.save(Member.builder()
                 .code(code)
                 .provider(OAuthProvider.GOOGLE)
@@ -41,7 +49,7 @@ public class MemberTestUtil extends TestUtil {
         return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
     }
 
-    public static GoogleMemberInfoResponse mockOAuthInfo(){
+    public static GoogleMemberInfoResponse mockOAuthInfo(String code){
         GoogleMemberInfoResponse response = new GoogleMemberInfoResponse();
         response.setSub(code);
         return response;
