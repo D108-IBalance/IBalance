@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ChildAllergyRepository extends JpaRepository<ChildAllergy, Long> {
     List<ChildAllergy> findByChild_id(Integer id);
+
+    List<ChildAllergy> findByIdIn(List<Long> id);
 }
