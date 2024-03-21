@@ -5,6 +5,8 @@ import org.springframework.restdocs.snippet.Snippet;
 
 import static com.ssafy.ibalance.common.DocumentFormatProvider.required;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
 public class ChildDocument {
 
@@ -16,6 +18,10 @@ public class ChildDocument {
             fieldWithPath("weight").type(JsonFieldType.NUMBER).attributes(required()).description("몸무게"),
             fieldWithPath("imageUrl").type(JsonFieldType.VARIES).attributes(required()).description("아이 이미지 URL"),
             fieldWithPath("haveAllergies").type(JsonFieldType.ARRAY).attributes(required()).description("알러지정보")
+    );
+
+    public static final Snippet childIdPathField = pathParameters(
+            parameterWithName("childId").attributes(required()).description("path 에 들어가는 자녀 PK 아이디")
     );
 
     public static final Snippet registerChildResponseField = responseFields(
@@ -36,5 +42,12 @@ public class ChildDocument {
             fieldWithPath("data[].name").type(JsonFieldType.STRING).description("자녀 이름"),
             fieldWithPath("data[].imageUrl").type(JsonFieldType.VARIES).description("이미지 URL"),
             fieldWithPath("data[].gender").type(JsonFieldType.STRING).description("성별")
+    );
+
+    public static final  Snippet deletedChildResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("삭제 자녀정보 기존 PK ID"),
+            fieldWithPath("data.name").type(JsonFieldType.STRING).description("삭제 자녀정보의 자녀 이름"),
+            fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("삭제한 유저의 PK ID")
     );
 }
