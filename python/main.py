@@ -40,9 +40,4 @@ mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD,
 def init_recommend(request: ChildInfo):
     return init_recommendations(request)
 
-"""
-db 테스트 컨트롤러
-"""
-@app.get("/recomm/test")
-def test():
-    return {}
+
