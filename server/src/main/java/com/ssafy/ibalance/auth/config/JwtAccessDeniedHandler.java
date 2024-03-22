@@ -34,7 +34,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     }
 
     private int getStatusInfo(JwtCode jwtCode) {
-        if (jwtCode == JwtCode.ACCESS) {
+        if(jwtCode == JwtCode.ACCESS) {
             return HttpStatus.FORBIDDEN.value();
         }
         return HttpStatus.UNAUTHORIZED.value();
