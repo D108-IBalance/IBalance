@@ -74,7 +74,7 @@ public class MemberController {
      * @return 로그인 한 회원 JWT token 정보
      */
     @PostMapping("/issue/access-token")
-    public JwtTokenResponse issueAccessToken(@CookieValue(required = false) String refreshToken) {
+    public JwtTokenResponse issueAccessToken(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
         return jwtTokenProvider.reissueAccessToken(refreshToken);
     }
 }
