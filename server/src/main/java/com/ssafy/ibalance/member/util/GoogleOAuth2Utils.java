@@ -2,10 +2,11 @@ package com.ssafy.ibalance.member.util;
 
 import com.ssafy.ibalance.member.dto.response.GoogleMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.GoogleTokenResponse;
+import com.ssafy.ibalance.member.exception.OAuthDeniedException;
+import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,7 +34,7 @@ public class GoogleOAuth2Utils {
 
     public GoogleMemberInfoResponse getUserInfo(String code, String redirect) {
 
-        if(redirect == null){
+        if(redirect == null) {
             redirect = redirectUri;
         }
 
@@ -50,7 +51,7 @@ public class GoogleOAuth2Utils {
                 .block();
     }
 
-    private String getAccessToken(String code, String redirectUri){
+    private String getAccessToken(String code, String redirectUri) {
         GoogleTokenResponse accessTokenAnswer = WebClient.create()
                 .post()
                 .uri(tokenUri)
@@ -58,17 +59,18 @@ public class GoogleOAuth2Utils {
                 .bodyValue(makeGoogleTokenRequest(code, redirectUri))
                 .retrieve()
                 .bodyToMono(GoogleTokenResponse.class)
+                .onErrorMap(e -> new OAuthDeniedException("code 또는 redirectUri 가 유효하지 않습니다."))
                 .block();
 
-        if(accessTokenAnswer != null){
+        if(accessTokenAnswer != null) {
             return accessTokenAnswer.accessToken();
         }
 
-        return null; // TODO : Custom Exception & Exception Handler 처리하기
+        throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
     }
 
 
-    private MultiValueMap<String, String> makeGoogleTokenRequest(String code, String redirectUri){
+    private MultiValueMap<String, String> makeGoogleTokenRequest(String code, String redirectUri) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", clientId);
