@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
 
-        if(password != null && password.isBlank()) {
+        if (password != null && !password.isBlank()) {
             redisStandaloneConfiguration.setPassword(password);
         }
 
