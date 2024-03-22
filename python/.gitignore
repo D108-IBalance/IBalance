@@ -1,0 +1,14 @@
+## venv
+venv
+
+## .idea
+.idea
+
+## /__pycache__
+__pycache__
+
+## json
+*.json
+
+## 지금은 쓸데없는 파일 - 나중에 필요할때 사용
+local
