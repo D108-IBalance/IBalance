@@ -9,3 +9,9 @@ __pycache__
 
 ## json
 *.json
+
+## 지금은 쓸데없는 파일 - 나중에 필요할때 사용
+./pre/apiToMongo.py
+./pre/make_random_rating.py
+./pre/preprocessing.py
+./pre/ToMongo.py

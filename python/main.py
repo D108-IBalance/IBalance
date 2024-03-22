@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from recommend import init_recommendations
 from pydantic_settings import BaseSettings
-from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_typs
+from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data
 from dbUtil.mysql_api import mysql_connect, find_all_rating
 from request.request_dto import ChildInfo
 

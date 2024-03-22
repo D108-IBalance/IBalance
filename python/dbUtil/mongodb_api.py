@@ -3,10 +3,20 @@ from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from pre.data_preprocess import menu_pre
 
-DATABASE_NAME = "ibalance"
-client = None
-collection_name_list = []
-last_uri = None
+"""
+@Author: 김회창
+"""
+
+DATABASE_NAME = "ibalance"  # 접속 할 데이터베이스 이름
+client = None   # pymongo 클라이언트 접속 객체
+collection_name_list = []   # 현재 mongodb 내 컬렌션 이름들
+last_uri = None # 마지막 접속 uri를 캐싱해놓는 전역변수
+
+
+"""
+mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기 위해 사용
+:param: uri str, 접속에 필요한 uri
+"""
 
 
 def mongodb_connect(uri):
@@ -24,6 +34,13 @@ def mongodb_connect(uri):
         print("Pinged your deployment. You successfully connected to MongoDB!")
     except Exception as e:
         print(e)
+
+
+"""
+현재 클라이언트가 살아있는지, 데이터베이스 내에 없는 컬렉션에 접근하려는건 아닌지 등을 검사하는 함수
+만약 클라이언트 접속정보가 죽었다면, 재접속 시도
+:param: collection_name str, 검사할 컬렉션 이름
+"""
 
 
 def validation_check(collection_name: None):
@@ -45,9 +62,18 @@ def validation_check(collection_name: None):
     return True
 
 
+"""
+private 함수로서 현재 파일내에서만 사용한다.
+각각의 목적에 맞는 함수로 부터 query를 받아서 실행시키기 전 validation 체크를 하고, mongodb 고유 id값을 변환시켜서 객체를 리턴
+:param: collection_name str, mongodb 의 컬렉션 이름
+:param: query dictionary, mongodb에 사용할 query
+:param: project dictionary, mongodb에서 특별하게 뽑을 컬럼이 있을시 사용하는 query
+:param: is_multipl bool, 복수개의 데이터인지 아닌지에 따라 반복문 시도 여부 결정
+"""
+
+
 def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     result = dict()
-    # print('''query : {}, project {}'''.format(query, project))
     global client
     if is_multiple:
         result = list()
@@ -69,6 +95,13 @@ def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
         ret = menu_pre(result.next())
     return ret
 
+"""
+mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 함수
+:param: collection_name str, mongodb내 쿼리를 실행시킬 collection 이름
+:param: _id str, objectId 로 변환 시킬 고유 값
+:return: dictionary, 쿼리를 실행시킨 결과 리턴
+"""
+
 
 def find_by_object_id(collection_name, _id: str):
     query = {"_id": ObjectId(_id)}
@@ -76,11 +109,28 @@ def find_by_object_id(collection_name, _id: str):
     result = _execute(collection_name, query, project, is_multiple=False)
     return result
 
+
+"""
+mongodb 내 모든 데이터 조회하는 함수
+:param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
+:return: dictionary, 쿼리를 실행시킨 결과 리턴
+"""
+
+
 def find_all_data(collection_name):
     query = {}
     project = None
     result = _execute(collection_name, query, project, is_multiple=True)
     return result
+
+
+"""
+mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
+:param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
+:attr_name: 데이터들 내 공통 속성 명
+:return: dictionary, 쿼리를 실행시킨 결과 리턴
+"""
+
 
 def find_all_attr(collection_name, attr_name):
     result = list()
@@ -90,6 +140,15 @@ def find_all_attr(collection_name, attr_name):
     }
     return _execute(collection_name, query, project, is_multiple=True)
 
+
+"""
+mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
+:param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
+:attr_name: 데이터들 내 공통 속성 명
+:return: dictionary, 쿼리를 실행시킨 결과 리턴
+"""
+
+
 def find_attr_by_id(collection_name, attr_name, id):
     query = {
         "_id": ObjectId(id)
@@ -98,10 +157,3 @@ def find_attr_by_id(collection_name, attr_name, id):
         attr_name : 1
     }
     return _execute(collection_name, query, project, is_multiple=False)
-
-def find_typs(collection_name):
-    global client
-    global DATABASE_NAME
-    client[DATABASE_NAME][collection_name].delete_many({"$expr": {"$eq": ["$MEAL_NM", "$COOK_MTH_CONT"]}})
-
-    # print(client[DATABASE_NAME][collection_name].distinct("MEAL_CLSF_NM"))

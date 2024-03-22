@@ -2,6 +2,7 @@ import pandas as pd
 from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr
 from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
+from pre.data_preprocess import diet_converter
 
 """
 @Author: 김회창
@@ -9,13 +10,13 @@ from request.request_dto import ChildInfo
 
 N_NEIGHBORS = 10  # 유저의 이웃들의 수
 N_RECOMMENDATIONS = 5  # 추천 데이터 개수
-ratings = []  # 메뉴에 대한 레이팅 데이터
 menu_objs = {}  # 모든 메뉴에 대한 정보
 user_id = ""  # 추천받을 child_id
 
-rice_ratings = []
-side_ratings = []
-soup_ratings = []
+rice_ratings = []   # 밥류 평점 모아놓은 리스트
+side_ratings = []   # 반찬류 평점 모아놓은 리스트
+soup_ratings = []   # 국류 평점 모아놓은 리스트
+
 
 """
 전역변수 초기화
@@ -52,7 +53,6 @@ def read_menu():
 
 
 def read_ratings(exclude_id_list: list, exclude_mat_list: list):
-    global ratings
     global menu_objs
     global rice_ratings
     global side_ratings
@@ -188,6 +188,12 @@ def recommend(cur_ratings, n_neighbors=10, n_recomm=5):
     return result
 
 
+"""
+하나의 식단을 추천해주는 함수
+:return: result list[dict], 하나의 식단에 밥류 1개, 반찬류 2개, 국 1개의 총 4개 메뉴 정보를 추가한 리스트 리턴
+"""
+
+
 def one_diet_recommend():
     diet = []
     global soup_ratings
@@ -215,29 +221,12 @@ def one_diet_recommend():
     return diet
 
 
-def _diet_converter(diet):
-    new_diet = list()
-    for menu in diet:
-        new_menu_obj = dict()
-        new_menu_obj["recipe"] = dict()
-        new_menu_obj["recipe"]["need"] = menu["MATRL_NM"]
-        new_menu_obj["recipe"]["content_list"] = menu["COOK_MTH_CONT"].split("<br>")
-        new_menu_obj["nutrient"] = dict()
-        new_menu_obj["nutrient"]["protein"] = menu["PROTEIN_QY"]
-        new_menu_obj["nutrient"]["fat"] = menu["FAT_QY"]
-        new_menu_obj["nutrient"]["carbohydrate"] = menu["CARBOH_QY"]
-        new_menu_obj["material"] = menu["MATRL_NM"].split(", ")
-        if menu["MEAL_CLSF_NM"] in ["밥류", "죽류"]:
-            new_menu_obj["type"] = "밥"
-        elif menu["MEAL_CLSF_NM"] in ["국,탕류"]:
-            new_menu_obj["type"] = "국"
-        else:
-            new_menu_obj["type"] = "반찬"
-        new_menu_obj["img_url"] = menu["MEAL_PICTR_FILE_NM"]
-        new_menu_obj["menu_id"] = menu["menu_id"]
-        new_menu_obj["menu_name"] = menu["MEAL_NM"]
-        new_diet.append(new_menu_obj)
-    return new_diet
+"""
+초창기 7가지 식단을 UBCF알고리즘 기반으로 추천해주는 함수
+:param: request ChildInfo, 아이의 정보 및 가까운 시일내에 추천받았던 메뉴를 제외시키기 위해 클라이언트로 부터 넘어온 정보
+:return: list[list[dict]], 클라이언트로 부터 받은 정보를 바탕으로 7개의 식단을 추천한 결과를 리턴 
+"""
+
 
 def init_recommendations(request: ChildInfo):
     _init()
@@ -246,6 +235,6 @@ def init_recommendations(request: ChildInfo):
     read_ratings(request.cacheList, request.allergyList)
     result = []
     for __ in range(7):
-        diet = _diet_converter(one_diet_recommend())
+        diet = diet_converter(one_diet_recommend())
         result.append(diet)
     return result
