@@ -46,10 +46,10 @@ public class ApiTest extends TestBase {
         }
         databaseCleanup.truncateAllTables();
 
-        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.oneCode, MemberTestUtil.redirectUri))
+        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.oneCode, MemberTestUtil.googleRedirectUrl))
                 .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.oneCode));
 
-        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.otherCode, MemberTestUtil.redirectUri))
+        Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.otherCode, MemberTestUtil.googleRedirectUrl))
                 .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.otherCode));
     }
 
