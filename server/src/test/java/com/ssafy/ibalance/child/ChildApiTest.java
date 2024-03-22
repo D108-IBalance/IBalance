@@ -244,4 +244,108 @@ public class ChildApiTest extends ApiTest {
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField));
     }
+
+    @Test
+    void 메인_정보_조회_식단없음_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                    get("/child/main/{childId}", childId)
+                        .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField,
+                        ChildDocument.getChildDetailResponseField
+                        ));
+    }
+
+    @Test
+    void 메인_정보_조회_식단있음_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        get("/child/main/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 아이의 정보와 오늘의 식단을 조회하는 API 입니다." +
+                                "<br>JWT 토큰과 자녀 아이디를 올바르게 입력하면, 200 OK 와 함께 아이의 정보와 오늘의 식단이 반환됩니다." +
+                                "<br>- 자녀 아이디는 1 이상의 정수로 입력해야 합니다." +
+                                "<br>- 0 이하의 정수를 입력하면 400 Bad Request 가 body 의 status 로 반환됩니다." +
+                                "<br>- Header 에 JWT 토큰이 올바르게 입력되지 않았을 때, 401 Unauthorized 가 body 의 status 로 반환됩니다." +
+                                "<br>- 해당 자녀 정보에 접근 권한이 없을 때, 403 Forbidden 이 body 의 status 로 반환됩니다." +
+                                "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, 404 Not Found 가 body 의 status 로 반환됩니다.",
+                        "메인_자녀 정보, 오늘의 식단 조회", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField,
+                        ChildDocument.getChildDetailResponseField
+                ));
+    }
+
+    @Test
+    void 메인_정보_조회_잘못된아이디_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                    get("/child/main/{childId}", childId)
+                        .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 메인_정보_조회_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                    get("/child/main/{childId}", childId)
+                )
+                .andExpect(status().is(401))
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 메인_정보_조회_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        get("/child/main/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 메인_정보_조회_없는아이_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 9999999;
+
+        mockMvc.perform(
+                get("/child/main/{childId}", childId)
+                        .header(AUTH_HEADER, token)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
 }
