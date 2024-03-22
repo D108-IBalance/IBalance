@@ -5,6 +5,7 @@ import com.ssafy.ibalance.auth.response.JwtTokenResponse;
 import com.ssafy.ibalance.auth.type.JwtCode;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.entity.RefreshToken;
+import com.ssafy.ibalance.member.exception.TokenInvalidException;
 import com.ssafy.ibalance.member.repository.RefreshTokenRedisRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import com.ssafy.ibalance.member.type.Role;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -98,11 +98,11 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPrimaryKey(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserInfoClaim(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    private String getUserPrimaryKey(String token) {
+    private String getUserInfoClaim(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -116,7 +116,7 @@ public class JwtTokenProvider {
         String refreshToken = makeRefreshToken(member.getCode(), member.getProvider());
 
         Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setMaxAge((int)(refreshTokenValidTime / 1000));
+        cookie.setMaxAge((int) (refreshTokenValidTime / 1000));
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
@@ -157,5 +157,20 @@ public class JwtTokenProvider {
                 .tokenType("Bearer")
                 .oAuthProvider(member.getProvider())
                 .build();
+    }
+
+    public JwtTokenResponse reissueAccessToken(String refreshToken) {
+        if(isNotValidRefreshToken(refreshToken)) {
+            throw new TokenInvalidException("refresh token 이 유효하지 않습니다.");
+        }
+
+        Member foundMember = (Member) userDetailsService.loadUserByUsername(getUserInfoClaim(refreshToken));
+        return makeJwtTokenResponse(foundMember);
+    }
+
+    private boolean isNotValidRefreshToken(String refreshToken) {
+        return refreshToken == null
+                || redisRepository.findByRefreshToken(refreshToken).isEmpty()
+                || validateToken(refreshToken) != JwtCode.ACCESS;
     }
 }
