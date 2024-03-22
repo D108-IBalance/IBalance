@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 public class MemberSteps {
 
 
-    public LoginRequest 로그인_생성(String code){
+    public LoginRequest 로그인_생성(String code) {
         return LoginRequest.builder()
                 .code(code)
                 .url(MemberTestUtil.googleRedirectUrl)
                 .build();
     }
 
-    public LoginRequest 로그인_생성_카카오(String code){
+    public LoginRequest 로그인_생성_카카오(String code) {
         return LoginRequest.builder()
                 .code(code)
                 .url(MemberTestUtil.kakaoRedirectUrl)
