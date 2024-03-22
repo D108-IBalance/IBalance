@@ -4,6 +4,8 @@ import com.google.common.net.HttpHeaders;
 import com.ssafy.ibalance.auth.response.JwtTokenResponse;
 import com.ssafy.ibalance.auth.type.JwtCode;
 import com.ssafy.ibalance.member.entity.Member;
+import com.ssafy.ibalance.member.entity.RefreshToken;
+import com.ssafy.ibalance.member.repository.RefreshTokenRedisRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import com.ssafy.ibalance.member.type.Role;
 import io.jsonwebtoken.*;
@@ -19,7 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -27,11 +31,15 @@ import java.util.Set;
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
+    private final RefreshTokenRedisRepository redisRepository;
     private String secretKey;
 
-    public JwtTokenProvider(UserDetailsService userDetailsService, @Value("${jwt.secret.key}") String secretKey) {
+    public JwtTokenProvider(UserDetailsService userDetailsService,
+                            RefreshTokenRedisRepository redisRepository,
+                            @Value("${jwt.secret.key}") String secretKey) {
         this.userDetailsService = userDetailsService;
         this.secretKey = secretKey;
+        this.redisRepository = redisRepository;
     }
 
     public static long tokenValidTime = 3 * 60 * 60 * 1000L;    // 3시간
@@ -66,16 +74,12 @@ public class JwtTokenProvider {
 
         Date now = new Date();
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-
-        // Redis 저장 로직 추가 필요
-
-        return token;
     }
 
     private String makeAccessToken(String code, Set<Role> roles, OAuthProvider oAuthProvider) {
@@ -109,17 +113,24 @@ public class JwtTokenProvider {
     }
 
     public void setRefreshTokenForClient(HttpServletResponse response, Member member) {
-        Cookie cookie = new Cookie("refreshToken", makeRefreshToken(member.getCode(), member.getProvider()));
+        String refreshToken = makeRefreshToken(member.getCode(), member.getProvider());
+
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setMaxAge((int)(refreshTokenValidTime / 1000));
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
 
-        // TODO : Refresh Token 생성하고, Redis 에 저장하는 코드 생성하기
+        redisRepository.save(RefreshToken.builder()
+                .id(member.getId())
+                .refreshToken(refreshToken)
+                .build());
+
         response.addCookie(cookie);
     }
 
-    public void removeRefreshTokenForClient(HttpServletResponse response) {
+    public void removeRefreshTokenForClient(HttpServletRequest request, HttpServletResponse response) {
+
         ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
                 .maxAge(0)
                 .httpOnly(true)
@@ -128,7 +139,12 @@ public class JwtTokenProvider {
                 .sameSite("None")
                 .build();
 
-        // TODO : Redis에 저장된 Refresh Token 삭제
+        if(request.getCookies() != null && request.getCookies().length != 0) {
+            Arrays.stream(request.getCookies())
+                    .filter(c -> c.getName().equals("refreshToken"))
+                    .findFirst()
+                    .ifPresent(c -> redisRepository.deleteByRefreshToken(c.getAttribute("refreshToken")));
+        }
 
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
