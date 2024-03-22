@@ -2,7 +2,6 @@ package com.ssafy.ibalance.diet.service;
 
 import com.ssafy.ibalance.child.entity.ChildAllergy;
 import com.ssafy.ibalance.child.entity.RedisChildAllergy;
-import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
@@ -105,6 +104,19 @@ public class DietService {
                 .build());
 
         return tempDiet;
+    }
+
+    public List<Integer> deleteTempDiet(Integer childId, int dietDay, int sequence) {
+        RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
+        List<Integer> menuList = new ArrayList<>();
+        try {
+            menuList = dayDiet.getDietList().get(sequence-1).getMenuList();
+            dayDiet.getDietList().remove(sequence-1);
+        } catch (Exception e) {
+            throw new RedisException("Redis에 해당 날짜, 해당 순서의 식단 데이터가 없습니다.");
+        }
+        redisInitDietRepository.save(dayDiet);
+        return menuList;
     }
 
     private List<MenuDetailDto> getMenuDetailByMenuId(List<Integer> menuIdList) {

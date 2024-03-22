@@ -52,4 +52,9 @@ public class DietController {
         cookieUtil.addCookieValue(request, response, menuList, "doNotRecommend", "/");
         return menuList;
     }
+
+    @DeleteMapping("/{childId}/temp")
+    public List<Integer> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
+        return dietService.deleteTempDiet(childId, dietDay, sequence);
+    }
 }
