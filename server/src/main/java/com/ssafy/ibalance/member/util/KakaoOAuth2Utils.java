@@ -3,6 +3,8 @@ package com.ssafy.ibalance.member.util;
 import com.ssafy.ibalance.member.dto.response.KakaoMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.KakaoTokenResponse;
 import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
+import com.ssafy.ibalance.member.exception.OAuthDeniedException;
+import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +71,7 @@ public class KakaoOAuth2Utils {
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(KakaoTokenResponse.class)
+                .onErrorMap(e -> new OAuthDeniedException("code 또는 redirectUri 가 유효하지 않습니다."))
                 .block();
 
         log.info("kakaoTokenResponseDto : {}", kakaoTokenResponse);
@@ -77,6 +80,6 @@ public class KakaoOAuth2Utils {
             return kakaoTokenResponse.getAccessToken();
         }
 
-        throw new KakaoTokenIsNullException("kakao accessToken이 없습니다.");
+        throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
     }
 }
