@@ -9,16 +9,12 @@ import com.ssafy.ibalance.common.CommonDocument;
 import com.ssafy.ibalance.common.MemberTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -109,7 +105,7 @@ public class ChildApiTest extends ApiTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(childSteps.아이정보_생성()))
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().is(401))
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH));
@@ -120,9 +116,9 @@ public class ChildApiTest extends ApiTest {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         mockMvc.perform(
-                get("/child")
-                        .header(AUTH_HEADER, token)
-        )
+                        get("/child")
+                                .header(AUTH_HEADER, token)
+                )
                 .andExpect(status().isOk())
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader));
     }
@@ -134,16 +130,16 @@ public class ChildApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                get("/child")
-                        .header(AUTH_HEADER, token)
-        )
+                        get("/child")
+                                .header(AUTH_HEADER, token)
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.size()").value(1))
                 .andExpect(jsonPath("$.data.[0].childId").value(childId))
                 .andDo(document(DEFAULT_RESTDOC_PATH, "아이 정보를 가져오는 API 입니다. " +
-                        "<br>Header 에 유효한 JWT 토큰을 넣어 주면, 200 OK 와 함께 아이들의 정보 리스트가 반환됩니다." +
-                        "<br>유효하지 않은 JWT 토큰을 헤더에 입력하거나, 입력하지 않으면 401 Unauthorized 가 Body 내 status 에 반환됩니다.",
+                                "<br>Header 에 유효한 JWT 토큰을 넣어 주면, 200 OK 와 함께 아이들의 정보 리스트가 반환됩니다." +
+                                "<br>유효하지 않은 JWT 토큰을 헤더에 입력하거나, 입력하지 않으면 401 Unauthorized 가 Body 내 status 에 반환됩니다.",
                         "아이정보조회",
                         CommonDocument.AccessTokenHeader,
                         ChildDocument.findChildResponseField));
@@ -154,7 +150,7 @@ public class ChildApiTest extends ApiTest {
         mockMvc.perform(
                         get("/child")
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().is(401))
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(document(DEFAULT_RESTDOC_PATH));
     }
@@ -171,16 +167,16 @@ public class ChildApiTest extends ApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andDo(document(DEFAULT_RESTDOC_PATH, "아이 정보를 삭제하는 API 입니다. " +
-                        "<br>성공적으로 아이 정보가 삭제되면 200 OK 와 함께 삭제된 아이의 대략적인 정보가 반환됩니다." +
-                        "<br>자녀의 Primary Key 는 1 이상의 정수로 입력해야 합니다." +
-                        "<br>0 이하의 정수를 입력하면 400 Bad Request 가 body 내에 들어가 반환됩니다." +
-                        "<br>JWT 토큰이 헤더에 올바르게 입력되지 않았을 때, 401 Unauthorized 가 반환됩니다." +
-                        "<br>해당 자녀 정보에 접근할 권한이 없을 때, 403 Forbidden 이 반환됩니다." +
-                        "<br>해당 아이디로 된 자녀를 찾을 수 없을 때, 404 Not Found 가 반환됩니다.",
+                                "<br>성공적으로 아이 정보가 삭제되면 200 OK 와 함께 삭제된 아이의 대략적인 정보가 반환됩니다." +
+                                "<br>자녀의 Primary Key 는 1 이상의 정수로 입력해야 합니다." +
+                                "<br>0 이하의 정수를 입력하면 400 Bad Request 가 body 내에 들어가 반환됩니다." +
+                                "<br>JWT 토큰이 헤더에 올바르게 입력되지 않았을 때, 401 Unauthorized 가 반환됩니다." +
+                                "<br>해당 자녀 정보에 접근할 권한이 없을 때, 403 Forbidden 이 반환됩니다." +
+                                "<br>해당 아이디로 된 자녀를 찾을 수 없을 때, 404 Not Found 가 반환됩니다.",
                         "자녀정보삭제", CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField,
                         ChildDocument.deletedChildResponseField
-                        ))
+                ))
                 .andReturn();
 
         Integer deletedChildId = getValueFromJSONBody(mvcResult, "$.data.id", 0);
@@ -212,7 +208,7 @@ public class ChildApiTest extends ApiTest {
         mockMvc.perform(
                         delete("/child/{childId}", childId)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().is(401))
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
     }
