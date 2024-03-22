@@ -5,6 +5,7 @@ import com.ssafy.ibalance.auth.response.JwtTokenResponse;
 import com.ssafy.ibalance.member.dto.request.LoginRequest;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -62,8 +63,8 @@ public class MemberController {
      * @param response 쿠키 삭제를 위한 response
      */
     @GetMapping("/logout")
-    public void logout(HttpServletResponse response) {
-        jwtTokenProvider.removeRefreshTokenForClient(response);
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        jwtTokenProvider.removeRefreshTokenForClient(request, response);
     }
 }
 
