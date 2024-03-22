@@ -13,6 +13,15 @@ import java.util.List;
 @Component
 public class CookieUtil {
 
+    public void initCookie(HttpServletRequest request, HttpServletResponse response) {
+        for(Cookie cookie : request.getCookies()) {
+            if(cookie.getName().equals("allergy") || cookie.getName().equals("doNotRecommend")) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
+    }
+
     public void makeCookie(HttpServletResponse response, List<Integer> target, String cookieName, String cookiePath) {
         StringBuilder sb = new StringBuilder();
         for(Integer targetInt : target) {

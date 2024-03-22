@@ -33,7 +33,9 @@ public class DietController {
     }
 
     @GetMapping("/{childId}/init")
-    public List<InitDietResponse> getInitDiet(@PathVariable Integer childId, HttpServletResponse response) {
+    public List<InitDietResponse> getInitDiet(@PathVariable Integer childId, HttpServletRequest request, HttpServletResponse response) {
+        cookieUtil.initCookie(request, response);
+
         List<Integer> allergyList = dietService.getAllergy(childId);
         cookieUtil.makeCookie(response, allergyList, "allergy", "/");
 
