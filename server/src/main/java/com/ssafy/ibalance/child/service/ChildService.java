@@ -100,10 +100,10 @@ public class ChildService {
         return savedAllergies.stream().map(ChildAllergy::getId).toList();
     }
 
-    public ChildDietResponse getMain(Integer childId, LocalDate date, Member member) {
+    public ChildDietResponse getMain(Integer childId, Member member) {
         return ChildDietResponse.builder()
                 .childDetailResponse(getChildDetail(childId, member))
-                .dietList(dietRepository.getDietByDate(childId, date, member)).build();
+                .dietList(dietRepository.getDietByDate(childId, LocalDate.now(), member)).build();
     }
 
     public ChildDetailResponse getChildDetail(Integer childId, Member member) {

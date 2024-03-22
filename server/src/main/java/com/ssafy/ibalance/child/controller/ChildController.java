@@ -8,12 +8,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -71,16 +69,14 @@ public class ChildController {
      * 메인 페이지에서 자녀 정보와 오늘의 식단 조회
      *
      * @param childId 자녀 아이디
-     * @param date 오늘 날짜 (yyyy-MM-dd)
      * @param member 로그인 한 멤버
      * @return 자녀 정보 (자녀 아이디, 프로필 이미지 url, 이름, 생년월일, 성별, 키, 몸무게, 마지막 업데이트 날짜)와
      *         오늘의 식단 (식단 아이디, 식단 날짜, 순서, 메뉴 목록)
      */
     @GetMapping("/main/{childId}")
-    public ChildDietResponse getMain(@PathVariable Integer childId,
-                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    public ChildDietResponse getMain(@PathVariable @Min(value = 0, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                      @AuthenticationPrincipal Member member) {
-        return childService.getMain(childId, date, member);
+        return childService.getMain(childId, member);
     }
 
     /**
