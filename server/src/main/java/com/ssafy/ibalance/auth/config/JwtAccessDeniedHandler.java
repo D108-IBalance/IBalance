@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.auth.type.JwtCode;
 import com.ssafy.ibalance.common.dto.response.CommonWrapperResponse;
 import com.ssafy.ibalance.common.type.ErrorResponse;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +27,14 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         JwtCode jwtCode = jwtTokenProvider.validateToken(token);
 
         response.setContentType("application/json");
-
         int status = getStatusInfo(jwtCode);
+
+        response.setStatus(status);
         response.getWriter().write(objectMapper.writeValueAsString(getErrorResponse(jwtCode, status)));
     }
 
     private int getStatusInfo(JwtCode jwtCode) {
-        if(jwtCode == JwtCode.ACCESS) {
+        if (jwtCode == JwtCode.ACCESS) {
             return HttpStatus.FORBIDDEN.value();
         }
         return HttpStatus.UNAUTHORIZED.value();
