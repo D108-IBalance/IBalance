@@ -139,7 +139,7 @@ public class JwtTokenProvider {
                 .sameSite("None")
                 .build();
 
-        if(request.getCookies() != null && request.getCookies().length != 0){
+        if(request.getCookies() != null && request.getCookies().length != 0) {
             Arrays.stream(request.getCookies())
                     .filter(c -> c.getName().equals("refreshToken"))
                     .findFirst()

@@ -6,6 +6,7 @@ public enum OAuthProvider {
     GOOGLE, KAKAO, NAVER;
 
     public static OAuthProvider getOAuthProvider(String inputProvider) {
+
         String convertProvider = inputProvider.toUpperCase();
 
         return switch (convertProvider) {

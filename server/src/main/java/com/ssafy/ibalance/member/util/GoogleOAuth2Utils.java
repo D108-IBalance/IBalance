@@ -62,7 +62,7 @@ public class GoogleOAuth2Utils {
                 .onErrorMap(e -> new OAuthDeniedException("code 또는 redirectUri 가 유효하지 않습니다."))
                 .block();
 
-        if (accessTokenAnswer != null) {
+        if(accessTokenAnswer != null) {
             return accessTokenAnswer.accessToken();
         }
 
