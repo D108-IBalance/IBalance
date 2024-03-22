@@ -2,10 +2,11 @@ package com.ssafy.ibalance.member.util;
 
 import com.ssafy.ibalance.member.dto.response.GoogleMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.GoogleTokenResponse;
+import com.ssafy.ibalance.member.exception.OAuthDeniedException;
+import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -58,13 +59,14 @@ public class GoogleOAuth2Utils {
                 .bodyValue(makeGoogleTokenRequest(code, redirectUri))
                 .retrieve()
                 .bodyToMono(GoogleTokenResponse.class)
+                .onErrorMap(e -> new OAuthDeniedException("code 또는 redirectUri 가 유효하지 않습니다."))
                 .block();
 
         if(accessTokenAnswer != null){
             return accessTokenAnswer.accessToken();
         }
 
-        return null; // TODO : Custom Exception & Exception Handler 처리하기
+        throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
     }
 
 

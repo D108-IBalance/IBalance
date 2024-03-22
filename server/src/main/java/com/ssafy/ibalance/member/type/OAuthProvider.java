@@ -1,5 +1,7 @@
 package com.ssafy.ibalance.member.type;
 
+import com.ssafy.ibalance.member.exception.ProviderNotSupportedException;
+
 public enum OAuthProvider {
     GOOGLE, KAKAO, NAVER;
 
@@ -11,7 +13,7 @@ public enum OAuthProvider {
             case "KAKAO" -> KAKAO;
             case "NAVER" -> NAVER;
             case "GOOGLE" -> GOOGLE;
-            default -> throw new IllegalArgumentException("잘못된 요청입니다."); // TODO : Custom Exception & Exception Handler 처리할 것
+            default -> throw new ProviderNotSupportedException("잘못된 요청입니다.");
         };
     }
 }

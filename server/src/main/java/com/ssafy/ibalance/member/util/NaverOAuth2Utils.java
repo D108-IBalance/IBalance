@@ -3,10 +3,11 @@ package com.ssafy.ibalance.member.util;
 import com.ssafy.ibalance.member.dto.OAuthMemberInfo;
 import com.ssafy.ibalance.member.dto.response.NaverMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.NaverTokenResponse;
+import com.ssafy.ibalance.member.exception.OAuthDeniedException;
+import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -48,6 +49,7 @@ public class NaverOAuth2Utils {
                 .header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
                 .retrieve()
                 .bodyToMono(NaverMemberInfoResponse.class)
+                .onErrorMap(e -> new OAuthDeniedException("code 또는 redirectUri 가 유효하지 않습니다."))
                 .block();
     }
 
@@ -66,7 +68,7 @@ public class NaverOAuth2Utils {
             return tokenResponse.accessToken();
         }
 
-        return null; // TODO : custom exception & exception handler 처리
+        throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
     }
 
     private MultiValueMap<String, String>  makeNaverTokenRequest(String code, String redirectUri){
