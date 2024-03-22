@@ -24,7 +24,7 @@ public class EmbeddedRedisConfig {
     @PostConstruct
     public void redisServer() throws IOException {
         int port = redisPort;
-        if(isRedisRunning()){
+        if(isRedisRunning()) {
             port = findAvailablePort();
         }
 
@@ -33,8 +33,8 @@ public class EmbeddedRedisConfig {
     }
 
     @PreDestroy
-    public void stopRedis(){
-        if(redisServer != null){
+    public void stopRedis() {
+        if(redisServer != null) {
             redisServer.stop();
         }
     }
@@ -43,9 +43,9 @@ public class EmbeddedRedisConfig {
      * 현재 PC/서버에서 사용가능한 포트 조회
      */
     private int findAvailablePort() throws IOException {
-        for(int port = 10000; port <= 65535; port++){
+        for(int port = 10000; port <= 65535; port++) {
             Process process = executeGrepProcessCommand(port);
-            if(!isRunning(process)){
+            if(!isRunning(process)) {
                 return port;
             }
         }
@@ -53,7 +53,7 @@ public class EmbeddedRedisConfig {
         throw new IllegalArgumentException("10000 ~ 65535 사이의 포트를 찾을 수 없습니다.");
     }
 
-    private boolean isRedisRunning() throws IOException{
+    private boolean isRedisRunning() throws IOException {
         return isRunning(executeGrepProcessCommand(redisPort));
     }
 
@@ -61,11 +61,11 @@ public class EmbeddedRedisConfig {
         String line;
         StringBuilder pidInfo = new StringBuilder();
 
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))){
-            while((line = reader.readLine()) != null){
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            while((line = reader.readLine()) != null) {
                 pidInfo.append(line);
             }
-        }catch(Exception ignored){}
+        } catch(Exception ignored) {}
 
         return !StringUtils.isEmpty(pidInfo.toString());
     }
@@ -75,11 +75,11 @@ public class EmbeddedRedisConfig {
      */
     private Process executeGrepProcessCommand(int port) throws IOException {
 
-        try{
+        try {
             String command = String.format("netstat -nat | grep LISTEN|grep %d", port);
             String[] shell = {"/bin/sh", "-c", command};
             return Runtime.getRuntime().exec(shell);
-        }catch(Exception e){
+        } catch(Exception e) {
             String command = String.format("netstat -nao | find \"LISTEN\" | find \"%d\"", port);
             String[] shell = {"cmd.exe", "/y", "/c", command};
             return Runtime.getRuntime().exec(shell);

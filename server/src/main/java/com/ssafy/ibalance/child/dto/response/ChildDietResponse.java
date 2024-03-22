@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 public class ChildDietResponse {
+
     private ChildDetailResponse childDetailResponse;
     private List<DietByDateResponse> dietList;
 }

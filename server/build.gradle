@@ -188,6 +188,6 @@ sourceSets {
 	main.java.srcDirs += [ querydslDir ]
 }
 
-clean{
+clean {
 	delete file(querydslDir)
 }

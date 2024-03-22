@@ -26,4 +26,3 @@ public class ChildAllergy {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Allergy allergy;
 }
-

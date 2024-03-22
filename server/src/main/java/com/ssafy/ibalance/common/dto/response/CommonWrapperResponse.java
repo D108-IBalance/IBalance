@@ -4,7 +4,9 @@ import lombok.Builder;
 
 @Builder
 public record CommonWrapperResponse(
+
         Integer status,
+
         Object data
 ) {
 }

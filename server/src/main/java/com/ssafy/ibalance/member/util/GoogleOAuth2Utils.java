@@ -33,7 +33,6 @@ public class GoogleOAuth2Utils {
     private String clientSecret;
 
     public GoogleMemberInfoResponse getUserInfo(String code, String redirect) {
-
         if (redirect == null) {
             redirect = redirectUri;
         }

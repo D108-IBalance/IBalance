@@ -20,32 +20,32 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/hello/{name}")
-    public StringWrapper hello(@PathVariable String name){
+    public StringWrapper hello(@PathVariable String name) {
         return StringWrapper.wrap("Hello " + name);
     }
 
     @GetMapping("/jpa/{address}")
-    public List<TesterEntity> jpaTest(@PathVariable String address){
+    public List<TesterEntity> jpaTest(@PathVariable String address) {
         return testService.getTestUsingAddress(address);
     }
 
     @GetMapping("/querydsl/{name}")
-    public List<TesterEntity> queryDslTest(@PathVariable String name){
+    public List<TesterEntity> queryDslTest(@PathVariable String name) {
         return testService.getTestUsingName(name);
     }
 
     @GetMapping("/exceptional")
-    public void exceptionHandlerTest(){
+    public void exceptionHandlerTest() {
         throw new ChildNotFoundException("한번 아무 것으로 테스트 해 봅시다.");
     }
 
     @GetMapping("/login")
-    public Member loginTest(@AuthenticationPrincipal Member member){
+    public Member loginTest(@AuthenticationPrincipal Member member) {
         return member;
     }
 
     @PostMapping("/save")
-    public void testSave(@RequestBody TestSaveRequest request){
+    public void testSave(@RequestBody TestSaveRequest request) {
         testService.saveTestEntity(request);
     }
 }

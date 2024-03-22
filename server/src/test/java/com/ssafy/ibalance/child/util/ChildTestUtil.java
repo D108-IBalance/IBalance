@@ -24,7 +24,6 @@ public class ChildTestUtil extends TestBase {
     protected ObjectMapper objectMapper;
 
     public Integer 아이_등록(String token, MockMvc mockMvc) throws Exception {
-
         MvcResult mvcResult = mockMvc.perform(
                         post("/child")
                                 .header(ApiTest.AUTH_HEADER, token)

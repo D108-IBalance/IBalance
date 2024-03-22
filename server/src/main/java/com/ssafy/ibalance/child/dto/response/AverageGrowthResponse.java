@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class AverageGrowthResponse {
+
     private int month;
     private double averageHeight;
     private double averageWeight;

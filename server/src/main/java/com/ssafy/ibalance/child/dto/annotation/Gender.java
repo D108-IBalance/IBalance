@@ -12,9 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = GenderValidator.class)
 public @interface Gender {
+
     String message() default "성별은 MALE 또는 FEMALE 만 입력 가능합니다.";
     Class[] groups() default {};
-
     Class[] payload() default {};
 }
-

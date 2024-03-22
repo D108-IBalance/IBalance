@@ -9,8 +9,6 @@ import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.dto.MenuDto;
-import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
@@ -22,7 +20,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.querydsl.core.group.GroupBy.*;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
@@ -34,8 +31,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date) {
-        // DB에서 데이터 조회
+    public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member) {
         Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
                 .from(diet)
                 .join(dietMenu)
@@ -47,44 +43,40 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         )
                 );
 
-        // Dto로 변환
         List<DietByDateDto> dietByDateDtoList = transform.entrySet().stream()
                 .map(entry -> DietByDateDto.builder()
-                        .dietId(entry.getKey().getId())
-                        .dietDate(entry.getKey().getDietDate())
-                        .sequence(entry.getKey().getSequence())
+                        .diet(entry.getKey())
                         .dietMenuList(entry.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
-        // return하기 위한 response 객체 생성
-        // TODO : NoSQL에서 메뉴 아이디에 해당하는 메뉴 정보 조회 구현 필요
-        List<DietByDateResponse> dietByDateResponseList = new ArrayList<>();
-
-        for(DietByDateDto dto : dietByDateDtoList) {
-            List<DietMenuResponse> dietMenuResponseList = new ArrayList<>();
-
-            for(DietMenu dietMenu : dto.getDietMenuList()) {
-                dietMenuResponseList.add(DietMenuResponse.builder()
-                        .menuId(dietMenu.getMenuId())
-                        .menuName("NoSQL에서 가져온 메뉴 이름")
-                        .score(dietMenu.getScore())
-                        .build());
-            }
-
-            dietByDateResponseList.add(DietByDateResponse.builder()
-                    .dietId(dto.getDietId())
-                    .dietDate(dto.getDietDate())
-                    .sequence(dto.getSequence())
-                    .dietMenuList(dietMenuResponseList)
-                    .build());
+        if(!dietByDateDtoList.isEmpty() && !member.equals(dietByDateDtoList.getFirst().getDiet().getChild().getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
         }
 
-        return dietByDateResponseList;
+        return dietByDateDtoList.stream()
+                .map(dto -> DietByDateResponse.builder()
+                        .dietId(dto.getDiet().getId())
+                        .dietDate(dto.getDiet().getDietDate())
+                        .sequence(dto.getDiet().getSequence())
+                        .menuList(getDietMenuFromMongo(dto))
+                        .build())
+                .toList();
+    }
+
+    public List<DietMenuResponse> getDietMenuFromMongo(DietByDateDto dietByDateDto) {
+        // TODO : NoSQL에서 메뉴 아이디에 해당하는 메뉴 정보 조회 구현 필요
+        return dietByDateDto.getDietMenuList().stream()
+                .map(menu -> DietMenuResponse.builder()
+                        .menuId(menu.getMenuId())
+                        .menuName("MongoDB에서 가져온 메뉴 이름")
+                        .menuType(MenuType.RICE)
+                        .build())
+                .toList();
     }
 
     @Override
-    public List<RecommendedDietResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate) {
+    public List<DietByDateResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate) {
         Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
                 .from(diet)
                 .join(dietMenu)
@@ -98,31 +90,29 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
 
         List<DietByDateDto> dietByDateDtoList = transform.entrySet().stream()
                 .map(entry -> DietByDateDto.builder()
-                        .dietId(entry.getKey().getId())
-                        .dietDate(entry.getKey().getDietDate())
-                        .sequence(entry.getKey().getSequence())
+                        .diet(entry.getKey())
                         .dietMenuList(entry.getValue())
                         .build())
                 .toList();
 
-        List<RecommendedDietResponse> childDietResponseList = new ArrayList<>();
+        List<DietByDateResponse> childDietResponseList = new ArrayList<>();
 
         // TODO : MongoDB에서 메뉴 데이터 가져오기
         for(DietByDateDto dto : dietByDateDtoList) {
-            List<MenuDto> menuDtoList = new ArrayList<>();
+            List<DietMenuResponse> menuDtoList = new ArrayList<>();
 
             for(DietMenu dietMenu : dto.getDietMenuList()) {
-                menuDtoList.add(MenuDto.builder()
+                menuDtoList.add(DietMenuResponse.builder()
                         .menuId(dietMenu.getMenuId())
                         .menuName("메뉴 이름")
                         .menuType(MenuType.RICE)
                         .build());
             }
 
-            childDietResponseList.add(RecommendedDietResponse.builder()
-                    .dietId(dto.getDietId())
-                    .dietDate(dto.getDietDate())
-                    .sequence(dto.getSequence())
+            childDietResponseList.add(DietByDateResponse.builder()
+                    .dietId(dto.getDiet().getId())
+                    .dietDate(dto.getDiet().getDietDate())
+                    .sequence(dto.getDiet().getSequence())
                     .menuList(menuDtoList)
                     .build());
         }
