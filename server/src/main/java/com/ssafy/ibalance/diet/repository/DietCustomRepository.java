@@ -10,7 +10,7 @@ import java.util.List;
 public interface DietCustomRepository {
     List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member);
 
-    List<DietByDateResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate);
+    List<DietByDateResponse> getDietByDateBetween(Integer childId, LocalDate startDate, LocalDate endDate);
 
     List<Integer> getMenuIdByDietId(Long dietId);
 

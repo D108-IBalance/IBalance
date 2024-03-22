@@ -76,7 +76,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     @Override
-    public List<DietByDateResponse> getDietMenuByDate(Integer childId, LocalDate startDate, LocalDate endDate) {
+    public List<DietByDateResponse> getDietByDateBetween(Integer childId, LocalDate startDate, LocalDate endDate) {
         Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
                 .from(diet)
                 .join(dietMenu)

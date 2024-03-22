@@ -1,7 +1,7 @@
 package com.ssafy.ibalance.diet.controller;
 
 import com.ssafy.ibalance.common.util.CookieUtil;
-import com.ssafy.ibalance.diet.dto.MenuDetailDto;
+import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
@@ -28,7 +28,7 @@ public class DietController {
     }
 
     @GetMapping("/detail/{dietId}")
-    public List<MenuDetailDto> getDietDetail(@PathVariable Long dietId) {
+    public List<MenuDetailResponse> getDietDetail(@PathVariable Long dietId) {
         return dietService.getDietDetail(dietId);
     }
 
@@ -56,5 +56,14 @@ public class DietController {
     @DeleteMapping("/{childId}/temp")
     public List<Integer> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
         return dietService.deleteTempDiet(childId, dietDay, sequence);
+    }
+
+    @PutMapping("/{childId}/temp")
+    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam Integer menuId, HttpServletRequest request, HttpServletResponse response) {
+        String allergy = cookieUtil.getCookie(request, "allergy");
+        String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
+        MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);
+        cookieUtil.addCookieValue(request, response, menu, "doNotRecommend", "/");
+        return menu;
     }
 }

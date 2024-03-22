@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.common.util;
 
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
+import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
 import com.ssafy.ibalance.diet.exception.WrongCookieDataException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +45,23 @@ public class CookieUtil {
                 }
 
                 Cookie createCookie = new Cookie(cookieName, stringBuilder.toString());
+                createCookie.setPath(setPath);
+                response.addCookie(createCookie);
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+
+                break;
+            }
+        }
+    }
+
+    public void addCookieValue(HttpServletRequest request, HttpServletResponse response, MenuDetailResponse menuDetailResponse, String cookieName, String setPath) {
+        for(Cookie cookie : request.getCookies()) {
+            if(cookie.getName().equals(cookieName)) {
+                String beforeValue = cookie.getValue();
+                String result = beforeValue + menuDetailResponse.getMenuId() + "|";
+
+                Cookie createCookie = new Cookie(cookieName, result);
                 createCookie.setPath(setPath);
                 response.addCookie(createCookie);
                 cookie.setMaxAge(0);
