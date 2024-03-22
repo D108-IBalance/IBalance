@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CalendarDto {
+
     private Member member;
     private LocalDate dietDate;
     private boolean allReviewed;

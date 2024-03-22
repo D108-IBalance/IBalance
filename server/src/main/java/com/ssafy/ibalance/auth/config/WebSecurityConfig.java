@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/child/main/**").hasRole("USER")
                         .requestMatchers("/child/growth/**").hasRole("USER")
                         .requestMatchers("/diary/calendar/**").hasRole("USER")
+                        .requestMatchers("/diary/**").hasRole("USER")
                         .requestMatchers("/docs/**").permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(config ->
@@ -99,5 +100,4 @@ public class WebSecurityConfig {
         providerManager.setEraseCredentialsAfterAuthentication(false);
         return providerManager;
     }
-
 }

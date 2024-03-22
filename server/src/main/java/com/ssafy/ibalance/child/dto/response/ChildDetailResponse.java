@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class ChildDetailResponse {
+
     private Integer childId;
     private String imageUrl;
     private String name;

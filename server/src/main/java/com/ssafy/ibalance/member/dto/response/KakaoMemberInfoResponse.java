@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class KakaoMemberInfoResponse implements OAuthMemberInfo {
+
     private Long id;
     private Timestamp connecetedAt;
 

@@ -11,7 +11,7 @@ import static com.ssafy.ibalance.test.entity.QTesterEntity.testerEntity;
 
 @Repository
 @RequiredArgsConstructor
-public class TestCustomRepositoryImpl implements TestCustomRepository{
+public class TestCustomRepositoryImpl implements TestCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

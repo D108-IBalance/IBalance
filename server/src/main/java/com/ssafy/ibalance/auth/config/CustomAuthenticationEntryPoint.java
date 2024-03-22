@@ -31,7 +31,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         JwtCode jwtCode = jwtTokenProvider.validateToken(token);
 
         response.setContentType("application/json;charset=UTF-8");
-//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         CommonWrapperResponse errorMsg = getErrorMessageMap(jwtCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorMsg));

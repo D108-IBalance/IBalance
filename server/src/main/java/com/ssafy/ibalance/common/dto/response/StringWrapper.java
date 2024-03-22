@@ -7,11 +7,11 @@ public class StringWrapper {
 
     private String value;
 
-    public static StringWrapper wrap(String value){
+    public static StringWrapper wrap(String value) {
         return new StringWrapper(value);
     }
 
-    private StringWrapper(String value){
+    private StringWrapper(String value) {
         this.value = value;
     }
 }

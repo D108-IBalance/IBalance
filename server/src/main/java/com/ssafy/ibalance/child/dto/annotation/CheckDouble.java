@@ -17,6 +17,5 @@ public @interface CheckDouble {
 
     String message() default "키나 몸무게 데이터는 소수점 1자리까지만 입력해 주세요!";
     Class[] groups() default {};
-
     Class[] payload() default {};
 }

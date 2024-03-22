@@ -40,8 +40,8 @@ public class ApiTest extends TestBase {
     protected static final String DEFAULT_RESTDOC_PATH = "{class_name}/{method_name}";
 
     @BeforeEach
-    void setUp(){
-        if(databaseCleanup.tableNames == null || databaseCleanup.tableNames.isEmpty()){
+    void setUp() {
+        if(databaseCleanup.tableNames == null || databaseCleanup.tableNames.isEmpty()) {
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.truncateAllTables();

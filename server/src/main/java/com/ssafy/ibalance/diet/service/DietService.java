@@ -6,9 +6,9 @@ import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.diet.dto.MenuDetailDto;
-import com.ssafy.ibalance.diet.dto.MenuDto;
+import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
+import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
-import com.ssafy.ibalance.diet.dto.response.RecommendedDietResponse;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class DietService {
     private final ChildRepository childRepository;
     private final RedisChildAllergyRepository redisChildAllergyRepository;
 
-    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
+    public List<DietByDateResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
         return dietRepository.getDietMenuByDate(childId, today, endday);
     }
@@ -81,13 +81,13 @@ public class DietService {
         return menuDetailDtoList;
     }
 
-    private List<InitDietResponse> getInitRecommendByChildId(Integer childId, List<Integer> allergyList, List<Integer>pastMenu) {
+    private List<InitDietResponse> getInitRecommendByChildId(Integer childId, List<Integer> allergyList, List<Integer> pastMenu) {
         // TODO : FastAPI에서 자녀 정보를 기준으로 일주일치 초기 추천 식단 받기
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
         for(int i = 1; i <= 7; i++) {
-            List<MenuDto> menuList = new ArrayList<>();
+            List<DietMenuResponse> menuList = new ArrayList<>();
             for(int j = 0; j < 4; j++) {
-                menuList.add(MenuDto.builder()
+                menuList.add(DietMenuResponse.builder()
                         .menuId(j+1)
                         .menuName("메뉴 " + (j+1) + "번")
                         .menuType(MenuType.RICE)

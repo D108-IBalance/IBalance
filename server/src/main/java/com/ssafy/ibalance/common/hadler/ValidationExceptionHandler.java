@@ -16,7 +16,7 @@ public class ValidationExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     @ResponseStatus(HttpStatus.OK)
-    public List<ErrorResponse> processValidationExceptionHandler(BindException e){
+    public List<ErrorResponse> processValidationExceptionHandler(BindException e) {
         return e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> ErrorResponse.builder()
                         .message(fieldError.getDefaultMessage())
@@ -28,8 +28,7 @@ public class ValidationExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public List<ErrorResponse> constraintViolationExceptionHandler(ConstraintViolationException e){
-
+    public List<ErrorResponse> constraintViolationExceptionHandler(ConstraintViolationException e) {
         return e.getConstraintViolations().stream().map(error -> {
             String[] propertyPath = error.getPropertyPath().toString().split("\\.");
             String fieldName = propertyPath[propertyPath.length-1];
@@ -41,6 +40,5 @@ public class ValidationExceptionHandler {
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
         }).toList();
-
     }
 }

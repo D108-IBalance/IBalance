@@ -43,5 +43,4 @@ public class RegistChildRequest {
     @NotNull(message = "알러지 정보를 입력해 주세요")
     @CheckAllergies
     private List<Integer> haveAllergies;
-
 }

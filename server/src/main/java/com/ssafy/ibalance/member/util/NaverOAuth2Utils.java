@@ -33,9 +33,8 @@ public class NaverOAuth2Utils {
     @Value("${naver.redirect-uri}")
     private String redirectUri;
 
-    public OAuthMemberInfo getUserInfo(String code, String redirect){
-
-        if(redirect == null){
+    public OAuthMemberInfo getUserInfo(String code, String redirect) {
+        if(redirect == null) {
             redirect = redirectUri;
         }
 
@@ -53,8 +52,7 @@ public class NaverOAuth2Utils {
                 .block();
     }
 
-    private String getAccessToken(String code, String redirect){
-
+    private String getAccessToken(String code, String redirect) {
         NaverTokenResponse tokenResponse = WebClient.create()
                 .post()
                 .uri(tokenUri)
@@ -64,14 +62,14 @@ public class NaverOAuth2Utils {
                 .bodyToMono(NaverTokenResponse.class)
                 .block();
 
-        if(tokenResponse != null){
+        if(tokenResponse != null) {
             return tokenResponse.accessToken();
         }
 
         throw new OAuthInfoNullException("해당하는 유저가 없습니다.");
     }
 
-    private MultiValueMap<String, String>  makeNaverTokenRequest(String code, String redirectUri){
+    private MultiValueMap<String, String>  makeNaverTokenRequest(String code, String redirectUri) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("grant_type", "authorization_code");
@@ -81,5 +79,4 @@ public class NaverOAuth2Utils {
 
         return params;
     }
-
 }

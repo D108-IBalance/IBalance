@@ -55,7 +55,7 @@ public class ChildService {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 아이를 찾을 수 없습니다."));
 
-        if(!member.equals(child.getMember())){
+        if(!member.equals(child.getMember())) {
             throw new ChildAccessDeniedException("해당 아이 정보에 접근할 수 있는 권한이 없습니다.");
         }
 
@@ -85,7 +85,7 @@ public class ChildService {
         List<Integer> allergyIdList = registChildRequest.getHaveAllergies();
         List<Allergy> allergies = allergyRepository.findAllById(allergyIdList);
 
-        if(allergies.size() != allergyIdList.size()){
+        if(allergies.size() != allergyIdList.size()) {
             throw new AllergyNotFoundException("리스트에 있는 알러지 ID 중 존재하지 않는 알러지 번호가 있습니다.");
         }
 
@@ -103,7 +103,7 @@ public class ChildService {
     public ChildDietResponse getMain(Integer childId, LocalDate date, Member member) {
         return ChildDietResponse.builder()
                 .childDetailResponse(getChildDetail(childId, member))
-                .dietList(dietRepository.getDietByDate(childId, date)).build();
+                .dietList(dietRepository.getDietByDate(childId, date, member)).build();
     }
 
     public ChildDetailResponse getChildDetail(Integer childId, Member member) {
@@ -142,5 +142,4 @@ public class ChildService {
                 .averageList(averageGrowthList)
                 .build();
     }
-
 }
