@@ -169,6 +169,7 @@ public class JwtTokenProvider {
     }
 
     private boolean isNotValidRefreshToken(String refreshToken) {
+        log.info("refresh token : {}", refreshToken);
         return refreshToken == null
                 || redisRepository.findByRefreshToken(refreshToken).isEmpty()
                 || validateToken(refreshToken) != JwtCode.ACCESS;

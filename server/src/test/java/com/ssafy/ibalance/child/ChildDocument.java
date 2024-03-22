@@ -50,4 +50,23 @@ public class ChildDocument {
             fieldWithPath("data.name").type(JsonFieldType.STRING).description("삭제 자녀정보의 자녀 이름"),
             fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("삭제한 유저의 PK ID")
     );
+
+    public static final Snippet getChildDetailResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.childDetailResponse.childId").type(JsonFieldType.NUMBER).description("자녀 PK 아이디"),
+            fieldWithPath("data.childDetailResponse.imageUrl").type(JsonFieldType.STRING).description("자녀 이미지 Url"),
+            fieldWithPath("data.childDetailResponse.name").type(JsonFieldType.STRING).description("자녀 이름"),
+            fieldWithPath("data.childDetailResponse.birthDate").type(JsonFieldType.STRING).description("자녀 생년월일"),
+            fieldWithPath("data.childDetailResponse.gender").type(JsonFieldType.STRING).description("자녀 성별"),
+            fieldWithPath("data.childDetailResponse.height").type(JsonFieldType.NUMBER).description("자녀 키"),
+            fieldWithPath("data.childDetailResponse.weight").type(JsonFieldType.NUMBER).description("자녀 몸무게"),
+            fieldWithPath("data.childDetailResponse.lastUpdateDate").type(JsonFieldType.STRING).description("자녀 마지막 업데이트일"),
+            fieldWithPath("data.dietList").type(JsonFieldType.ARRAY).description("오늘의 식단 리스트"),
+            fieldWithPath("data.dietList[].dietId").type(JsonFieldType.NUMBER).description("오늘의 식단 아이디").optional(),
+            fieldWithPath("data.dietList[].dietDate").type(JsonFieldType.NUMBER).description("오늘의 식단 날짜").optional(),
+            fieldWithPath("data.dietList[].sequence").type(JsonFieldType.NUMBER).description("오늘의 식단 순서(1:아침, 2:점심, 3:저녁, 4:순서없음)").optional(),
+            fieldWithPath("data.dietList[].dietMenuList[].menuId").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 아이디").optional(),
+            fieldWithPath("data.dietList[].dietMenuList[].menuName").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 이름").optional(),
+            fieldWithPath("data.dietList[].dietMenuList[].menuType").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 타입(RICE, SOUP, MAIN, SUB)").optional()
+    );
 }
