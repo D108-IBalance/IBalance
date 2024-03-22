@@ -1,11 +1,13 @@
 package com.ssafy.ibalance.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ibalance.member.MemberSteps;
 import com.ssafy.ibalance.member.dto.response.GoogleMemberInfoResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.repository.MemberRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,11 +22,17 @@ public class MemberTestUtil extends TestBase {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MemberSteps memberSteps;
+
     public static String oneCode = "3387150673";
     public static String otherCode = "1234567812345";
 
-    @Value("${google.redirect-uri}")
-    public static String redirectUri;
+    public static String googleRedirectUrl = "http://localhost:8080/member/login/google";
+    public static String kakaoRedirectUrl = "http://localhost:8080/member/login/kakao";
 
     public String 회원가입_토큰반환(MockMvc mockMvc) throws Exception {
         return 회원가입(mockMvc, oneCode);
@@ -36,14 +44,18 @@ public class MemberTestUtil extends TestBase {
 
     private String 회원가입(MockMvc mockMvc, String code) throws Exception{
         memberRepository.save(Member.builder()
-                .code(code)
+                .code(MemberTestUtil.oneCode)
                 .provider(OAuthProvider.GOOGLE)
                 .build());
 
         MvcResult mvcResult = mockMvc.perform(
-                        get("/member/login/{provider}?code={code}", "google", code)
+                        post("/member/login/{provider}", "google")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(memberSteps.로그인_생성(code)))
                 )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(cookie().exists("refreshToken"))
                 .andReturn();
 
         return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
