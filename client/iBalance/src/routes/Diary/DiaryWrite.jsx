@@ -3,6 +3,7 @@ const DiaryWrite = (props) => {
   return (
     <>
       <h1>{selectedDate}</h1>
+      <p>zzz</p>
     </>
   );
 };
