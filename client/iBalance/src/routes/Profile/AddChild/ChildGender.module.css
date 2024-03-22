@@ -1,0 +1,86 @@
+.fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.fadeOut {
+  animation: fadeOut 0.5s ease forwards;
+}
+.formBox {
+  width: 300px;
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: column;
+}
+.title {
+  font-size: 1.6rem;
+  align-self: center;
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+.boxFlex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.genderImg {
+  width: 110px;
+  height: 130px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin: 10px;
+  border-radius: 20px;
+  box-shadow: 1.3px 2px 1.2px 1.2px rgb(0, 0, 0, 0.4);
+  cursor: pointer;
+  padding: 10px;
+}
+.genderPick {
+  width: 110px;
+  height: 130px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin: 10px;
+  border-radius: 20px;
+  box-shadow: 1.3px 2px 1.2px 1.2px rgba(214, 101, 21, 0.7);
+  cursor: pointer;
+  padding: 10px;
+}
+.nextBtn {
+  align-self: center;
+  width: 100%;
+  height: 45px;
+  border: 1px solid #fe724c;
+  background-color: #fe724c;
+  border-radius: 5px;
+  color: white;
+  margin-top: 50px;
+}
+.noBtn {
+  align-self: center;
+  width: 100%;
+  height: 45px;
+  border: 1px solid #fe724c;
+  background-color: #fe724c;
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 50px;
+  cursor: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
