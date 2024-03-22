@@ -162,13 +162,12 @@
     height: 160px;
     border-radius: 12px;
     background-color: #fff;
-    margin-left: 20px;
-    margin-right: 20px;
     box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
   }
   .profileImg img {
     width: 150px;
     height: 150px;
+    margin: auto;
     background-color: #ffefe9;
     border-radius: 12px;
     border: #fe724c solid 2px;

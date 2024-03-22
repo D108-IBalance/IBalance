@@ -1,19 +1,19 @@
-/* eslint-disable */
-
-import secureLocalStorage from "react-secure-storage";
+// 외부 모듈
 
 import axios from "axios";
 
-const getProfile = async () => {
-  const TOKEN = secureLocalStorage.getItem("token");
+// 내부 모듈
+
+// import customAxios, { token } from "../../axiosController";
+
+const getProfile = async (TOKEN) => {
   const headers = {
     Authorization: `${TOKEN}`,
   };
   return axios.get("https://j10d108.p.ssafy.io/api/child", { headers });
 };
 
-const addProfile = async (profile) => {
-  const TOKEN = secureLocalStorage.getItem("token");
+const addProfile = async (TOKEN, profile) => {
   const headers = {
     Authorization: `${TOKEN}`,
     "Content-Type": `application/json`,
@@ -27,8 +27,7 @@ const addProfile = async (profile) => {
   );
 };
 
-const deleteProfile = async (id) => {
-  const TOKEN = secureLocalStorage.getItem("token");
+const deleteProfile = async (TOKEN, id) => {
   const headers = {
     Authorization: `${TOKEN}`,
   };
@@ -36,5 +35,9 @@ const deleteProfile = async (id) => {
     headers,
   });
 };
+
+// const getTestProfile = async () => {
+//   return customAxios.get("child");
+// };
 
 export { getProfile, addProfile, deleteProfile };

@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./ChildBirth.module.css";
-import birthValidation from "./birthValidation.js"; // 생년월일 모두 확인 이후 값 잘라서 return
+import birthValidation from "./birthValidation.js";
 
 const ChildBirth = (props) => {
-  let [current, setCurrent] = useState(0);
-  let { setStep, setProfileData, profileData } = props;
-  let [animation, setAnimation] = useState("fadeIn");
-  let [year, setYear] = useState(0);
-  let [month, setMonth] = useState(0);
-  let [day, setDay] = useState(0);
-  let [warn, setWarn] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const { setStep, setProfileData, profileData } = props;
+  const [animation, setAnimation] = useState("fadeIn");
+  const [year, setYear] = useState(0);
+  const [month, setMonth] = useState(0);
+  const [day, setDay] = useState(0);
+  const [warn, setWarn] = useState(false);
   let onNextStep = () => {
     let flag = birthValidation(year, month, day);
     if (flag === false) {

@@ -1,8 +1,8 @@
 // 외부 모듈
-import NavbarModule from "../../modules/Navbar/NavbarModule";
 import { useState } from "react";
 
 // 내부 모듈
+import NavbarModule from "../../modules/Navbar/NavbarModule";
 import classes from "./DietPage.module.css";
 import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";

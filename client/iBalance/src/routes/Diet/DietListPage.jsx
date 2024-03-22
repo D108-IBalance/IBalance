@@ -11,9 +11,9 @@ import SaveModalPage from "./SaveModalPage";
 
 const DietListPage = () => {
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
-  const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const weekList = useMemo(() => {
+    const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     return [...new Array(7)].map((_, idx) => {
       const newDate = new Date();
       newDate.setDate(newDate.getDate() + idx);
@@ -21,9 +21,8 @@ const DietListPage = () => {
     });
   }, []); // 초기 마운트 시에만 실행
 
-  const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
-
   const weekListKo = useMemo(() => {
+    const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
     return [...new Array(7)].map((_, idx) => {
       const newDate = new Date();
       newDate.setDate(newDate.getDate() + idx);

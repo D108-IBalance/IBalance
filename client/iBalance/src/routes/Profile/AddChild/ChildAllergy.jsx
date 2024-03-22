@@ -1,26 +1,26 @@
 // 외부 모듈
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./ChildAllergy.module.css";
 import allergy from "./allergy.js";
-import { useNavigate } from "react-router-dom";
 import { addProfile } from "../ServerConnect.js";
-import { useSelector } from "react-redux";
 
 const ChildAllergy = (props) => {
   const TOKEN = useSelector((state) => {
     return state.token;
   });
-  let { setProfileData, profileData } = props;
-  let [animation, setAnimation] = useState("fadeIn");
-  let [current, setCurrent] = useState(0);
-  let [select, setSelect] = useState([]);
-  let tempShadow = [...new Array(allergy.length)].map(() => {
+  const { setProfileData, profileData } = props;
+  const [animation, setAnimation] = useState("fadeIn");
+  const [current, setCurrent] = useState(0);
+  const [select, setSelect] = useState([]);
+  const navigate = useNavigate();
+  const tempShadow = [...new Array(allergy.length)].map(() => {
     return "0px 4px 4px 0px rgba(0,0,0,0.25)";
   });
-  let [shadow, setShadow] = useState(tempShadow);
-  let navigate = useNavigate();
+  const [shadow, setShadow] = useState(tempShadow);
   let selectShadow = (idx, id) => {
     let tempShadow = [...shadow];
     let tempSelect = [...select];

@@ -12,7 +12,6 @@ const RecipePage = () => {
     <>
       <div className={classes.gridSet}>
         <Header />
-
         <NavbarModule isClick={1}></NavbarModule>
         <div className={classes.recipeContentBox}>this is Recipe</div>
       </div>

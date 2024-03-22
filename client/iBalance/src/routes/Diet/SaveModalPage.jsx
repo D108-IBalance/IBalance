@@ -1,19 +1,16 @@
-// 외부 모듈
-import { useCallback } from "react";
-
 //내부 모듈
 import classes from "./SaveModalPage.module.css";
 
 const SaveModalPage = (props) => {
   const { setSaveModal, setSaveDiet } = props;
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     setSaveModal(false);
-  }, [setSaveModal]);
+  };
 
-  const confirmAndCloseModal = useCallback(() => {
+  const confirmAndCloseModal = () => {
     setSaveDiet(true);
     setSaveModal(false);
-  }, [setSaveDiet, setSaveModal]);
+  };
 
   return (
     <div

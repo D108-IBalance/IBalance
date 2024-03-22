@@ -1,36 +1,49 @@
 // 외부 모듈
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import secureLocalStorage from "react-secure-storage";
 
 // 내부 모듈
 import Loading from "../../modules/Load/Load.jsx";
 import { getToken } from "./ServerConnect.js";
+import { setToken } from "../../store.js";
+import LoginAlert from "./LoginAlert.jsx";
 
 const SocialLogin = () => {
-  // redierct URL 파싱
   const dispatch = useDispatch();
-  const params = new URL(window.location.href).searchParams;
-  const code = params.get("code");
   const { provider } = useParams();
   const navigate = useNavigate();
+  const [alert, setAlert] = useState(0);
 
   useEffect(() => {
+    // URL 파싱
+    const params = new URL(window.location.href).searchParams;
+    const code = params.get("code");
     let login = async () => {
       try {
         const value = await getToken(code, provider);
         const accessToken = value.data.data.accessToken;
-        secureLocalStorage.setItem("token", accessToken);
+        dispatch(setToken(accessToken));
         navigate("/enter/profile");
       } catch (err) {
-        console.log("Login error:", err);
+        setAlert(1);
       }
     };
     login();
-  }, [code, dispatch, navigate, provider]); // 의존성 배열 축
+  }, [dispatch, navigate, provider]);
 
-  return <Loading step={2} />;
+  useEffect(() => {
+    if (alert === 2) {
+      navigate("/");
+    }
+  }, [alert, navigate]);
+
+  return (
+    <>
+      <Loading step={2} />
+      {alert === 1 ? <LoginAlert setAlert={setAlert} /> : null}
+    </>
+  );
 };
 
 export default SocialLogin;

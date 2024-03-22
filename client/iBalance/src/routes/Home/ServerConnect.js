@@ -1,20 +1,17 @@
 import axios from "axios";
-import secureLocalStorage from "react-secure-storage";
 
-const getUserChart = async (page, idx) => {
-  const TOKEN = secureLocalStorage.getItem("token");
+const getUserChart = async (TOKEN, page, CHILDID) => {
   const SIZE = 4;
   const headers = {
     Authorization: `${TOKEN}`,
   };
   return axios.get(
-    `https://j10d108.p.ssafy.io/api/child/growth/${idx}?page=${page}&size=${SIZE}`,
+    `https://j10d108.p.ssafy.io/api/child/growth/${CHILDID}?page=${page}&size=${SIZE}`,
     { headers },
   );
 };
 
-const getUserInfo = (idx) => {
-  const TOKEN = secureLocalStorage.getItem("token");
+const getUserInfo = async (TOKEN, idx) => {
   const headers = {
     Authorization: `${TOKEN}`,
   };

@@ -1,12 +1,12 @@
 // 외부 모듈
 import { useNavigate, useOutletContext } from "react-router-dom";
+
+// 내부 모듈
+import classes from "./DietDetail.module.css";
 import sampleMenu from "../../assets/diet/sampleImg.png";
 import recipe1 from "../../assets/diet/recipe1.png";
 import recipe2 from "../../assets/diet/recipe2.png";
 import recipe3 from "../../assets/diet/recipe3.png";
-
-// 내부 모듈
-import classes from "./DietDetail.module.css";
 
 const DietDetail = () => {
   const { setIsOpen } = useOutletContext();

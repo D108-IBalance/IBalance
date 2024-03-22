@@ -1,6 +1,7 @@
 import classes from "./DiaryCards.module.css";
 import spoonIcon from "../../assets/diary/img/diet_icon_white.png";
 import addIcon from "../../assets/diary/img/add_diet_icon.png";
+
 const DiaryCard = (props) => {
   const { setPageStep } = props;
   const DIET = {

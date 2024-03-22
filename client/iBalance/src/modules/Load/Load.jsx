@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 // 외부 모듈
 import Lottie from "react-lottie";
 import Icon from "../../assets/load/json/Lottie-load.json";
@@ -15,7 +13,7 @@ import classes from "./Load.module.css";
         - 2 : (off/none -> on)
 */
 const Load = (props) => {
-  let { step } = props;
+  const { step } = props;
   let isShow = false;
   let fade = "";
 
@@ -55,7 +53,7 @@ const Spinner = (props) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  let { fade } = props; // 애니메이션 클래스
+  const { fade } = props; // 애니메이션 클래스
   return (
     <div className={classes.container + ` ${classes[fade]}`}>
       <Lottie options={defaultOptions} height={100} width={100} />

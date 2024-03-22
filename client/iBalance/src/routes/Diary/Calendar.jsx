@@ -1,10 +1,11 @@
 // 외부 모듈
 import React from "react";
+import { useCallback, useMemo, useState } from "react";
 
 //내부 모듈
 import classes from "./Calendar.module.css";
 import selectImg from "../../assets/diary/img/select.svg";
-import { useCallback, useMemo, useState } from "react";
+
 const Calendar = (props) => {
   const MONTHS = [
     "1월",
@@ -23,26 +24,25 @@ const Calendar = (props) => {
   const { setSelectedDate, setPageStep } = props;
   const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
-
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  // 달력의 범위 변경 시 하위 IS_NEXT 및 IS_PREV 변경 시 변경 가능
-  // 현재 년도보다 높은 년도일 시 False
-  const IS_NEXT = month === 11 && year === today.getFullYear() ? false : true;
-  // 서비스 시작 2024년도
-  const IS_PREV = month === 0 && year === 2024 ? false : true;
+  const LAST_MONTH_IDX = 11;
+  const FIRST_MONTH_IDX = 0;
+  const IS_NEXT =
+    month === LAST_MONTH_IDX && year === today.getFullYear() ? false : true;
+  const IS_PREV = month === FIRST_MONTH_IDX && year === 2024 ? false : true;
   const movePrev = () => {
-    if (month === 0) {
+    if (month === FIRST_MONTH_IDX) {
       setYear(year - 1);
-      setMonth(11);
+      setMonth(LAST_MONTH_IDX);
       return;
     }
     setMonth(month - 1);
   };
   const moveNext = () => {
-    if (month === 11) {
+    if (month === LAST_MONTH_IDX) {
       setYear(year + 1);
-      setMonth(0);
+      setMonth(FIRST_MONTH_IDX);
       return;
     }
     setMonth(month + 1);

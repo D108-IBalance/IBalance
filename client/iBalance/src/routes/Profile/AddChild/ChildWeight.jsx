@@ -7,12 +7,12 @@ import classes from "./ChildWeight.module.css";
 const ChildWeight = (props) => {
   // 최대 몸무게 100Kg
   const MAX_WEIGHT = 100;
-  let { setStep, setProfileData, profileData } = props;
-  let [animation, setAnimation] = useState("fadeIn");
-  let [current, setCurrent] = useState(0);
-  let [weight, setWeight] = useState(0);
-  let [go, setGo] = useState(MAX_WEIGHT * 4.1);
-  let [validate, setValidate] = useState(false);
+  const { setStep, setProfileData, profileData } = props;
+  const [animation, setAnimation] = useState("fadeIn");
+  const [current, setCurrent] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [go, setGo] = useState(MAX_WEIGHT * 4.1);
+  const [validate, setValidate] = useState(false);
   let arr = [...new Array(MAX_WEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";

@@ -1,16 +1,15 @@
 // 내부 모듈
-import { useCallback } from "react";
 import classes from "./WeekCard.module.css";
 
 const WeekCard = (props) => {
   const { weekList, isClick, setIsClick } = props;
-  const handleAllClick = useCallback(() => {
+  const handleAllClick = () => {
     setIsClick(0);
-  }, []);
+  };
 
-  const handleCardClick = useCallback((index) => {
+  const handleCardClick = (index) => {
     setIsClick(index + 1);
-  }, []);
+  };
   return (
     <div className={classes.container}>
       <div className={classes.weekCardBox}>

@@ -112,7 +112,7 @@
 .svgAni {
   stroke-dashoffset: 500;
   stroke-dasharray: 500;
-  animation: move 3s forwards;
+  animation: move 5s forwards;
 }
 
 @keyframes move {

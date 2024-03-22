@@ -9,11 +9,11 @@ import femalePng from "../../../assets/profile/Img/female.png";
 import malePng from "../../../assets/profile/Img/male.png";
 
 const ChildGender = (props) => {
-  let [current, setCurrent] = useState(0);
-  let { setStep, setProfileData, profileData } = props;
-  let [animation, setAnimation] = useState("fadeIn");
-  let [gender, setGender] = useState("");
-  let onNextStep = () => {
+  const [current, setCurrent] = useState(0);
+  const { setStep, setProfileData, profileData } = props;
+  const [animation, setAnimation] = useState("fadeIn");
+  const [gender, setGender] = useState("");
+  const onNextStep = () => {
     let data = Object.assign({}, profileData);
     data.gender = gender;
     setProfileData(data);

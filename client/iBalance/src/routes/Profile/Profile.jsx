@@ -16,6 +16,7 @@ import { setChildId } from "../../store.js";
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.token);
   const [profileList, setProfileList] = useState([]);
   const [isSetting, setIsSetting] = useState(false);
   const [deleteIdx, setDeleteIdx] = useState(-1);
@@ -24,25 +25,13 @@ const Profile = () => {
     dispatch(setChildId(profileList[idx].childId));
     navigate("/home");
   };
-  useEffect(() => {
-    const getProfileList = async () => {
-      try {
-        let value = await getProfile();
-        setProfileList(value.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getProfileList();
-  }, []);
-
-  const onDelete = async (deleteIdx) => {
-    if (deleteIdx === -1) {
+  const onDelete = async (idx) => {
+    if (idx === -1) {
       setDeleteIdx(-1);
       return;
     }
     const { childId } = profileList[deleteIdx];
-    const value = await deleteProfile(childId);
+    const value = await deleteProfile(token, childId);
     if (value.status == "200") {
       setProfileList(profileList.filter((_, idx) => idx !== deleteIdx));
       setDeleteIdx(-1);
@@ -50,6 +39,15 @@ const Profile = () => {
       alert("에러발생");
     }
   };
+
+  useEffect(() => {
+    const getProfileList = async () => {
+      let value = await getProfile(token);
+      setProfileList(value.data.data);
+    };
+    getProfileList();
+  }, []);
+
   return (
     <main className={classes.container}>
       <img

@@ -6,18 +6,19 @@ const ChildHeight = (props) => {
   // 최대 키
   const MAX_HEIGHT = 150;
 
-  let [current, setCurrent] = useState(0);
-  let [animation, setAnimation] = useState("fadeIn");
-  let { setStep, setProfileData, profileData } = props;
+  const [current, setCurrent] = useState(0);
+  const [animation, setAnimation] = useState("fadeIn");
+  const { setStep, setProfileData, profileData } = props;
+  const [go, setGo] = useState(0);
+  const [height, setHeight] = useState("0");
+  const [validate, setValidate] = useState(false);
   let arr = [...new Array(MAX_HEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";
     }
     return "short";
   });
-  let [go, setGo] = useState(0);
-  let [height, setHeight] = useState("0");
-  let [validate, setValidate] = useState(false);
+
   let onChangeIt = (e) => {
     e.currentTarget.value = e.currentTarget.value
       .replace(/[^0-9.]/g, "")

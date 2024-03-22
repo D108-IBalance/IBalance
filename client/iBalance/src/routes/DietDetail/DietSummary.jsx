@@ -1,11 +1,10 @@
 // 외부 모듈
 import { useNavigate, Outlet } from "react-router-dom";
+import { useState } from "react";
 
 // 내부 모듈
 import classes from "./DietSummary.module.css";
 import NavbarModule from "../../modules/Navbar/NavbarModule";
-import { useState } from "react";
-
 import sample1 from "../../assets/diet/sample1.png";
 import sample2 from "../../assets/diet/sample2.png";
 import sample3 from "../../assets/diet/sample3.png";
