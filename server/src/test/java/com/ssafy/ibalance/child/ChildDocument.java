@@ -5,8 +5,7 @@ import org.springframework.restdocs.snippet.Snippet;
 
 import static com.ssafy.ibalance.common.DocumentFormatProvider.required;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class ChildDocument {
 
@@ -51,7 +50,7 @@ public class ChildDocument {
             fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("삭제한 유저의 PK ID")
     );
 
-    public static final Snippet getChildDetailResponseField = responseFields(
+    public static final Snippet getMainResponseField = responseFields(
             fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
             fieldWithPath("data.childDetailResponse.childId").type(JsonFieldType.NUMBER).description("자녀 PK 아이디"),
             fieldWithPath("data.childDetailResponse.imageUrl").type(JsonFieldType.STRING).description("자녀 이미지 Url"),
@@ -68,5 +67,27 @@ public class ChildDocument {
             fieldWithPath("data.dietList[].dietMenuList[].menuId").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 아이디").optional(),
             fieldWithPath("data.dietList[].dietMenuList[].menuName").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 이름").optional(),
             fieldWithPath("data.dietList[].dietMenuList[].menuType").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 타입(RICE, SOUP, MAIN, SUB)").optional()
+    );
+
+    public static final Snippet pageableQueryField = queryParameters(
+            parameterWithName("page").attributes(required()).description("조회할 페이지 (0부터 시작)"),
+            parameterWithName("size").attributes(required()).description("조회할 데이터 수 (4)")
+    );
+
+    public static final Snippet getGrowthListResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+            fieldWithPath("data.growthList[].gender").type(JsonFieldType.STRING).description("자녀 성별"),
+            fieldWithPath("data.growthList[].birthDate").type(JsonFieldType.STRING).description("자녀 생년월일"),
+            fieldWithPath("data.growthList[].month").type(JsonFieldType.NUMBER).description("자녀 개월 수"),
+            fieldWithPath("data.growthList[].recordDate").type(JsonFieldType.STRING).description("자녀 정보 기록일"),
+            fieldWithPath("data.growthList[].startDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 일요일"),
+            fieldWithPath("data.growthList[].endDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 토요일"),
+            fieldWithPath("data.growthList[].height").type(JsonFieldType.NUMBER).description("자녀 키"),
+            fieldWithPath("data.growthList[].weight").type(JsonFieldType.NUMBER).description("자녀 몸무게"),
+            fieldWithPath("data.averageList").type(JsonFieldType.ARRAY).description("평균 성장 데이터"),
+            fieldWithPath("data.averageList[].month").type(JsonFieldType.NUMBER).description("개월 수").optional(),
+            fieldWithPath("data.averageList[].averageHeight").type(JsonFieldType.NUMBER).description("평균 키").optional(),
+            fieldWithPath("data.averageList[].averageWeight").type(JsonFieldType.NUMBER).description("평균 몸무게").optional()
     );
 }
