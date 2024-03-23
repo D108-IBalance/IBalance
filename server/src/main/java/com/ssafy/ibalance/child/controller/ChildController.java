@@ -89,7 +89,8 @@ public class ChildController {
      *         평균 데이터 (개월 수, 평균 키, 평균 몸무게)
      */
     @GetMapping("/growth/{childId}")
-    public GrowthPageResponse getGrowthList(@PathVariable Integer childId, Pageable pageable,
+    public GrowthPageResponse getGrowthList(@PathVariable @Min(value = 0, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                            Pageable pageable,
                                             @AuthenticationPrincipal Member member) {
         return childService.getGrowthList(childId, pageable, member);
     }

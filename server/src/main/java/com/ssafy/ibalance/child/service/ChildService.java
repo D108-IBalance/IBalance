@@ -121,6 +121,10 @@ public class ChildService {
     public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
         Page<Growth> growthPage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable);
 
+        if(growthPage.isEmpty()) {
+            throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
+        }
+
         if(!member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
