@@ -39,7 +39,7 @@ const ChildAllergy = (props) => {
     temp.haveAllergies = select;
     setProfileData(temp);
     try {
-      await addProfile(temp, TOKEN);
+      await addProfile(TOKEN, temp);
       setCurrent(1);
     } catch (err) {
       console.log(err);
