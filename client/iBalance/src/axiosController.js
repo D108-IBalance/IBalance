@@ -21,6 +21,7 @@ customAxios.interceptors.response.use(
   // 실패시 콜백
   async (err) => {
     if (err.response.status === 401) {
+      console.log("이전 토큰 : ", err.config);
       try {
         let value = await axios.post(
           "https://j10d108.p.ssafy.io/api/member/issue/access-token",
