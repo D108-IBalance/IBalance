@@ -6,6 +6,7 @@ import com.ssafy.ibalance.member.dto.response.GoogleMemberInfoResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.repository.MemberRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -35,20 +36,28 @@ public class MemberTestUtil extends TestBase {
     public static String kakaoRedirectUrl = "http://localhost:8080/member/login/kakao";
 
     public String 회원가입_토큰반환(MockMvc mockMvc) throws Exception {
-        return 회원가입(mockMvc, oneCode);
+        MvcResult mvcResult = 회원가입_후_로그인(mockMvc, oneCode);
+        return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
+
     }
 
     public String 회원가입_다른유저_토큰반환(MockMvc mockMvc) throws Exception {
-        return 회원가입(mockMvc, otherCode);
+        MvcResult mvcResult = 회원가입_후_로그인(mockMvc, otherCode);
+        return getValueFromJSONBody(mvcResult, "$.dta.accessToken", "");
     }
 
-    private String 회원가입(MockMvc mockMvc, String code) throws Exception {
+    public Cookie 회원가입_쿠키반환(MockMvc mockMvc) throws Exception {
+        MvcResult mvcResult = 회원가입_후_로그인(mockMvc, oneCode);
+        return mvcResult.getResponse().getCookie("refreshToken");
+    }
+
+    private MvcResult 회원가입_후_로그인(MockMvc mockMvc, String code) throws Exception {
         memberRepository.save(Member.builder()
                 .code(MemberTestUtil.oneCode)
                 .provider(OAuthProvider.GOOGLE)
                 .build());
 
-        MvcResult mvcResult = mockMvc.perform(
+        return mockMvc.perform(
                         post("/member/login/{provider}", "google")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(memberSteps.로그인_생성(code)))
@@ -57,8 +66,6 @@ public class MemberTestUtil extends TestBase {
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(cookie().exists("refreshToken"))
                 .andReturn();
-
-        return getValueFromJSONBody(mvcResult, "$.data.accessToken", "");
     }
 
     public static GoogleMemberInfoResponse mockOAuthInfo(String code) {
