@@ -9,7 +9,7 @@ const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
   timeout: 2000,
   headers: {
-    Authorization: `${-1}`,
+    Authorization: `${store.getState().token}`,
     "Content-Type": "application/json",
   },
   withCredentials: true,
