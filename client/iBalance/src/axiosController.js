@@ -1,7 +1,7 @@
 // 현재 작업중이 axios Interceptor로직, 테스트 코드 작성중
 
 import store from "./store";
-// import { setToken } from "./store";
+import { setToken } from "./store";
 
 import axios from "axios";
 
@@ -29,16 +29,15 @@ customAxios.interceptors.response.use(
           {},
           { withCredentials: true },
         );
-        console.log(value);
-      } catch (err) {
-        console.log(err);
+        const newToken = value.data.data.accessToken;
+        store.dispatch(setToken(newToken));
+        err.config.headers.Authorization = newToken;
+        customAxios.defaults.headers.common.Authorization = newToken;
+        customAxios.defaults.headers.Authorization = newToken;
+        return axios(err.config);
+      } catch (newErr) {
+        console.log(newErr);
       }
-      // console.log(store.getState().token);
-      // err.config.headers.Authorization = `${store.getState().token}`;
-      // customAxios.defaults.headers.common.Authorization = `${store.getState().token}`;
-      // customAxios.defaults.headers.Authorization = `${store.getState().token}`;
-      // console.log(customAxios.defaults.headers);
-      // return axios(err.config);
     }
     return Promise.reject(err);
   },

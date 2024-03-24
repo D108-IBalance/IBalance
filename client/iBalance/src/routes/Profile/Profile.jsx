@@ -44,7 +44,8 @@ const Profile = () => {
     const getProfileList = async () => {
       // let value = await getProfile(token);
       // setProfileList(value.data.data);
-      await getTestProfile();
+      let value = await getTestProfile();
+      console.log(value);
     };
     getProfileList();
   }, []);
