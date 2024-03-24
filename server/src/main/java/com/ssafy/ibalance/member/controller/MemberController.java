@@ -5,9 +5,11 @@ import com.ssafy.ibalance.auth.response.JwtTokenResponse;
 import com.ssafy.ibalance.member.dto.request.LoginRequest;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -76,5 +79,12 @@ public class MemberController {
     @PostMapping("/issue/access-token")
     public JwtTokenResponse issueAccessToken(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
         return jwtTokenProvider.reissueAccessToken(refreshToken);
+    }
+
+    @PostMapping("/issue/test-acces-token")
+    public void testAccessToken(HttpServletRequest request) {
+        for (Cookie cookie : request.getCookies()) {
+            log.info("cookie name : {}, value : {}", cookie.getName(), cookie.getValue());
+        }
     }
 }
