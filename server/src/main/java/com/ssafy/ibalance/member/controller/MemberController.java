@@ -2,8 +2,10 @@ package com.ssafy.ibalance.member.controller;
 
 import com.ssafy.ibalance.auth.config.JwtTokenProvider;
 import com.ssafy.ibalance.auth.response.JwtTokenResponse;
+import com.ssafy.ibalance.common.dto.response.StringWrapper;
 import com.ssafy.ibalance.member.dto.request.LoginRequest;
 import com.ssafy.ibalance.member.entity.Member;
+import com.ssafy.ibalance.member.exception.TokenInvalidException;
 import com.ssafy.ibalance.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,10 +83,21 @@ public class MemberController {
         return jwtTokenProvider.reissueAccessToken(refreshToken);
     }
 
-    @PostMapping("/issue/test-acces-token")
-    public void testAccessToken(HttpServletRequest request) {
-        for (Cookie cookie : request.getCookies()) {
-            log.info("cookie name : {}, value : {}", cookie.getName(), cookie.getValue());
+    @PostMapping("/issue/test-access-token")
+    public StringWrapper testAccessToken(HttpServletRequest request) {
+        if(request != null && request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                log.info("cookie name : {}, value : {}", cookie.getName(), cookie.getValue());
+                if(cookie.getName().equals("refreshToken")) {
+                    return StringWrapper.wrap("refreshToken 발견 : " + cookie.getValue());
+                }
+            }
+
+            return StringWrapper.wrap("쿠키가 존재했지만, 그 중 refresh token 으로 보이는 값을 찾지 못했습니다.");
+        } else {
+            log.info("request : {}, request.getCookies() : {}", request, request.getCookies());
+            throw new TokenInvalidException("쿠키에 담겨오는 값이 없습니다.");
         }
+
     }
 }
