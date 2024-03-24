@@ -9,22 +9,37 @@ const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
   timeout: 2000,
   headers: {
-    Authorization: `${store.getState().token}`,
+    Authorization: `${-1}`,
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
+// `${store.getState().token}`
 const root = JSON.parse(localStorage.getItem("persist:root"));
 export const token = root["token"];
 customAxios.interceptors.response.use(
   // 성공시 콜백
-  (res) => {
-    console.log("하하하하하핳");
-    return res;
-  },
+  (res) => res,
   // 실패시 콜백
-  (err) => {
-    console.log("야야야야 이거 왜 되누?");
+  async (err) => {
+    if (err.response.status === 401) {
+      try {
+        let value = await axios.post(
+          "https://j10d108.p.ssafy.io/api/member/issue/test-access-token",
+          {},
+          { withCredentials: true },
+        );
+        console.log(value);
+      } catch (err) {
+        console.log(err);
+      }
+      // console.log(store.getState().token);
+      // err.config.headers.Authorization = `${store.getState().token}`;
+      // customAxios.defaults.headers.common.Authorization = `${store.getState().token}`;
+      // customAxios.defaults.headers.Authorization = `${store.getState().token}`;
+      // console.log(customAxios.defaults.headers);
+      // return axios(err.config);
+    }
     return Promise.reject(err);
   },
 );

@@ -4,7 +4,7 @@ import axios from "axios";
 
 // 내부 모듈
 
-// import customAxios, { token } from "../../axiosController";
+import customAxios from "../../axiosController";
 
 const getProfile = async (TOKEN) => {
   const headers = {
@@ -27,6 +27,10 @@ const addProfile = async (TOKEN, profile) => {
   );
 };
 
+const getTestProfile = async () => {
+  return customAxios.get(`child`);
+};
+
 const deleteProfile = async (TOKEN, id) => {
   const headers = {
     Authorization: `${TOKEN}`,
@@ -40,4 +44,4 @@ const deleteProfile = async (TOKEN, id) => {
 //   return customAxios.get("child");
 // };
 
-export { getProfile, addProfile, deleteProfile };
+export { getProfile, addProfile, deleteProfile, getTestProfile };
