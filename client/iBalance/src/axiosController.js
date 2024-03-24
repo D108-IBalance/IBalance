@@ -15,8 +15,6 @@ const customAxios = axios.create({
   withCredentials: true,
 });
 // `${store.getState().token}`
-const root = JSON.parse(localStorage.getItem("persist:root"));
-export const token = root["token"];
 customAxios.interceptors.response.use(
   // 성공시 콜백
   (res) => res,
