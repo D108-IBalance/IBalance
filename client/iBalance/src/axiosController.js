@@ -25,7 +25,7 @@ customAxios.interceptors.response.use(
     if (err.response.status === 401) {
       try {
         let value = await axios.post(
-          "https://j10d108.p.ssafy.io/api/member/issue/test-access-token",
+          "https://j10d108.p.ssafy.io/api/member/issue/access-token",
           {},
           { withCredentials: true },
         );
