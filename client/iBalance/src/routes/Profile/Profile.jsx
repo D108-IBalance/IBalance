@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./Profile.module.css";
-import { getProfile, deleteProfile, getTestProfile } from "./ServerConnect.js";
+import { getProfile, deleteProfile } from "./ServerConnect.js";
 import settingImg from "../../assets/profile/Img/setting.svg";
 import warningImg from "../../assets/profile/Img/warning.svg";
 import { setChildId } from "../../store.js";
@@ -31,7 +31,7 @@ const Profile = () => {
       return;
     }
     const { childId } = profileList[deleteIdx];
-    const value = await deleteProfile(token, childId);
+    const value = await deleteProfile(childId);
     if (value.status == "200") {
       setProfileList(profileList.filter((_, idx) => idx !== deleteIdx));
       setDeleteIdx(-1);
@@ -42,10 +42,8 @@ const Profile = () => {
 
   useEffect(() => {
     const getProfileList = async () => {
-      // let value = await getProfile(token);
-      // setProfileList(value.data.data);
-      let value = await getTestProfile();
-      console.log(value);
+      let value = await getProfile();
+      setProfileList(value.data.data);
     };
     getProfileList();
   }, []);

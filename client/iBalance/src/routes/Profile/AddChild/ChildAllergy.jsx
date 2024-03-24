@@ -1,6 +1,5 @@
 // 외부 모듈
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // 내부 모듈
@@ -9,9 +8,6 @@ import allergy from "./allergy.js";
 import { addProfile } from "../ServerConnect.js";
 
 const ChildAllergy = (props) => {
-  const TOKEN = useSelector((state) => {
-    return state.token;
-  });
   const { setProfileData, profileData } = props;
   const [animation, setAnimation] = useState("fadeIn");
   const [current, setCurrent] = useState(0);
@@ -35,11 +31,11 @@ const ChildAllergy = (props) => {
     setSelect(tempSelect);
   };
   let onNextStep = async () => {
-    let temp = Object.assign({}, profileData);
-    temp.haveAllergies = select;
-    setProfileData(temp);
+    let allergyArr = Object.assign({}, profileData);
+    allergyArr.haveAllergies = select;
+    setProfileData(allergyArr);
     try {
-      await addProfile(TOKEN, temp);
+      await addProfile(allergyArr);
       setCurrent(1);
     } catch (err) {
       console.log(err);

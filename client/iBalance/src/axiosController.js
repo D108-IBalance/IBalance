@@ -9,20 +9,25 @@ const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
   timeout: 2000,
   headers: {
-    Authorization: `${store.getState().token}`,
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
-// `${store.getState().token}`
+
+customAxios.interceptors.request.use((config) => {
+  const token = store.getState().token;
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+});
+
 customAxios.interceptors.response.use(
   // 성공시 콜백
   (res) => res,
   // 실패시 콜백
   async (err) => {
-    console.log(store.getState().token);
     if (err.response.status === 401) {
-      console.log("이전 토큰 : ", err.config);
       try {
         let value = await axios.post(
           "https://j10d108.p.ssafy.io/api/member/issue/access-token",
