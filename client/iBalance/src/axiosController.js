@@ -20,6 +20,7 @@ customAxios.interceptors.response.use(
   (res) => res,
   // 실패시 콜백
   async (err) => {
+    console.log(store.getState().token);
     if (err.response.status === 401) {
       console.log("이전 토큰 : ", err.config);
       try {
