@@ -7,11 +7,11 @@ from pre.data_preprocess import menu_pre
 @Author: 김회창
 """
 
-DATABASE_NAME = "ibalance"  # 접속 할 데이터베이스 이름
-client = None   # pymongo 클라이언트 접속 객체
-collection_name_list = []   # 현재 mongodb 내 컬렌션 이름들
-last_uri = None # 마지막 접속 uri를 캐싱해놓는 전역변수
-
+DATABASE_NAME = "ibalance"  #
+# 접속 할 데이터베이스 이름
+client = None  # pymongo 클라이언트 접속 객체
+collection_name_list = []  # 현재 mongodb 내 컬렌션 이름들
+last_uri = None  # 마지막 접속 uri를 캐싱해놓는 전역변수
 
 """
 mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기 위해 사용
@@ -74,6 +74,7 @@ private 함수로서 현재 파일내에서만 사용한다.
 
 def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     result = dict()
+    print(f'query: {query}')
     global client
     if is_multiple:
         result = list()
@@ -94,6 +95,7 @@ def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     else:
         ret = menu_pre(result.next())
     return ret
+
 
 """
 mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 함수
@@ -154,6 +156,34 @@ def find_attr_by_id(collection_name, attr_name, id):
         "_id": ObjectId(id)
     }
     project = {
-        attr_name : 1
+        attr_name: 1
     }
     return _execute(collection_name, query, project, is_multiple=False)
+
+
+"""
+mongodb 내 allergy 컬렉션에 대해서 allergy_name 기준으로 데이터를 들고 오는 함수
+:param: allergy_name_list list, 알러지 이름 리스트
+:return: list[dictionary], 알러지 이름 및 위험한 식품 정보가 담겨있는 객체 리스트
+"""
+
+
+def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str, need_attr=None, exclude_attr=None):
+    operator = "$or"
+    if not is_or:
+        operator = "$and"
+    query = {operator: list()}
+    project = {}
+    if need_attr:
+        for need_attr_name in need_attr:
+            project[need_attr_name] = 1
+    if exclude_attr:
+        for exclude_attr_name in exclude_attr:
+            project[exclude_attr_name] = 0
+
+    for condition in condition_list:
+        sub_query = dict()
+        sub_query[attr_name] = condition
+        query[operator].append(sub_query)
+
+    return _execute(collection_name, query, project, is_multiple=True)
