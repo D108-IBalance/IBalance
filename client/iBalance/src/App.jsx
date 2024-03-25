@@ -19,6 +19,8 @@ import Profile from "./routes/Profile/Profile.jsx";
 import DietSummary from "./routes/DietDetail/DietSummary.jsx";
 import DietDetail from "./routes/DietDetail/DietDetail.jsx";
 import EditProfile from "./routes/Profile/EditProfile.jsx";
+import RecipeDetail from "./routes/Recipe/RecipeDetail.jsx";
+import RecipeMore from "./routes/Recipe/RecipeMore.jsx";
 
 const App = () => {
   const setScreenSize = () => {
@@ -52,7 +54,11 @@ const App = () => {
         {/* 홈페이지 */}
         <Route path="/home" element={<HomePage />}></Route>
         {/* 레시피페이지 */}
-        <Route path="/recipe" element={<RecipePage />}></Route>
+        <Route path="/recipe" element={<RecipePage />}>
+          {/* 레시피상세페이지 */}
+          <Route path="more" element={<RecipeMore></RecipeMore>}></Route>
+          <Route path="item" element={<RecipeDetail></RecipeDetail>}></Route>
+        </Route>
         {/* 식단페이지 */}
         <Route path="/diet" element={<DietPage />}></Route>
         {/* 식단상세페이지 */}
