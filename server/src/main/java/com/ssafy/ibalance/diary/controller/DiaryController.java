@@ -1,12 +1,15 @@
 package com.ssafy.ibalance.diary.controller;
 
+import com.ssafy.ibalance.diary.dto.annotation.CheckMonth;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diary.service.DiaryService;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.member.entity.Member;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/diary")
+@Validated
 public class DiaryController {
 
     private final DiaryService diaryService;
@@ -32,8 +36,9 @@ public class DiaryController {
      * @return 식단이 존재하는 날짜와 그 날짜의 모든 식단의 리뷰 여부
      */
     @GetMapping("/calendar/{childId}")
-    public List<CalendarResponse> getCalenderList(@PathVariable Integer childId,
-                                                  @RequestParam int year, @RequestParam int month,
+    public List<CalendarResponse> getCalenderList(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                  @RequestParam int year,
+                                                  @RequestParam @CheckMonth int month,
                                                   @AuthenticationPrincipal Member member) {
         return diaryService.getCalendarList(childId, year, month, member);
     }
