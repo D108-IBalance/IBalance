@@ -22,7 +22,7 @@ const DiaryPage = () => {
         setPageStep={setPageStep}
       />
     ) : (
-      <DiaryWrite selectedDate={selectedDate} />
+      <DiaryWrite selectedDate={selectedDate} setPageStep={setPageStep} />
     );
   return (
     <>
