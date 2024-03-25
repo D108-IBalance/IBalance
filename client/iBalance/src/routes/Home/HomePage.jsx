@@ -16,12 +16,11 @@ const HomePage = () => {
   const [chartInfo, setChartInfo] = useState({});
   const [userDiet, setUserDiet] = useState({});
   const childId = useSelector((state) => state.childId);
-  const token = useSelector((state) => state.token);
   useEffect(() => {
     const getHomeData = async () => {
       const res = await Promise.all([
-        getUserChart(token, 0, childId),
-        getUserInfo(token, childId),
+        getUserChart(0, childId),
+        getUserInfo(childId),
       ]);
       setChartInfo(res[0].data.data);
       setUserProfile(res[1].data.data.childDetailResponse);

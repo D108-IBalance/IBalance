@@ -1,7 +1,7 @@
 // 현재 작업중이 axios Interceptor로직, 테스트 코드 작성중
 
 import store from "./store";
-// import { setToken } from "./store";
+import { setToken } from "./store";
 
 import axios from "axios";
 
@@ -9,22 +9,41 @@ const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
   timeout: 2000,
   headers: {
-    Authorization: `${store.getState().token}`,
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
-const root = JSON.parse(localStorage.getItem("persist:root"));
-export const token = root["token"];
+
+customAxios.interceptors.request.use((config) => {
+  const token = store.getState().token;
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+});
+
 customAxios.interceptors.response.use(
   // 성공시 콜백
-  (res) => {
-    console.log("하하하하하핳");
-    return res;
-  },
+  (res) => res,
   // 실패시 콜백
-  (err) => {
-    console.log("야야야야 이거 왜 되누?");
+  async (err) => {
+    if (err.response.status === 401) {
+      try {
+        let value = await axios.post(
+          "https://j10d108.p.ssafy.io/api/member/issue/access-token",
+          {},
+          { withCredentials: true },
+        );
+        const newToken = value.data.data.accessToken;
+        store.dispatch(setToken(newToken));
+        err.config.headers.Authorization = newToken;
+        customAxios.defaults.headers.common.Authorization = newToken;
+        customAxios.defaults.headers.Authorization = newToken;
+        return axios(err.config);
+      } catch (newErr) {
+        console.log(newErr);
+      }
+    }
     return Promise.reject(err);
   },
 );

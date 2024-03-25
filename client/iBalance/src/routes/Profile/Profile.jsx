@@ -31,7 +31,7 @@ const Profile = () => {
       return;
     }
     const { childId } = profileList[deleteIdx];
-    const value = await deleteProfile(token, childId);
+    const value = await deleteProfile(childId);
     if (value.status == "200") {
       setProfileList(profileList.filter((_, idx) => idx !== deleteIdx));
       setDeleteIdx(-1);
@@ -42,7 +42,7 @@ const Profile = () => {
 
   useEffect(() => {
     const getProfileList = async () => {
-      let value = await getProfile(token);
+      let value = await getProfile();
       setProfileList(value.data.data);
     };
     getProfileList();
