@@ -1,7 +1,6 @@
-package com.ssafy.ibalance.diet.dto;
+package com.ssafy.ibalance.diet.dto.response;
 
 import com.ssafy.ibalance.diet.type.MenuType;
-import com.ssafy.ibalance.material.dto.MaterialDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Builder
 @Getter
-public class MenuDetailDto {
+public class MenuDetailResponse {
 
     private Integer menuId;
     private String menuName;
@@ -19,6 +18,6 @@ public class MenuDetailDto {
     private double carbohydrate;
     private double protein;
     private double fat;
-    private List<MaterialDto> materials;
-    private List<RecipeDto> recipe;
+    private List<String> materials;
+    private List<String> recipe;
 }
