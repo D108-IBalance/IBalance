@@ -14,7 +14,6 @@ class Need(BaseModel):
     calories: int   # 필요한 칼로리 수치
     carbohydrate: float # 필요한 탄수화물 수치
     protein: float  # 필요한 단백질 수치
-    fat: float  # 필요한 지방 수치
     cellulose: float    # 필요한 식이섬유 수치
 
 
