@@ -109,7 +109,7 @@ def _execute_and_fetchall(query: str, cursor: mysql.connector):
 def find_all_rating(exclude_id_list=[]):
     sql = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet-menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id INNER JOIN child AS c ON d.child_id = c.id WHERE 1=1 AND is_reviewed = 1 '''
     if exclude_id_list is not None and len(exclude_id_list) > 0:
-        sql += '''AND m.menu_id NOT IN ({}) '''.format(", ".join(map(str, exclude_id_list)))
+        sql += '''AND m.menu_id NOT IN ('{}') '''.format(", ".join(map(str, exclude_id_list)))
     sql += '''group by c.id, menu_id '''
     result = _execute(sql)
     return result
