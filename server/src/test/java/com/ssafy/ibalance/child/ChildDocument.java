@@ -62,11 +62,11 @@ public class ChildDocument {
             fieldWithPath("data.childDetailResponse.lastUpdateDate").type(JsonFieldType.STRING).description("자녀 마지막 업데이트일"),
             fieldWithPath("data.dietList").type(JsonFieldType.ARRAY).description("오늘의 식단 리스트"),
             fieldWithPath("data.dietList[].dietId").type(JsonFieldType.NUMBER).description("오늘의 식단 아이디").optional(),
-            fieldWithPath("data.dietList[].dietDate").type(JsonFieldType.NUMBER).description("오늘의 식단 날짜").optional(),
+            fieldWithPath("data.dietList[].dietDate").type(JsonFieldType.STRING).description("오늘의 식단 날짜").optional(),
             fieldWithPath("data.dietList[].sequence").type(JsonFieldType.NUMBER).description("오늘의 식단 순서(1:아침, 2:점심, 3:저녁, 4:순서없음)").optional(),
-            fieldWithPath("data.dietList[].dietMenuList[].menuId").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 아이디").optional(),
-            fieldWithPath("data.dietList[].dietMenuList[].menuName").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 이름").optional(),
-            fieldWithPath("data.dietList[].dietMenuList[].menuType").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 타입(RICE, SOUP, MAIN, SUB)").optional()
+            fieldWithPath("data.dietList[].menuList[].menuId").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 아이디").optional(),
+            fieldWithPath("data.dietList[].menuList[].menuName").type(JsonFieldType.STRING).description("오늘의 식단 메뉴 이름").optional(),
+            fieldWithPath("data.dietList[].menuList[].menuType").type(JsonFieldType.STRING).description("오늘의 식단 메뉴 타입(RICE, SOUP, MAIN, SUB)").optional()
     );
 
     public static final Snippet pageableQueryField = queryParameters(

@@ -74,7 +74,7 @@ public class ChildController {
      *         오늘의 식단 (식단 아이디, 식단 날짜, 순서, 메뉴 목록)
      */
     @GetMapping("/main/{childId}")
-    public ChildDietResponse getMain(@PathVariable @Min(value = 0, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+    public ChildDietResponse getMain(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                      @AuthenticationPrincipal Member member) {
         return childService.getMain(childId, member);
     }
@@ -89,7 +89,7 @@ public class ChildController {
      *         평균 데이터 (개월 수, 평균 키, 평균 몸무게)
      */
     @GetMapping("/growth/{childId}")
-    public GrowthPageResponse getGrowthList(@PathVariable @Min(value = 0, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+    public GrowthPageResponse getGrowthList(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                             Pageable pageable,
                                             @AuthenticationPrincipal Member member) {
         return childService.getGrowthList(childId, pageable, member);
