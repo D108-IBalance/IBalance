@@ -13,7 +13,7 @@ public interface DietCustomRepository {
 
     List<DietByDateResponse> getDietByDateBetween(Integer childId, LocalDate startDate, LocalDate endDate);
 
-    List<Integer> getMenuIdByDietId(Long dietId);
+    List<String> getMenuIdByDietId(Long dietId);
 
     List<CalendarResponse> getCalendarList(Integer childId, int year, int month, Member member);
 }

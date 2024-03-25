@@ -16,7 +16,7 @@ public class ChildCustomRepositoryImpl implements ChildCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Integer> getMenuIdByChildIdAndDate(Integer childId, LocalDate today) {
+    public List<String> getMenuIdByChildIdAndDate(Integer childId, LocalDate today) {
         return jpaQueryFactory.select(dietMenu.menuId)
                 .from(child)
                 .join(diet)

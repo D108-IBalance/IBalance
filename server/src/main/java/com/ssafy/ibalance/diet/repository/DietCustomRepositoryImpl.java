@@ -124,7 +124,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     @Override
-    public List<Integer> getMenuIdByDietId(Long dietId) {
+    public List<String> getMenuIdByDietId(Long dietId) {
         return jpaQueryFactory.select(dietMenu.menuId)
                 .from(diet)
                 .join(dietMenu)

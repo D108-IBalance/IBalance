@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ChildCustomRepository {
 
-    List<Integer> getMenuIdByChildIdAndDate(Integer childId, LocalDate today);
+    List<String> getMenuIdByChildIdAndDate(Integer childId, LocalDate today);
 }
