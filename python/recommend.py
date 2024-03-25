@@ -1,8 +1,8 @@
 import pandas as pd
-from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr
+from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr, find_data_by_attr_condition
 from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
-from pre.data_preprocess import diet_converter
+from pre.data_preprocess import diet_converter, parse_matrl_name
 
 """
 @Author: 김회창
@@ -13,8 +13,9 @@ N_RECOMMENDATIONS = 5  # 추천 데이터 개수
 menu_objs = {}  # 모든 메뉴에 대한 정보
 user_id = ""  # 추천받을 child_id
 
+hazard = [] # 알러지가 있을 경우 먹으면 안되는 음식 키워드
 rice_ratings = []   # 밥류 평점 모아놓은 리스트
-side_ratings = []   # 반찬류 평점 모아놓은 리스트
+side_ratings = []   # 반찬류 평점 모+++아놓은 리스트
 soup_ratings = []   # 국류 평점 모아놓은 리스트
 
 
@@ -24,11 +25,15 @@ soup_ratings = []   # 국류 평점 모아놓은 리스트
 
 
 def _init():
-    global ratings
-    global movie_names
+    global hazard
     global user_id
-    ratings = []
-    movie_names = []
+    global rice_ratings
+    global side_ratings
+    global soup_ratings
+    rice_ratings = []
+    side_ratings = []
+    soup_ratings = []
+    hazard = []
     user_id = None
 
 
@@ -52,19 +57,20 @@ def read_menu():
 """
 
 
-def read_ratings(exclude_id_list: list, exclude_mat_list: list):
+def read_ratings(exclude_id_list: list):
     global menu_objs
     global rice_ratings
     global side_ratings
     global soup_ratings
+    global hazard
     mysql_result = find_all_rating(exclude_id_list)
     for rating in mysql_result:
         if rating[1] not in menu_objs.keys():
             continue
-        include_mat = menu_objs[rating[1]]["MATRL_NM"]
         is_pass = True
-        for exclude_mat in exclude_mat_list:
-            if exclude_mat in include_mat:
+        matrl_name_list = parse_matrl_name(menu_objs[rating[1]]["MATRL_NM"])
+        for matrl_name in matrl_name_list:
+            if matrl_name in hazard:
                 is_pass = False
                 break
         if is_pass:
@@ -86,6 +92,23 @@ def read_ratings(exclude_id_list: list, exclude_mat_list: list):
                     rating[1],
                     rating[2]
                 ))
+
+
+"""
+아이의 알러지 정보를 읽어서 위험한 음식 키워드 들고와서 hazard 리스트 변수에 append함
+:param: allergy_name_list list, 해당하는 아이가 보유하고 있는 알러지 이름 리스트
+"""
+
+
+def read_allergy(allergy_name_list):
+    global hazard
+    if len(allergy_name_list) == 0:
+        return
+    exclude_attr = ["_id"]
+    allergy_obj_list = find_data_by_attr_condition(allergy_name_list, "allergy_name", is_or=True, collection_name="allergy", need_attr=None, exclude_attr=exclude_attr)
+    for allergy_obj in allergy_obj_list:
+        for hazard_menu in allergy_obj["allergy_hazard"]:
+            hazard.append(hazard_menu)
 
 
 """
@@ -232,7 +255,8 @@ def init_recommendations(request: ChildInfo):
     _init()
     set_user_id(request.childId)
     read_menu()
-    read_ratings(request.cacheList, request.allergyList)
+    read_allergy(request.allergyList)
+    read_ratings(request.cacheList)
     result = []
     for __ in range(7):
         diet = diet_converter(one_diet_recommend())
