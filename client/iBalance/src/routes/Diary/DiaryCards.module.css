@@ -1,0 +1,140 @@
+@media screen and (min-width: 576px) {
+  .container {
+    width: 100%;
+    margin-top: 3rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-weight: 600;
+  }
+  .dateDiary {
+    font-size: 1.2rem;
+    font-weight: 600;
+    flex: none;
+  }
+  .card {
+    margin-top: 1.5rem;
+    width: 100%;
+    height: 250px;
+    background-color: #fe724c;
+    border-radius: 15px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 1rem;
+  }
+  .cardContentBox {
+    display: flex;
+    width: 100%;
+  }
+  .spoonIcon {
+    flex: none;
+    margin-top: 0.5rem;
+    width: 35px;
+    height: 35px;
+  }
+  .line {
+    width: 1px;
+    height: 50px;
+    border-radius: 3px;
+    margin: 3px 15px 0px 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .cardContent {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    margin-top: 0.5rem;
+    color: white;
+    width: 100%;
+  }
+  .cardTitle {
+    font-size: 1.15rem;
+    font-weight: 400;
+  }
+  .cardFood {
+    font-size: 0.9rem;
+    font-weight: 100;
+    margin: 5px;
+    margin-left: 0;
+  }
+  .addDiary {
+    position: absolute;
+    top: 3%;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .container {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    font-weight: 600;
+  }
+  .dateDiary {
+    font-size: 1rem;
+    font-weight: 600;
+    flex: none;
+    padding-left: 0.5rem;
+  }
+  .card {
+    margin-top: 1.5rem;
+    width: 100%;
+    height: 200px;
+    background-color: #fe724c;
+    border-radius: 15px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.8rem;
+  }
+  .cardContentBox {
+    display: flex;
+    width: 100%;
+  }
+  .spoonIcon {
+    flex: none;
+    margin-top: 0.5rem;
+    width: 30px;
+    height: 30px;
+  }
+  .line {
+    width: 1.5px;
+    height: 40px;
+    border-radius: 3px;
+    margin: 3px 20px 0px 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .cardContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0;
+    color: white;
+  }
+  .cardTitle {
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+  .cardFood {
+    font-size: 0.8rem;
+    font-weight: 100;
+    margin: 3px;
+    margin-left: 0;
+  }
+  .addDiary {
+    position: absolute;
+    top: 3%;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+}
