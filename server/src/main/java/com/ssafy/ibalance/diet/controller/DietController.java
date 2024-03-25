@@ -1,10 +1,12 @@
 package com.ssafy.ibalance.diet.controller;
 
-import com.ssafy.ibalance.diet.dto.MenuDetailDto;
+import com.ssafy.ibalance.common.util.CookieUtil;
+import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
+import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
 import com.ssafy.ibalance.diet.service.DietService;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.util.List;
 public class DietController {
 
     private final DietService dietService;
+    private final CookieUtil cookieUtil;
 
     /**
      * 일주일치 확정된 식단 조회
@@ -41,7 +44,7 @@ public class DietController {
      * @return 메뉴 상세 정보 목록
      */
     @GetMapping("/detail/{dietId}")
-    public List<MenuDetailDto> getDietDetail(@PathVariable Long dietId) {
+    public List<MenuDetailResponse> getDietDetail(@PathVariable Long dietId) {
         return dietService.getDietDetail(dietId);
     }
 
@@ -53,33 +56,44 @@ public class DietController {
      * @return 추천된 7개의 식단 정보
      */
     @GetMapping("/{childId}/init")
-    public List<InitDietResponse> getInitDiet(@PathVariable Integer childId, HttpServletResponse response) {
+    public List<InitDietResponse> getInitDiet(@PathVariable Integer childId, HttpServletRequest request, HttpServletResponse response) {
+        cookieUtil.initCookie(request, response);
+
         List<Integer> allergyList = dietService.getAllergy(childId);
-        makeCookie(response, allergyList, "allergy", "/");
+        cookieUtil.makeCookie(response, allergyList, "allergy", "/");
 
         List<Integer> pastMenu = dietService.getPastMenu(childId);
-        makeCookie(response, pastMenu, "doNotRecommend", "/");
+        List<InitDietResponse> initDietResponseList = dietService.getInitDiet(childId, allergyList, pastMenu);
+        cookieUtil.makeCookie(response, pastMenu, "doNotRecommend", "/");
 
-        return dietService.getInitDiet(childId, allergyList, pastMenu);
+        return initDietResponseList;
     }
 
-    /**
-     * 쿠키에 저장하기 위한 데이터 변환
-     *
-     * @param response 쿠키 저장을 위한 response
-     * @param target 쿠키 변환 대상
-     * @param cookieName 쿠키 이름
-     * @param cookiePath 쿠키가 사용될 경로
-     */
-    private void makeCookie(HttpServletResponse response, List<Integer> target, String cookieName, String cookiePath) {
-        StringBuilder sb = new StringBuilder();
-        for(Integer targetInt : target) {
-            sb.append(targetInt);
-            sb.append("|");
-        }
+    @GetMapping("/{childId}/temp")
+    public List<DietMenuResponse> addTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, HttpServletRequest request, HttpServletResponse response) {
+        String allergy = cookieUtil.getCookie(request, "allergy");
+        String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
+        List<DietMenuResponse> menuList = dietService.addTempDiet(childId, dietDay, allergy, doNotRecommend);
+        cookieUtil.addCookieValue(request, response, menuList, "doNotRecommend", "/");
+        return menuList;
+    }
 
-        Cookie cookie = new Cookie(cookieName, sb.toString());
-        cookie.setPath(cookiePath);
-        response.addCookie(cookie);
+    @DeleteMapping("/{childId}/temp")
+    public List<Integer> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
+        return dietService.deleteTempDiet(childId, dietDay, sequence);
+    }
+
+    @PutMapping("/{childId}/temp")
+    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam Integer menuId, HttpServletRequest request, HttpServletResponse response) {
+        String allergy = cookieUtil.getCookie(request, "allergy");
+        String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
+        MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);
+        cookieUtil.addCookieValue(request, response, menu, "doNotRecommend", "/");
+        return menu;
+    }
+
+    @GetMapping("/{childId}/insert")
+    public List<Long> insertTempDiet(@PathVariable Integer childId, @RequestParam LocalDate startDate) {
+        return dietService.insertTempDiet(childId, startDate);
     }
 }

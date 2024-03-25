@@ -3,10 +3,11 @@ package com.ssafy.ibalance.diet.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Builder
 @Getter
-public class RecipeDto {
+public class RedisDietDto {
 
-    private String recipe;
-    private String recipeImg;
+    private List<Integer> menuList;
 }
