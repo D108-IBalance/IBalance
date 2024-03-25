@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class MenuDetailResponse {
 
-    private Integer menuId;
+    private String menuId;
     private String menuName;
     private String menuImgUrl;
     private MenuType menuType;
