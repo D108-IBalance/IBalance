@@ -14,6 +14,7 @@ import java.util.List;
 public class CookieUtil {
 
     public void initCookie(HttpServletRequest request, HttpServletResponse response) {
+        if(request.getCookies() == null) return;
         for(Cookie cookie : request.getCookies()) {
             if(cookie.getName().equals("allergy") || cookie.getName().equals("doNotRecommend")) {
                 cookie.setMaxAge(0);

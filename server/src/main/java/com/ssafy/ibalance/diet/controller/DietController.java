@@ -68,4 +68,9 @@ public class DietController {
         cookieUtil.addCookieValue(request, response, menu, "doNotRecommend", "/");
         return menu;
     }
+
+    @GetMapping("/{childId}/insert")
+    public List<Long> insertTempDiet(@PathVariable Integer childId, @RequestParam LocalDate startDate) {
+        return dietService.insertTempDiet(childId, startDate);
+    }
 }
