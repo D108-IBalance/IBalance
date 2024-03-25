@@ -8,10 +8,6 @@ public class CheckMonthValidator implements ConstraintValidator<CheckMonth, Inte
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
-        if(value == null || value < 1 || value > 12) {
-            return false;
-        }
-
-        return true;
+        return value != null && value >= 1 && value <= 12;
     }
 }

@@ -147,10 +147,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         Projections.fields(CalendarDto.class,
                                 child,
                                 diet.dietDate,
-                                new CaseBuilder()
-                                        .when(diet.dietDate.isNull()).then(false)
-                                        .when(diet.dietDate.in(allReviewed)).then(false)
-                                        .otherwise(true).as("allReviewed"))
+                                diet.dietDate.in(allReviewed).not().as("allReviewed"))
                 )
                 .from(diet).rightJoin(child)
                 .on(diet.child.id.eq(child.id))
