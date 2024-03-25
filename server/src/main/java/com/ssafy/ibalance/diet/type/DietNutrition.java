@@ -2,7 +2,9 @@ package com.ssafy.ibalance.diet.type;
 
 import com.ssafy.ibalance.child.type.Gender;
 import com.ssafy.ibalance.diet.exception.NutritionServiceException;
+import lombok.Getter;
 
+@Getter
 public enum DietNutrition {
 
     AGE_TWO(270, 39, 6, 5),
