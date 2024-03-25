@@ -135,6 +135,9 @@ public class DietService {
                 break;
             }
         }
+        if(dietList.size() != 3) {
+            throw new RedisException("해당 메뉴는 존재하지 않습니다.");
+        }
 
         List<Integer> allergyList = ConvertCookieStringToList(allergy);
         List<Integer> doNotRecommendList = ConvertCookieStringToList(doNotRecommend);
