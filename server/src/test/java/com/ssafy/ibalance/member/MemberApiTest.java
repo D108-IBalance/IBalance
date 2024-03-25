@@ -111,7 +111,14 @@ public class MemberApiTest extends ApiTest {
                                 .cookie(refreshTokenCookie)
                 )
                 .andExpect(status().isOk())
-                .andDo(this::print);
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "액세스 토큰을 갱신하는 API 입니다." +
+                                "<br>쿠키에 올바른 refresh token 을 담아 보내면, 200 OK 와 함께 새로운 access token 정보가 반환됩니다." +
+                                "<br>쿠키에 토큰이 없거나, 만료된 refresh token 이라면 401 Unauthorized 가 반환됩니다.",
+                        "액세스토큰 갱신",
+                        MemberDocument.refreshTokenCookieRequestField,
+                        MemberDocument.loginResultResponseField));
     }
 
     @Test
@@ -121,6 +128,7 @@ public class MemberApiTest extends ApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(401))
-                .andDo(this::print);
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH));
     }
 }
