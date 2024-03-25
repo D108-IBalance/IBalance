@@ -1,0 +1,168 @@
+@media screen and (max-width: 480px) {
+  .dayDietBox {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+  }
+  .dayTitleBox {
+    display: flex;
+    justify-content: space-between;
+  }
+  .dayTitle {
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+  .addTitle {
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: #fe724c;
+    cursor: pointer;
+  }
+  .addTitle:hover {
+    transform: scale(1.05);
+  }
+  .dayCardBox {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+  }
+  /* 스크롤바의 폭 너비 */
+  .dayCardBox::-webkit-scrollbar {
+    width: 1px;
+  }
+
+  .dayCardBox::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px; /* 스크롤바 둥근 테두리 */
+  }
+
+  .dayCardBox::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .dayCard {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    background-color: #fe724c;
+    height: 190px;
+    width: 270px;
+    margin-bottom: 30px;
+    margin-right: 20px;
+    border-radius: 15px;
+    box-shadow: 18px 18px 20px rgba(0, 0, 0, 15%);
+    padding: 20px;
+  }
+  .cardIcon {
+    background: url("../../assets/diet/diet_icon_white.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 50px;
+    width: 30px;
+  }
+  .cardLine {
+    height: 50px;
+    width: 10px;
+    border-right: 2px solid rgba(225, 225, 225, 20%);
+    border-radius: 20px;
+  }
+  .dietContentBox {
+    padding-left: 15px;
+    padding-top: 10px;
+  }
+  .dietContentBox p {
+    color: #fff;
+    margin-bottom: 6px;
+  }
+}
+@media screen and (min-width: 481px) {
+  .dayDietBox {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+  }
+  .dayTitleBox {
+    display: flex;
+    justify-content: space-between;
+  }
+  .dayTitle {
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+  .addTitle {
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: #fe724c;
+    cursor: pointer;
+  }
+  .addTitle:hover {
+    transform: scale(1.05);
+  }
+  .dayCardBox {
+    display: flex;
+    flex-direction: row;
+  }
+  .dietContentBox {
+    padding-left: 15px;
+    padding-top: 10px;
+  }
+  .dayCard {
+    display: flex;
+    flex-direction: row;
+    background-color: #fe724c;
+    height: 190px;
+    width: 30%;
+    margin-bottom: 25px;
+    margin-right: 20px;
+    border-radius: 15px;
+    box-shadow: 18px 18px 20px rgba(0, 0, 0, 15%);
+    padding: 3% 1.5%;
+    cursor: pointer;
+  }
+  .dayCard:hover {
+    transform: scale(1.01);
+  }
+  .cardIcon {
+    background: url("../../assets/diet/diet_icon_white.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 20%;
+    width: 15%;
+  }
+  .cardLine {
+    height: 20%;
+    width: 7%;
+    border-right: 2px solid rgba(225, 225, 225, 20%);
+  }
+  .dietContentBox {
+    padding: 0;
+    padding-left: 5%;
+  }
+
+  @media screen and (min-width: 480px) {
+    .dietContentBox p {
+      font-size: 0.6rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+  }
+  @media screen and (min-width: 600px) {
+    .dietContentBox p {
+      font-size: 0.8rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+  }
+  @media screen and (min-width: 950px) {
+    .dietContentBox p {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+  }
+}

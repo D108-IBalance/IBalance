@@ -1,0 +1,50 @@
+.modalBack {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.container {
+  width: 300px;
+  height: 250px;
+  padding-top: 50px;
+  padding-bottom: 30px;
+  background-color: #efefef;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+  flex-direction: column;
+  border-radius: 10px;
+  animation: moveDown 0.5s ease forwards;
+}
+
+.warnImg {
+  width: 60px;
+  height: 60px;
+}
+.warnText {
+  font-size: 0.9rem;
+  margin: 5%;
+  font-weight: 500;
+}
+.warnConfirm {
+  cursor: pointer;
+  width: 30%;
+  text-align: center;
+  font-weight: 500;
+}
+
+@keyframes moveDown {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

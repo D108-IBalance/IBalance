@@ -1,0 +1,32 @@
+@media screen and (max-width: 576px) {
+  .gridSet {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 70px);
+    /* margin-bottom: 100px; */
+    /* height: calc(var(--vh, 1vh) * 100 - 170px); */
+    width: 100%;
+  }
+  .dietContentBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    /* padding: 0px 20px; */
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .gridSet {
+    display: flex;
+    flex-direction: row;
+  }
+  .dietContentBox {
+    width: 100%;
+    height: 100vh;
+    padding-left: 10px;
+  }
+}

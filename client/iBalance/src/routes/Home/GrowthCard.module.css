@@ -1,0 +1,171 @@
+@media screen and (max-width: 576px) {
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 335px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px 5px rgba(160, 160, 160, 30%);
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .cardTitle {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .cardTitle span {
+    font-weight: 600;
+  }
+  .cardIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .cardBody {
+    flex: none;
+    width: 280px;
+    height: 100%;
+  }
+  .cardTitle {
+    display: flex;
+    flex-direction: row;
+  }
+  .cardTitle span {
+    font-weight: 600;
+  }
+  .category {
+    display: flex;
+  }
+  .cardIcon {
+    width: 20px;
+    height: 20px;
+    background: url("../../assets/home/cook_icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-right: 10px;
+  }
+  .card {
+    flex: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #fff;
+    margin-top: 5px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(160, 160, 160, 30%);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 100%;
+    height: 100%;
+  }
+  .category > .toggle {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .height {
+    display: none;
+  }
+  .weight {
+    display: none;
+  }
+  .category {
+    display: flex;
+    justify-content: space-between;
+  }
+  .category > .toggle {
+    display: inline;
+    padding-right: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .bold {
+    font-weight: bold;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .total {
+    display: none;
+  }
+  .category {
+    display: flex;
+  }
+}
+
+.svgAni {
+  stroke-dashoffset: 500;
+  stroke-dasharray: 500;
+  animation: move 5s forwards;
+}
+
+@keyframes move {
+  from {
+    stroke-dasharray: 500;
+  }
+  to {
+    stroke-dasharray: 800;
+  }
+}
+.circle {
+  cursor: pointer;
+}
+
+.selectIcon {
+  border-radius: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 3px solid #f75c31;
+  margin-right: 0.2rem;
+}
+.notSelectIcon {
+  border-radius: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 3px solid #fe724c;
+  opacity: 0.8;
+  margin-right: 0.2rem;
+}
+.legend {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  margin-left: 2rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  align-items: center;
+}
+
+.controller {
+  width: 30%;
+  display: flex;
+  justify-content: space-around;
+}
+.chartMeta {
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+}
+
+.prev {
+  cursor: pointer;
+}
+.next {
+  cursor: pointer;
+}
