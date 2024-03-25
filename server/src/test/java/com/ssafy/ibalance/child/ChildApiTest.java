@@ -7,11 +7,15 @@ import com.ssafy.ibalance.child.util.AllergyTestUtil;
 import com.ssafy.ibalance.child.util.ChildTestUtil;
 import com.ssafy.ibalance.common.CommonDocument;
 import com.ssafy.ibalance.common.MemberTestUtil;
+import com.ssafy.ibalance.diet.entity.Diet;
+import com.ssafy.ibalance.diet.util.DietTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +42,9 @@ public class ChildApiTest extends ApiTest {
 
     @Autowired
     private ChildRepository childRepository;
+
+    @Autowired
+    private DietTestUtil dietTestUtil;
 
     @BeforeEach
     void settings() {
@@ -246,27 +253,12 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 메인_정보_조회_식단없음_200() throws Exception {
-        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
-        Integer childId = childTestUtil.아이_등록(token, mockMvc);
-
-        mockMvc.perform(
-                    get("/child/main/{childId}", childId)
-                        .header(AUTH_HEADER, token)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
-                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
-                        ChildDocument.childIdPathField,
-                        ChildDocument.getMainResponseField
-                        ));
-    }
-
-    @Test
     void 메인_정보_조회_식단있음_200() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
+        dietTestUtil.식단_메뉴_저장(dietList);
 
         mockMvc.perform(
                         get("/child/main/{childId}", childId)
@@ -287,6 +279,24 @@ public class ChildApiTest extends ApiTest {
                         ChildDocument.childIdPathField,
                         ChildDocument.getMainResponseField
                 ));
+    }
+
+    @Test
+    void 메인_정보_조회_식단없음_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                    get("/child/main/{childId}", childId)
+                        .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField,
+                        ChildDocument.getMainResponseField
+                        ));
     }
 
     @Test
