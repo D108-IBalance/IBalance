@@ -3,11 +3,13 @@ from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr, 
 from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
 from pre.data_preprocess import diet_converter, parse_matrl_name
+from datetime import datetime
 
 """
 @Author: 김회창
 """
-
+last_access_time = None # 마지막으로 레이팅 데이터에 접근한 시간
+CACHE_LIMIT = 30 # 레이팅 데이터 캐싱시간(sec)
 N_NEIGHBORS = 10  # 유저의 이웃들의 수
 N_RECOMMENDATIONS = 5  # 추천 데이터 개수
 menu_objs = {}  # 모든 메뉴에 대한 정보
@@ -102,6 +104,7 @@ def read_ratings(exclude_id_list: list):
 
 def read_allergy(allergy_name_list):
     global hazard
+    hazard = []
     if len(allergy_name_list) == 0:
         return
     exclude_attr = ["_id"]
@@ -252,11 +255,17 @@ def one_diet_recommend():
 
 
 def init_recommendations(request: ChildInfo):
-    _init()
+    global last_access_time
+    global CACHE_LIMIT
+
+    if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
+        _init()
+        last_access_time = datetime.now()
+        read_menu()
+        read_ratings(request.cacheList)
+
     set_user_id(request.childId)
-    read_menu()
     read_allergy(request.allergyList)
-    read_ratings(request.cacheList)
     result = []
     for __ in range(7):
         diet = diet_converter(one_diet_recommend())
