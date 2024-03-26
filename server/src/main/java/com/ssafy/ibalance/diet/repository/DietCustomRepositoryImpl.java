@@ -42,7 +42,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                 .leftJoin(dietMenu).on(diet.id.eq(dietMenu.diet.id))
                 .where(child.id.eq(childId));
 
-        if(tuple.fetchFirst() == null) {
+        if(tuple.fetch().isEmpty()) {
             throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
         }
 
