@@ -23,10 +23,22 @@ public class CookieUtil {
         }
     }
 
-    public void makeCookie(HttpServletResponse response, List<Integer> target, String cookieName, String cookiePath) {
+    public void makeIntegerCookie(HttpServletResponse response, List<Integer> target, String cookieName, String cookiePath) {
         StringBuilder sb = new StringBuilder();
         for(Integer targetInt : target) {
             sb.append(targetInt);
+            sb.append("|");
+        }
+
+        Cookie cookie = new Cookie(cookieName, sb.toString());
+        cookie.setPath(cookiePath);
+        response.addCookie(cookie);
+    }
+
+    public void makeStringCookie(HttpServletResponse response, List<String> target, String cookieName, String cookiePath) {
+        StringBuilder sb = new StringBuilder();
+        for(String targetString : target) {
+            sb.append(targetString);
             sb.append("|");
         }
 

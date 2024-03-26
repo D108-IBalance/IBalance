@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 public class RedisDietDto {
 
-    private List<Integer> menuList;
+    private List<String> menuList;
 }
