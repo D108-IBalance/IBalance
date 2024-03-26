@@ -28,7 +28,7 @@ public class DiaryDocument {
             fieldWithPath("data[].dietId").type(JsonFieldType.NUMBER).description("식단 아이디").optional(),
             fieldWithPath("data[].dietDate").type(JsonFieldType.STRING).description("식단 날짜").optional(),
             fieldWithPath("data[].sequence").type(JsonFieldType.NUMBER).description("식단 순서 (아침 : 1, 점심 : 2, 저녁 : 3, 순서 없음 : 4)").optional(),
-            fieldWithPath("data[].menuList[].menuId").type(JsonFieldType.NUMBER).description("메뉴 아이디"),
+            fieldWithPath("data[].menuList[].menuId").type(JsonFieldType.STRING).description("메뉴 아이디"),
             fieldWithPath("data[].menuList[].menuName").type(JsonFieldType.STRING).description("메뉴명"),
             fieldWithPath("data[].menuList[].menuType").type(JsonFieldType.STRING).description("메뉴 타입 (밥 : RICE, 국 : SOUP, 반찬 : SIDE)")
     );

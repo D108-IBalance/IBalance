@@ -64,7 +64,7 @@ public class ChildDocument {
             fieldWithPath("data.dietList[].dietId").type(JsonFieldType.NUMBER).description("오늘의 식단 아이디").optional(),
             fieldWithPath("data.dietList[].dietDate").type(JsonFieldType.STRING).description("오늘의 식단 날짜").optional(),
             fieldWithPath("data.dietList[].sequence").type(JsonFieldType.NUMBER).description("오늘의 식단 순서(1:아침, 2:점심, 3:저녁, 4:순서없음)").optional(),
-            fieldWithPath("data.dietList[].menuList[].menuId").type(JsonFieldType.NUMBER).description("오늘의 식단 메뉴 아이디").optional(),
+            fieldWithPath("data.dietList[].menuList[].menuId").type(JsonFieldType.STRING).description("오늘의 식단 메뉴 아이디").optional(),
             fieldWithPath("data.dietList[].menuList[].menuName").type(JsonFieldType.STRING).description("오늘의 식단 메뉴 이름").optional(),
             fieldWithPath("data.dietList[].menuList[].menuType").type(JsonFieldType.STRING).description("오늘의 식단 메뉴 타입(RICE, SOUP, MAIN, SUB)").optional()
     );
