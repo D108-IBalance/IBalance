@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.diary.controller;
 
+import com.ssafy.ibalance.common.dto.annotation.DatePattern;
 import com.ssafy.ibalance.diary.dto.annotation.CheckMonth;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diary.service.DiaryService;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -52,9 +54,9 @@ public class DiaryController {
      * @return 식단 목록 (식단 아이디, 식단 날짜, 순서, 메뉴 목록)
      */
     @GetMapping("/{childId}")
-    public List<DietByDateResponse> getDietByDate(@PathVariable Integer childId,
-                                                  @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    public List<DietByDateResponse> getDietByDate(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                  @RequestParam @DatePattern String date,
                                                   @AuthenticationPrincipal Member member) {
-        return diaryService.getDietByDate(childId, date, member);
+        return diaryService.getDietByDate(childId, LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), member);
     }
 }

@@ -1,9 +1,10 @@
 package com.ssafy.ibalance.diet.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
@@ -35,16 +36,21 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
 
     @Override
     public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member) {
-        Map<Diet, List<DietMenu>> transform = jpaQueryFactory.select(diet, dietMenu)
-                .from(diet)
-                .join(dietMenu)
-                .on(diet.id.eq(dietMenu.diet.id))
-                .where(diet.child.id.eq(childId).and(diet.dietDate.eq(date)))
-                .transform(
-                        groupBy(diet).as(
-                                list(dietMenu)
-                        )
-                );
+        JPAQuery<Tuple> tuple = jpaQueryFactory.select(child, diet, dietMenu)
+                .from(child)
+                .leftJoin(diet).on(child.id.eq(diet.child.id).and(diet.dietDate.eq(date)))
+                .leftJoin(dietMenu).on(diet.id.eq(dietMenu.diet.id))
+                .where(child.id.eq(childId));
+
+        if(tuple.fetchFirst() == null) {
+            throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
+        }
+
+        Map<Diet, List<DietMenu>> transform = tuple.transform(
+                groupBy(diet).as(
+                        list(dietMenu)
+                )
+        );
 
         List<DietByDateDto> dietByDateDtoList = transform.entrySet().stream()
                 .map(entry -> DietByDateDto.builder()
@@ -53,8 +59,12 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                         .build())
                 .toList();
 
-        if(!dietByDateDtoList.isEmpty() && !member.equals(dietByDateDtoList.getFirst().getDiet().getChild().getMember())) {
+        if(dietByDateDtoList.getFirst().getDiet() != null && !member.equals(dietByDateDtoList.getFirst().getDiet().getChild().getMember())) {
             throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        if(dietByDateDtoList.getFirst().getDiet() == null) {
+            return new ArrayList<>();
         }
 
         return dietByDateDtoList.stream()
