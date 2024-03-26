@@ -71,6 +71,20 @@
     font-weight: 600;
     color: rgba(0, 0, 0, 0.3);
   }
+  .currentClick {
+    border: 2px solid #fe724c;
+    background-color: #fe724c;
+    color: white;
+    border-radius: 5px;
+    padding: 5% 10% 5% 10%;
+    cursor: pointer;
+  }
+  .canClick {
+    border: 2px solid #fe724c;
+    border-radius: 5px;
+    padding: 5% 10% 5% 10%;
+    cursor: pointer;
+  }
 }
 
 @media screen and (max-width: 800px) {

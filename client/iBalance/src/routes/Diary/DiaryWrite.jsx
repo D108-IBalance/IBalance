@@ -17,7 +17,7 @@ const DiaryWrite = (props) => {
     {
       id: 1,
       title: "점심",
-      content: "launch",
+      content: "lunch",
       checked: false,
     },
     {
@@ -38,20 +38,27 @@ const DiaryWrite = (props) => {
     { food: "zz", isSelect: false },
   ]);
   const onSelect = (idx, isChecked) => {
-    let prevSelection = selection.map((data, id) => {
-      data["checked"] = idx === id && !isChecked;
-      return data;
+    setSelection((prev) => {
+      return prev.map((data, id) => {
+        data["checked"] = idx === id && !isChecked;
+        return data;
+      });
     });
-    setSelection(prevSelection);
   };
-  const onRating = (isStar, idx) => {
-    let prevRating = rating.map((_, id) => id <= idx);
-    setRating(prevRating);
+  const onRating = (idx) => {
+    setRating((prev) => {
+      return prev.map((_, id) => id <= idx);
+    });
   };
   const onBalance = (idx) => {
-    let prevIngredients = [...ingredients];
-    prevIngredients[idx]["isSelect"] = !prevIngredients[idx]["isSelect"];
-    setIngredients(prevIngredients);
+    setIngredients((prev) => {
+      return prev.map((item, index) => {
+        if (index === idx) {
+          return { ...item, isSelect: !item.isSelect };
+        }
+        return item;
+      });
+    });
   };
   return (
     <div className={classes.container}>
@@ -111,7 +118,7 @@ const DiaryWrite = (props) => {
                           key={idx}
                           className={classes.star}
                           onClick={() => {
-                            onRating(isStar, idx);
+                            onRating(idx);
                           }}>
                           ★
                         </p>
@@ -120,7 +127,7 @@ const DiaryWrite = (props) => {
                           key={idx}
                           className={classes.star}
                           onClick={() => {
-                            onRating(isStar, idx);
+                            onRating(idx);
                           }}>
                           ☆
                         </p>
