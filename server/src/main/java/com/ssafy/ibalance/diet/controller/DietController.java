@@ -60,11 +60,11 @@ public class DietController {
         cookieUtil.initCookie(request, response);
 
         List<Integer> allergyList = dietService.getAllergy(childId);
-        cookieUtil.makeCookie(response, allergyList, "allergy", "/");
+        cookieUtil.makeIntegerCookie(response, allergyList, "allergy", "/");
 
-        List<Integer> pastMenu = dietService.getPastMenu(childId);
+        List<String> pastMenu = dietService.getPastMenu(childId);
         List<InitDietResponse> initDietResponseList = dietService.getInitDiet(childId, allergyList, pastMenu);
-        cookieUtil.makeCookie(response, pastMenu, "doNotRecommend", "/");
+        cookieUtil.makeStringCookie(response, pastMenu, "doNotRecommend", "/");
 
         return initDietResponseList;
     }
@@ -79,12 +79,12 @@ public class DietController {
     }
 
     @DeleteMapping("/{childId}/temp")
-    public List<Integer> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
+    public List<String> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
         return dietService.deleteTempDiet(childId, dietDay, sequence);
     }
 
     @PutMapping("/{childId}/temp")
-    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam Integer menuId, HttpServletRequest request, HttpServletResponse response) {
+    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam String menuId, HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
         MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);

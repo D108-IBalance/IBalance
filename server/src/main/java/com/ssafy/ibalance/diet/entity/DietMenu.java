@@ -17,8 +17,8 @@ public class DietMenu {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Integer menuId;
+    @Column(length = 50, nullable = false)
+    private String menuId;
 
     @Column
     private Float score;
