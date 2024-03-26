@@ -6,7 +6,7 @@ const RecipeMore = () => {
   const navigate = useNavigate();
   return (
     <div className={classes.container}>
-      <div className={classes.titleBox}>
+      <div className={classes.backBox}>
         <div
           className={classes.backIcon}
           onClick={() => {
@@ -19,6 +19,14 @@ const RecipeMore = () => {
         </p>
       </div>
       <div className={classes.cardBox}>
+        <div
+          className={classes.card}
+          onClick={() => {
+            navigate("/recipe/item");
+          }}></div>
+        <div className={classes.card}></div>
+        <div className={classes.card}></div>
+        <div className={classes.card}></div>
         <div className={classes.card}></div>
         <div className={classes.card}></div>
         <div className={classes.card}></div>

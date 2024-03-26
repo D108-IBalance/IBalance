@@ -1,7 +1,9 @@
-// 내부 모듈
-
+// 외부 모듈
 import { useNavigate } from "react-router-dom";
+
+// 내부 모듈
 import classes from "./RecipeSummary.module.css";
+import Carousel from "../../modules/Carousel/Carousel";
 
 const RecipeSummary = (props) => {
   const navigate = useNavigate();
@@ -22,15 +24,7 @@ const RecipeSummary = (props) => {
         </div>
         <div className={classes.cardContent}>
           <div className={classes.cardBox}>
-            <div
-              className={classes.card}
-              onClick={() => {
-                setIsOpen(true);
-                navigate(`/recipe/item`);
-              }}></div>
-            <div className={classes.card}></div>
-            <div className={classes.card}></div>
-            <div className={classes.card}></div>
+            <Carousel setIsOpen={setIsOpen}></Carousel>
           </div>
         </div>
       </div>
