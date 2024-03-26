@@ -293,6 +293,7 @@ public class ChildApiTest extends ApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField,
                         ChildDocument.getMainResponseField
