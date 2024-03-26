@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 public class DateValidator {
 
-    protected boolean checkValid(String value, Function<LocalDate, Boolean> checkFunction){
+    protected boolean checkValid(String value, Function<LocalDate, Boolean> checkFunction) {
         try {
             LocalDate inputPast = LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
