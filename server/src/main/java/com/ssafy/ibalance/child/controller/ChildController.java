@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.child.controller;
 
+import com.ssafy.ibalance.child.dto.annotation.CheckFile;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.service.ChildService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -93,5 +95,20 @@ public class ChildController {
                                             Pageable pageable,
                                             @AuthenticationPrincipal Member member) {
         return childService.getGrowthList(childId, pageable, member);
+    }
+
+    /**
+     * 자녀 프로필 변경
+     *
+     * @param childId 자녀 아이디
+     * @param image 이미지 파일
+     * @param member 로그인 한 멤버
+     * @return 변경된 자녀 정보
+     */
+    @PutMapping("/profile/{childId}")
+    public ChildInfoResponse saveImage(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                       @RequestPart(value = "image") @CheckFile MultipartFile image,
+                                       @AuthenticationPrincipal Member member) {
+        return childService.saveImage(childId, image, member);
     }
 }

@@ -7,17 +7,20 @@ import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
+import com.ssafy.ibalance.child.type.Gender;
+import com.ssafy.ibalance.common.util.S3Util;
 import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +35,13 @@ public class ChildService {
     private final DietRepository dietRepository;
     private final AverageGrowthRepository averageGrowthRepository;
     private final RedisChildAllergyRepository redisChildAllergyRepository;
+    private final S3Util s3Util;
+
+    @Value("${default.img.boy}")
+    private String defaultBoy;
+
+    @Value("${default.img.girl}")
+    private String defaultGirl;
 
     public List<ChildInfoResponse> getChildList(Integer memberId) {
 
@@ -65,6 +75,14 @@ public class ChildService {
     }
 
     private Child saveChild(RegistChildRequest registChildRequest, Member member) {
+        Gender gender = Gender.valueOf(registChildRequest.getGender());
+
+        if(gender.equals(Gender.MALE)) {
+            registChildRequest.setImageUrl(defaultBoy);
+        }
+        else {
+            registChildRequest.setImageUrl(defaultGirl);
+        }
 
         return childRepository.save(Child.ConvertDtoToEntity(registChildRequest, member));
     }
@@ -145,5 +163,19 @@ public class ChildService {
                 .growthList(growthResponseList)
                 .averageList(averageGrowthList)
                 .build();
+    }
+
+    @Transactional
+    public ChildInfoResponse saveImage(Integer childId, MultipartFile file, Member member) {
+        Child child = childRepository.findChildById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+
+        if(!member.equals(child.getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        child.setImageUrl(s3Util.uploadImage(file));
+
+        return ChildInfoResponse.ConvertEntityToDto(child);
     }
 }
