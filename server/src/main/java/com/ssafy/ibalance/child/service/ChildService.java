@@ -3,14 +3,13 @@ package com.ssafy.ibalance.child.service;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.entity.*;
-import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
+import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.child.type.Gender;
 import com.ssafy.ibalance.common.util.S3Util;
 import com.ssafy.ibalance.diet.repository.DietRepository;
-import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,8 +78,7 @@ public class ChildService {
 
         if(gender.equals(Gender.MALE)) {
             registChildRequest.setImageUrl(defaultBoy);
-        }
-        else {
+        } else {
             registChildRequest.setImageUrl(defaultGirl);
         }
 
@@ -109,9 +107,9 @@ public class ChildService {
 
         List<ChildAllergy> allergiesHave = allergies.stream().map(
                 allergy -> ChildAllergy.builder()
-                .child(child)
-                .allergy(allergy)
-                .build()).toList();
+                        .child(child)
+                        .allergy(allergy)
+                        .build()).toList();
 
         List<ChildAllergy> savedAllergies = childAllergyRepository.saveAll(allergiesHave);
 
@@ -165,7 +163,7 @@ public class ChildService {
                 .build();
     }
 
-    public ChildInfoResponse saveImage(Integer childId, MultipartFile file, Member member) {
+    public ChildInfoResponse saveProfileImage(Integer childId, MultipartFile file, Member member) {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
@@ -178,7 +176,7 @@ public class ChildService {
         return ChildInfoResponse.ConvertEntityToDto(child);
     }
 
-    public ChildInfoResponse deleteImage(Integer childId, Member member) {
+    public ChildInfoResponse deleteProfileImage(Integer childId, Member member) {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
@@ -188,8 +186,7 @@ public class ChildService {
 
         if(child.getGender().equals(Gender.MALE)) {
             child.setImageUrl(defaultBoy);
-        }
-        else {
+        } else {
             child.setImageUrl(defaultGirl);
         }
 

@@ -609,7 +609,7 @@ public class ChildApiTest extends ApiTest {
                                 .header(AUTH_HEADER, token)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.status").value(404))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField));
