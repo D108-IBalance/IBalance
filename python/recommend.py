@@ -71,6 +71,7 @@ def read_ratings(exclude_id_list: list):
             continue
         is_pass = True
         matrl_name_list = parse_matrl_name(menu_objs[rating[1]]["MATRL_NM"])
+
         for matrl_name in matrl_name_list:
             if matrl_name in hazard:
                 is_pass = False
@@ -94,7 +95,6 @@ def read_ratings(exclude_id_list: list):
                     rating[1],
                     rating[2]
                 ))
-
 
 """
 아이의 알러지 정보를 읽어서 위험한 음식 키워드 들고와서 hazard 리스트 변수에 append함
@@ -185,7 +185,6 @@ def predict_rating(item_id, ratings, similarities, N=10):
 
 
 def gen_condition(menu_obj, condition_obj):
-    # print(f'조건: {condition_obj}, {menu_obj}')
     if "CALORIE_QY" in condition_obj:
        if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
            return False
@@ -238,7 +237,9 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     recomms.u_index.apply(lambda d: some_list.append(unrated_items[int(d)]))
 
     filtered_recomms = list(filter(lambda x: gen_condition(menu_objs[x], condition_obj), some_list))
-
+    if len(filtered_recomms) == 0:
+        data = some_list[:n_recomm]
+        filtered_recomms.append(data[0])
     return filtered_recomms[:n_recomm]
 
 
@@ -291,13 +292,13 @@ def one_diet_recommend(request: ChildInfo):
         }
         result = recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
         diet.append(menu_objs[result[0]])
+
         for i in reversed(range(len(side_ratings))):
             if side_ratings[i][1] == result[0]:
                 del side_ratings[i]
         require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
         require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
         require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
-
     return diet
 
 
@@ -311,7 +312,8 @@ def one_diet_recommend(request: ChildInfo):
 def init_recommendations(request: ChildInfo):
     global last_access_time
     global CACHE_LIMIT
-
+    global rice_ratings
+    read_allergy(request.allergyList)
     if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
         _init()
         last_access_time = datetime.now()
@@ -319,7 +321,7 @@ def init_recommendations(request: ChildInfo):
         read_ratings(request.cacheList)
 
     set_user_id(request.childId)
-    read_allergy(request.allergyList)
+
     result = []
     for __ in range(7):
         diet = diet_converter(one_diet_recommend(request))
