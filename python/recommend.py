@@ -27,7 +27,6 @@ soup_ratings = []   # 국류 평점 모아놓은 리스트
 
 
 def _init():
-    global hazard
     global user_id
     global rice_ratings
     global side_ratings
@@ -35,7 +34,6 @@ def _init():
     rice_ratings = []
     side_ratings = []
     soup_ratings = []
-    hazard = []
     user_id = None
 
 
@@ -244,6 +242,25 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
 
 
 """
+추천 알고리즘 돌리기 전 초기화 단계 실행하는 함수
+"""
+
+
+def _init_process(request: ChildInfo):
+    global last_access_time
+    global CACHE_LIMIT
+    read_allergy(request.allergyList)
+    if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
+        _init()
+        last_access_time = datetime.now()
+        read_menu()
+        read_ratings(request.cacheList)
+
+    set_user_id(request.childId)
+
+
+
+"""
 하나의 식단을 추천해주는 함수
 :return: result list[dict], 하나의 식단에 밥류 1개, 반찬류 2개, 국 1개의 총 4개 메뉴 정보를 추가한 리스트 리턴
 """
@@ -310,17 +327,7 @@ def one_diet_recommend(request: ChildInfo):
 
 
 def init_recommendations(request: ChildInfo):
-    global last_access_time
-    global CACHE_LIMIT
-    global rice_ratings
-    read_allergy(request.allergyList)
-    if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
-        _init()
-        last_access_time = datetime.now()
-        read_menu()
-        read_ratings(request.cacheList)
-
-    set_user_id(request.childId)
+    _init_process(request)
 
     result = []
     for __ in range(7):
@@ -328,3 +335,8 @@ def init_recommendations(request: ChildInfo):
 
         result.append(diet)
     return result
+
+
+def one_recommend(request: ChildInfo):
+    _init_process(request)
+    return diet_converter(one_diet_recommend(request))

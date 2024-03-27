@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from pre import pre_call_data
 from pre.data_preprocess import menu_info_converter
-from recommend import init_recommendations, read_allergy
+from recommend import init_recommendations, one_recommend
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_by_object_id
 from dbUtil.mysql_api import mysql_connect, find_all_rating
@@ -57,7 +57,7 @@ def init_recommend(request: ChildInfo):
 
 
 """
-메뉴 고유id를 통해 메뉴 정보 조회
+메뉴 고유id를 통해 메뉴 정보 조회하는 컨트롤러
 """
 
 
@@ -65,3 +65,13 @@ def init_recommend(request: ChildInfo):
 def get_menu_info(menu_id: str):
     data = find_by_object_id("menu", menu_id)
     return menu_info_converter(data[0])
+
+
+"""
+단일 식단 조회하는 컨트롤러
+"""
+
+
+@app.post("/recomm")
+def refresh_recommend(request: ChildInfo):
+    return one_recommend(request)
