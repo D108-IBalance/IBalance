@@ -15,7 +15,19 @@
     overflow: scroll;
     position: relative;
   }
+  .slider::-webkit-scrollbar {
+    width: 5px; /* 스크롤바의 너비 */
+  }
 
+  .slider::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .slider::-webkit-scrollbar-track {
+    background: transparent;
+  }
   .inner {
     position: absolute;
     top: 0;
@@ -66,8 +78,20 @@
     font-size: 0.8rem;
     margin: 20px 0px;
   }
-}
+  .container::-webkit-scrollbar {
+    width: 5px; /* 스크롤바의 너비 */
+  }
 
+  .container::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
 @media (min-width: 576px) and (max-width: 1200px) {
   .slider {
     width: 100%;
@@ -140,12 +164,12 @@
 
   .container::-webkit-scrollbar-thumb {
     height: 10%; /* 스크롤바의 길이 */
-    background: #ffd1b5; /* 스크롤바의 색상 */
+    background: transparent;
     border-radius: 10px;
   }
 
   .container::-webkit-scrollbar-track {
-    background: #fff; /*스크롤바 뒷 배경 색상*/
+    background: transparent;
   }
 }
 @media screen and (min-width: 1200px) {
@@ -222,11 +246,11 @@
 
   .container::-webkit-scrollbar-thumb {
     height: 10%; /* 스크롤바의 길이 */
-    background: #ffd1b5; /* 스크롤바의 색상 */
+    background: transparent;
     border-radius: 10px;
   }
 
   .container::-webkit-scrollbar-track {
-    background: #fff; /*스크롤바 뒷 배경 색상*/
+    background: transparent;
   }
 }

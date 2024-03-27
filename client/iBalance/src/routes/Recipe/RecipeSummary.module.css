@@ -1,6 +1,5 @@
 @media screen and (max-width: 576px) {
   .container {
-    /* height: calc((100vh - 210px) / 2); */
     height: auto;
     width: 100%;
     margin-bottom: 20px;
@@ -27,10 +26,20 @@
   .cardContent {
     overflow-x: scroll;
   }
+  .cardContent::-webkit-scrollbar {
+    width: 5px; /* 스크롤바의 너비 */
+  }
+
+  .cardContent::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .cardContent::-webkit-scrollbar-track {
+    background: transparent;
+  }
   .cardBox {
-    /* display: flex;
-    flex-direction: row;
-    align-items: center; */
     height: 220px;
     width: 880px;
   }
