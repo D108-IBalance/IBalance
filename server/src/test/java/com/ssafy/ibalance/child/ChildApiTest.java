@@ -487,6 +487,7 @@ public class ChildApiTest extends ApiTest {
                 .andExpect(jsonPath("$.status").value(200))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, "아이의 프로필 사진 변경을 요청하는 API 입니다." +
+                                "<br>이 API 는 multipart/form-data 형식으로 입력해야 합니다." +
                                 "<br>100MB 이하 용량의 사진을 입력했을 경우, 200 OK 와 함께 결과 Image URL 정보가 반환됩니다." +
                                 "<br>사진을 입력하지 않았을 경우, 400 Bad Request 가 body 에 반환됩니다." +
                                 "<br>로그인 토큰을 헤더에 넣어주지 않았을 경우, 401 Unauthorized 가 body 에 반환됩니다." +
