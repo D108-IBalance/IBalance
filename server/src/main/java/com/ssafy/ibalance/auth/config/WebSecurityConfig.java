@@ -52,6 +52,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/child/**").hasRole("USER")
                         .requestMatchers("/child/main/**").hasRole("USER")
                         .requestMatchers("/child/growth/**").hasRole("USER")
+                        .requestMatchers("/child/profile/**").hasRole("USER")
                         .requestMatchers("/diary/calendar/**").hasRole("USER")
                         .requestMatchers("/diary/**").hasRole("USER")
                         .requestMatchers("/docs/**").permitAll()
