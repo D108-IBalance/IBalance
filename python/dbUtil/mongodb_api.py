@@ -88,12 +88,17 @@ def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
         result = collection.find(query, project)
 
     ret = []
-    if is_multiple and collection_name == "menu":
+    print(f'type : {type(result)}, data : {result}')
+    if is_multiple:
         for res in result:
-            ret.append(menu_pre(res))
-
+            if collection_name == "menu":
+                ret.append(menu_pre(res))
+            else: ret.append(res)
     else:
-        ret = menu_pre(result.next())
+        if collection_name == "menu":
+            ret.append(menu_pre(result.next()))
+        else: ret.append(result.next())
+
     return ret
 
 
@@ -186,4 +191,8 @@ def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: boo
         sub_query[attr_name] = condition
         query[operator].append(sub_query)
 
-    return _execute(collection_name, query, project, is_multiple=True)
+    is_multiple=True
+    if len(query[operator]) == 1:
+        is_multiple=False
+
+    return _execute(collection_name, query, project, is_multiple=is_multiple)
