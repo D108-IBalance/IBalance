@@ -1,4 +1,4 @@
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 576px) {
   .container {
     position: fixed;
     top: 0;
@@ -202,7 +202,7 @@
   }
 }
 
-@media screen and (min-width: 560px) {
+@media screen and (min-width: 576px) {
   .headerContainer {
     padding: 5% 7% 3% 7%;
   }

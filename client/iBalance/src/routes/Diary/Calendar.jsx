@@ -111,7 +111,7 @@ const Calendar = (props) => {
           return tempDate.getDate();
         });
       }
-      let dayArr = getDayArr(dietDays);
+      let dayArr = getDayArr([1, 2, 20, 30]);
       const weeks = getWeekArr(dayArr);
       console.log(weeks);
       setWeekArr(weeks);
@@ -163,14 +163,14 @@ const Calendar = (props) => {
                           day["haveDiets"]
                             ? onClickDay(
                                 `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
-                                id,
+                                day["날짜"],
                               )
                             : null;
                         }}>
                         <span
                           className={
                             day["haveDiets"]
-                              ? currentClick === id
+                              ? currentClick === day["날짜"]
                                 ? classes.currentClick
                                 : classes.canClick
                               : ""

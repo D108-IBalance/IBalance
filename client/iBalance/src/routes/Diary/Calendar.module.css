@@ -80,7 +80,9 @@
     cursor: pointer;
   }
   .canClick {
-    border: 2px solid #fe724c;
+    border: 2px solid #ffd1b5;
+    background-color: #ffd1b5;
+    color: #e55700;
     border-radius: 5px;
     padding: 5% 10% 5% 10%;
     cursor: pointer;
@@ -182,5 +184,21 @@
   .disable {
     font-weight: 600;
     color: rgba(0, 0, 0, 0.3);
+  }
+  .currentClick {
+    border: 2px solid #fe724c;
+    background-color: #fe724c;
+    color: white;
+    border-radius: 5px;
+    padding: 5% 15% 5% 15%;
+    cursor: pointer;
+  }
+  .canClick {
+    border: 2px solid #ffd1b5;
+    background-color: #ffd1b5;
+    color: #e55700;
+    border-radius: 5px;
+    padding: 5% 15% 5% 15%;
+    cursor: pointer;
   }
 }
