@@ -8,7 +8,9 @@ import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
 import com.ssafy.ibalance.diet.service.DietService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -33,7 +35,8 @@ public class DietController {
      * @return 일주일 식단 목록
      */
     @GetMapping("/{childId}")
-    public List<DietByDateResponse> getRecommendedDiet(@PathVariable Integer childId, @RequestParam LocalDate today) {
+    public List<DietByDateResponse> getRecommendedDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                       @RequestParam LocalDate today) {
         return dietService.getRecommendedDiet(childId, today);
     }
 
@@ -44,7 +47,7 @@ public class DietController {
      * @return 메뉴 상세 정보 목록
      */
     @GetMapping("/detail/{dietId}")
-    public List<MenuDetailResponse> getDietDetail(@PathVariable Long dietId) {
+    public List<MenuDetailResponse> getDietDetail(@PathVariable @Min(value = 1, message = "식단 ID 는 1 이상이어야 합니다.") Long dietId) {
         return dietService.getDietDetail(dietId);
     }
 
@@ -56,7 +59,8 @@ public class DietController {
      * @return 추천된 7개의 식단 정보
      */
     @GetMapping("/{childId}/init")
-    public List<InitDietResponse> getInitDiet(@PathVariable Integer childId, HttpServletRequest request, HttpServletResponse response) {
+    public List<InitDietResponse> getInitDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                              HttpServletRequest request, HttpServletResponse response) {
         cookieUtil.initCookie(request, response);
 
         List<Integer> allergyList = dietService.getAllergy(childId);
@@ -79,7 +83,8 @@ public class DietController {
      * @return 한 끼 식단으로 추천된 메뉴 목록
      */
     @GetMapping("/{childId}/temp")
-    public List<DietMenuResponse> addTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, HttpServletRequest request, HttpServletResponse response) {
+    public List<DietMenuResponse> addTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                              @RequestParam int dietDay, HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
         List<DietMenuResponse> menuList = dietService.addTempDiet(childId, dietDay, allergy, doNotRecommend);
@@ -96,7 +101,8 @@ public class DietController {
      * @return 삭제된 식단의 메뉴 아이디 목록
      */
     @DeleteMapping("/{childId}/temp")
-    public List<String> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
+    public List<String> deleteTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId, @RequestParam int dietDay,
+                                       @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence) {
         return dietService.deleteTempDiet(childId, dietDay, sequence);
     }
 
@@ -112,7 +118,9 @@ public class DietController {
      * @return 추천받은 메뉴 정보
      */
     @PutMapping("/{childId}/temp")
-    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam String menuId, HttpServletRequest request, HttpServletResponse response) {
+    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId, @RequestParam int dietDay,
+                                                   @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence,
+                                                   @RequestParam String menuId, HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
         MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);
@@ -128,7 +136,8 @@ public class DietController {
      * @return 식단 아이디 목록
      */
     @GetMapping("/{childId}/insert")
-    public List<Long> insertTempDiet(@PathVariable Integer childId, @RequestParam LocalDate startDate) {
+    public List<Long> insertTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                     @RequestParam LocalDate startDate) {
         return dietService.insertTempDiet(childId, startDate);
     }
 }
