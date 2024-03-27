@@ -274,7 +274,7 @@ public class ChildApiTest extends ApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andExpect(jsonPath("$.data.childMainResponse.childId").value(childId))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 아이의 정보와 오늘의 식단을 조회하는 API 입니다." +
                                 "<br>JWT 토큰과 자녀 아이디를 올바르게 입력하면, 200 OK 와 함께 아이의 정보와 오늘의 식단이 반환됩니다." +
@@ -300,7 +300,7 @@ public class ChildApiTest extends ApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.childDetailResponse.childId").value(childId))
+                .andExpect(jsonPath("$.data.childMainResponse.childId").value(childId))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField,
