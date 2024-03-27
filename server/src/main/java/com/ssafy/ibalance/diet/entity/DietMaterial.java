@@ -18,7 +18,7 @@ public class DietMaterial {
     @Column(columnDefinition = "boolean default false")
     private boolean picky;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 50, nullable = false)
     private String material;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

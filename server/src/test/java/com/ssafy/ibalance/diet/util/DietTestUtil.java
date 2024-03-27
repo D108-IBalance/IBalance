@@ -29,7 +29,7 @@ public class DietTestUtil extends TestBase {
         List<Integer> intList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
         List<DietMenu> dietMenuList = intList.stream().map(x -> DietMenu.builder()
-                        .menuId(x)
+                        .menuId(String.valueOf(x))
                         .diet(dietList.get((x - 1) / 4))
                         .build())
                 .toList();
