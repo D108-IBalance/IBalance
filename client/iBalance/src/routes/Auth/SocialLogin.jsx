@@ -29,6 +29,7 @@ const SocialLogin = () => {
         setAlert(1);
       }
     };
+
     login();
   }, [dispatch, navigate, provider]);
 

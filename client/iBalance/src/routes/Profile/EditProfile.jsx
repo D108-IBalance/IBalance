@@ -1,12 +1,60 @@
 // 외부 모듈
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./EditProfile.module.css";
-import profileImg from "../../assets/profile/Img/default_image.png";
+import { getChildProfile, editProfileImg } from "./ServerConnect";
+import { useEffect, useState } from "react";
 
 const EditProfile = () => {
+  const [uploadedImage, setUploadedImage] = useState("");
+  const [userProfile, setUserProfile] = useState({});
   const navigate = useNavigate();
+  const childId = useSelector((state) => state.childId);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const res = await Promise.all([getChildProfile(childId)]);
+      setUserProfile(res[0].data.data.childMainResponse);
+      setUploadedImage(res[0].data.data.childMainResponse.imageUrl);
+    };
+    getUserData();
+  }, [childId]);
+
+  const handleFileChange = async (e) => {
+    if (e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    console.log(file.size);
+    if (!file) {
+      return;
+    }
+    // 파일 크기 검증
+    const maxFileSize = 100 * 1024 * 1024; // 100MB in bytes
+    if (file.size > maxFileSize) {
+      alert("파일 크기가 너무 큽니다. 100MB 이하의 파일을 업로드해주세요.");
+      return;
+    }
+
+    // 파일 타입 검증
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    const imageUrl = URL.createObjectURL(file);
+
+    try {
+      // 파일 업로드를 시도합니다.
+      const res = await editProfileImg(childId, file);
+      console.log(res);
+      if (res.request.status === 200) {
+        setUploadedImage(imageUrl);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <main className={classes.container}>
       <section className={classes.formBox}>
@@ -17,31 +65,44 @@ const EditProfile = () => {
           }}></div>
         <div className={classes.imgBox}>
           <div className={classes.settingLine}>
-            <img src={profileImg} className={classes.profileImg} />
+            <img
+              src={uploadedImage}
+              alt="Profile"
+              className={classes.profileImg}
+            />{" "}
             <div className={classes.settingIconBox}>
-              <div className={classes.settingIcon}></div>
+              <input
+                style={{ display: "none" }}
+                id="file"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />{" "}
+              <label className={classes.settingIcon} htmlFor="file"></label>
             </div>
           </div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 이름</p>
-          <div className={classes.dataBox}>박서준</div>
+          <div className={classes.dataBox}>{userProfile.name}</div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 생년월일</p>
-          <div className={classes.dataBox}>2020 / 03 / 30</div>
+          <div className={classes.dataBox}>{userProfile.birthDate}</div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 성별</p>
-          <div className={classes.dataBox}>남자</div>
+          <div className={classes.dataBox}>
+            {userProfile.gender === "MALE" ? "남자" : "여자"}
+          </div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 키</p>
-          <div className={classes.dataBox}>130cm</div>
+          <div className={classes.dataBox}>{userProfile.height}cm</div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 몸무게</p>
-          <div className={classes.dataBox}>35kg</div>
+          <div className={classes.dataBox}>{userProfile.weight}kg</div>
         </div>
         <div className={classes.flexBet}>
           <p>자녀 알레르기</p>

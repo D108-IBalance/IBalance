@@ -3,7 +3,11 @@
 import customAxios from "../../axiosController";
 
 const getProfile = async () => {
-  return customAxios.get("child");
+  return customAxios.get(`child`);
+};
+
+const getChildProfile = async (idx) => {
+  return customAxios.get(`child/main/${idx}`);
 };
 
 const addProfile = async (profile) => {
@@ -14,8 +18,19 @@ const deleteProfile = async (id) => {
   return customAxios.delete(`child/${id}`);
 };
 
-// const getTestProfile = async () => {
-//   return customAxios.get("child");
-// };
+const editProfileImg = async (childId, profileImg) => {
+  const headers = {
+    "Content-Type": "multipart/form-data",
+  };
+  const formData = new FormData();
+  formData.append("image", profileImg);
+  return customAxios.put(`child/profile/${childId}`, formData, { headers });
+};
 
-export { getProfile, addProfile, deleteProfile };
+export {
+  getProfile,
+  getChildProfile,
+  addProfile,
+  deleteProfile,
+  editProfileImg,
+};

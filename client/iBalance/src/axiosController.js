@@ -27,6 +27,7 @@ customAxios.interceptors.response.use(
   (res) => res,
   // 실패시 콜백
   async (err) => {
+    console.log(err);
     if (err.response.status === 401) {
       try {
         let value = await axios.post(
