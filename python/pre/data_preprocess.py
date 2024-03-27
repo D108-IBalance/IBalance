@@ -110,3 +110,29 @@ def diet_converter(diet):
         new_menu_obj["cal"] = str(int(float(menu["CALORIE_QY"])))
         new_diet.append(new_menu_obj)
     return new_diet
+
+
+"""
+메뉴 정보조회 전용 converter
+:param: mongodb에서 object_id를 통해 조회한 단일 menu 객체
+:return: 필요한 요소만 담긴 response 객체 반환
+"""
+
+def menu_info_converter(menu_obj):
+    new_obj = dict()
+    new_obj["menuId"] = menu_obj["menu_id"]
+    new_obj["menuName"] = menu_obj["MEAL_NM"]
+    new_obj["menuImgUrl"] = menu_obj["MEAL_PICTR_FILE_NM"]
+    if menu_obj["MEAL_CLSF_NM"] in ["밥류", "죽류"]:
+        new_obj["menuType"] = "RICE"
+    elif menu_obj["MEAL_CLSF_NM"] in ["국,탕류"]:
+        new_obj["menuType"] = "SOUP"
+    else:
+        new_obj["menuType"] = "SIDE"
+    new_obj["calorie"] = int(float(menu_obj["CALORIE_QY"]))
+    new_obj["carbohydrate"] = float(menu_obj["CARBOH_QY"])
+    new_obj["protein"] = float(menu_obj["PROTEIN_QY"])
+    new_obj["fat"] = float(menu_obj["FAT_QY"])
+    new_obj["materials"] = parse_matrl_name(menu_obj["MATRL_NM"])
+    new_obj["recipe"] = menu_obj["COOK_MTH_CONT"].split("<br>")
+    return new_obj
