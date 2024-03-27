@@ -7,18 +7,23 @@ import com.ssafy.ibalance.child.util.AllergyTestUtil;
 import com.ssafy.ibalance.child.util.ChildTestUtil;
 import com.ssafy.ibalance.common.CommonDocument;
 import com.ssafy.ibalance.common.MemberTestUtil;
+import com.ssafy.ibalance.common.MockMultipartTestUtil;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.util.DietTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +50,9 @@ public class ChildApiTest extends ApiTest {
 
     @Autowired
     private DietTestUtil dietTestUtil;
+
+    @Autowired
+    private MockMultipartTestUtil mockMultipartTestUtil;
 
     @BeforeEach
     void settings() {
@@ -88,7 +96,6 @@ public class ChildApiTest extends ApiTest {
 
     @Test
     void 아이_정보_등록_정보이상_400() throws Exception {
-        allergyTestUtil.알러지정보_저장();
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
 
         mockMvc.perform(
@@ -287,8 +294,8 @@ public class ChildApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                    get("/child/main/{childId}", childId)
-                        .header(AUTH_HEADER, token)
+                        get("/child/main/{childId}", childId)
+                                .header(AUTH_HEADER, token)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
@@ -297,7 +304,7 @@ public class ChildApiTest extends ApiTest {
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField,
                         ChildDocument.getMainResponseField
-                        ));
+                ));
     }
 
     @Test
@@ -306,8 +313,8 @@ public class ChildApiTest extends ApiTest {
         Integer childId = -1;
 
         mockMvc.perform(
-                    get("/child/main/{childId}", childId)
-                        .header(AUTH_HEADER, token)
+                        get("/child/main/{childId}", childId)
+                                .header(AUTH_HEADER, token)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(400))
@@ -321,7 +328,7 @@ public class ChildApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                    get("/child/main/{childId}", childId)
+                        get("/child/main/{childId}", childId)
                 )
                 .andExpect(status().is(401))
                 .andExpect(jsonPath("$.status").value(401))
@@ -351,9 +358,9 @@ public class ChildApiTest extends ApiTest {
         Integer childId = 9999999;
 
         mockMvc.perform(
-                get("/child/main/{childId}", childId)
-                        .header(AUTH_HEADER, token)
-        )
+                        get("/child/main/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(404))
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
@@ -366,11 +373,11 @@ public class ChildApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                get("/child/growth/{childId}", childId)
-                        .header(AUTH_HEADER, token)
-                        .param("page", "0")
-                        .param("size", "4")
-        )
+                        get("/child/growth/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 자녀의 성장 데이터와 평균 데이터를 조회하는 API 입니다." +
@@ -383,7 +390,7 @@ public class ChildApiTest extends ApiTest {
                         "메인_자녀 성장 데이터, 평균 데이터 조회", CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField, ChildDocument.pageableQueryField,
                         ChildDocument.getGrowthListResponseField
-                        ));
+                ));
     }
 
     @Test
@@ -392,11 +399,11 @@ public class ChildApiTest extends ApiTest {
         Integer childId = -1;
 
         mockMvc.perform(
-                get("/child/growth/{childId}", childId)
-                        .header(AUTH_HEADER, token)
-                        .param("page", "0")
-                        .param("size", "4")
-        )
+                        get("/child/growth/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(400))
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
@@ -410,10 +417,10 @@ public class ChildApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                get("/child/growth/{childId}", childId)
-                        .param("page", "0")
-                        .param("size", "4")
-        )
+                        get("/child/growth/{childId}", childId)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
                 .andExpect(status().is(401))
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(document(DEFAULT_RESTDOC_PATH,
@@ -429,11 +436,11 @@ public class ChildApiTest extends ApiTest {
         String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
 
         mockMvc.perform(
-                get("/child/growth/{childId}", childId)
-                        .header(AUTH_HEADER, otherToken)
-                        .param("page", "0")
-                        .param("size", "4")
-        )
+                        get("/child/growth/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(403))
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
@@ -447,15 +454,187 @@ public class ChildApiTest extends ApiTest {
         Integer childId = 9999999;
 
         mockMvc.perform(
-                get("/child/growth/{childId}", childId)
-                        .header(AUTH_HEADER, token)
-                        .param("page", "0")
-                        .param("size", "4")
-        )
+                        get("/child/growth/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(404))
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField, ChildDocument.pageableQueryField
                 ));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .file(profileImage)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, token)
+
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "아이의 프로필 사진 변경을 요청하는 API 입니다." +
+                                "<br>100MB 이하 용량의 사진을 입력했을 경우, 200 OK 와 함께 결과 Image URL 정보가 반환됩니다." +
+                                "<br>사진을 입력하지 않았을 경우, 400 Bad Request 가 body 에 반환됩니다." +
+                                "<br>로그인 토큰을 헤더에 넣어주지 않았을 경우, 401 Unauthorized 가 body 에 반환됩니다." +
+                                "<br>해당 자녀의 프로필 사진을 변경할 권한이 없는 유저일 경우, 403 Forbidden 이 body 에 반환됩니다." +
+                                "<br>해당 아이디로 된 자녀가 존재하지 않을 경우, 404 Not Found 가 body 에 반환됩니다." +
+                                "<br>허용된 사진 파일 확장자가 아닌 다른 확장자의 파일을 입력했을 경우, 415 Unsupported Media Type 이 반환됩니다.",
+                        "자녀프로필사진변경", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+
+        Mockito.verify(amazonS3, Mockito.times(1))
+                .putObject(anyString(), anyString(), any(), any());
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_유효성검증_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, token)
+
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_자녀_아이디_오류_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", -1)
+                                .file(profileImage)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, token)
+
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .file(profileImage)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .file(profileImage)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_아이없음_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 99999;
+
+        MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .file(profileImage)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_변경_다른확장자_415() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        MockMultipartFile textFile = mockMultipartTestUtil.텍스트_파일_생성("textfile", "hello world", "image");
+
+        mockMvc.perform(
+                        multipart("/child/profile/{childId}", childId)
+                                .file(textFile)
+                                .with(request -> {
+                                    request.setMethod("PUT");
+                                    return request;
+                                })
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(415))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
     }
 }
