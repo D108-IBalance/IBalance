@@ -107,6 +107,6 @@ def diet_converter(diet):
         new_menu_obj["img_url"] = menu["MEAL_PICTR_FILE_NM"]
         new_menu_obj["menu_id"] = menu["menu_id"]
         new_menu_obj["menu_name"] = menu["MEAL_NM"]
-        new_menu_obj["cal"] = menu["CALORIE_QY"]
+        new_menu_obj["cal"] = str(int(float(menu["CALORIE_QY"])))
         new_diet.append(new_menu_obj)
     return new_diet
