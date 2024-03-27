@@ -1,11 +1,13 @@
 from fastapi import FastAPI
+
+from pre import pre_call_data
 from recommend import init_recommendations, read_allergy
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data
 from dbUtil.mysql_api import mysql_connect, find_all_rating
 from request.request_dto import ChildInfo
 import warnings
-
+import importlib
 # 특정 유형의 경고를 필터링
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -39,6 +41,9 @@ uri = f'{settings.MONGO_HOST}'
 mongodb_connect(uri) # 몽고DB 연결
 mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE, settings.MYSQL_PORT) # MySQL 연결
 
+pre_call_data.pre_call()
+
+from pre.pre_call_data import TABLE
 
 """
 초창기 식단 7개를 한번에 추천해주는 컨트롤러
