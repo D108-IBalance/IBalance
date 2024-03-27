@@ -2,24 +2,23 @@ import pandas as pd
 from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr, find_data_by_attr_condition
 from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
-from pre.data_preprocess import diet_converter, parse_matrl_name
+from pre.data_preprocess import diet_converter, parse_matrl_name, menu_converter
 from datetime import datetime
 
 """
 @Author: 김회창
 """
-last_access_time = None # 마지막으로 레이팅 데이터에 접근한 시간
-CACHE_LIMIT = 30 # 레이팅 데이터 캐싱시간(sec)
+last_access_time = None  # 마지막으로 레이팅 데이터에 접근한 시간
+CACHE_LIMIT = 30  # 레이팅 데이터 캐싱시간(sec)
 N_NEIGHBORS = 10  # 유저의 이웃들의 수
 N_RECOMMENDATIONS = 5  # 추천 데이터 개수
 menu_objs = {}  # 모든 메뉴에 대한 정보
 user_id = ""  # 추천받을 child_id
 
-hazard = [] # 알러지가 있을 경우 먹으면 안되는 음식 키워드
-rice_ratings = []   # 밥류 평점 모아놓은 리스트
-side_ratings = []   # 반찬류 평점 모+++아놓은 리스트
-soup_ratings = []   # 국류 평점 모아놓은 리스트
-
+hazard = []  # 알러지가 있을 경우 먹으면 안되는 음식 키워드
+rice_ratings = []  # 밥류 평점 모아놓은 리스트
+side_ratings = []  # 반찬류 평점 모+++아놓은 리스트
+soup_ratings = []  # 국류 평점 모아놓은 리스트
 
 """
 전역변수 초기화
@@ -94,6 +93,7 @@ def read_ratings(exclude_id_list: list):
                     rating[2]
                 ))
 
+
 """
 아이의 알러지 정보를 읽어서 위험한 음식 키워드 들고와서 hazard 리스트 변수에 append함
 :param: allergy_name_list list, 해당하는 아이가 보유하고 있는 알러지 이름 리스트
@@ -106,7 +106,8 @@ def read_allergy(allergy_name_list):
     if len(allergy_name_list) == 0:
         return
     exclude_attr = ["_id"]
-    allergy_obj_list = find_data_by_attr_condition(allergy_name_list, "allergy_name", is_or=True, collection_name="allergy", need_attr=None, exclude_attr=exclude_attr)
+    allergy_obj_list = find_data_by_attr_condition(allergy_name_list, "allergy_name", is_or=True,
+                                                   collection_name="allergy", need_attr=None, exclude_attr=exclude_attr)
     for allergy_obj in allergy_obj_list:
         for hazard_menu in allergy_obj["allergy_hazard"]:
             hazard.append(hazard_menu)
@@ -184,8 +185,8 @@ def predict_rating(item_id, ratings, similarities, N=10):
 
 def gen_condition(menu_obj, condition_obj):
     if "CALORIE_QY" in condition_obj:
-       if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
-           return False
+        if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
+            return False
     if "CARBOH_QY" in condition_obj:
         if float(menu_obj["CARBOH_QY"]) > float(condition_obj["CARBOH_QY"]):
             return False
@@ -196,8 +197,6 @@ def gen_condition(menu_obj, condition_obj):
         if float(menu_obj["CELLU_QY"]) > float(condition_obj["CELLU_QY"]):
             return False
     return True
-
-
 
 
 """
@@ -259,6 +258,42 @@ def _init_process(request: ChildInfo):
     set_user_id(request.childId)
 
 
+"""
+하나의 밥류 메뉴를 추천해주는 함수
+:param: condition_obj dict, 현재 사용 가능한 칼로리 및 영양소 수치, 이 수치를 기반으로 적절한 밥을 추천함
+:return: list[dict], recommend 함수를 통해 추천된 밥류 menu dict를 리턴
+"""
+
+
+def recommend_rice(condition_obj):
+    global rice_ratings
+    return recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+
+
+"""
+하나의 국류 메뉴를 추천해주는 함수
+:param: condition_obj dict, 현재 사용 가능한 칼로리 및 영양소 수치, 이 수치를 기반으로 적절한 국을 추천함
+:return: list[dict], recommend 함수를 통해 추천된 국류 menu dict를 리턴
+"""
+
+
+def recommend_soup(condition_obj):
+    global soup_ratings
+    return recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+
+
+"""
+하나의 반찬류 메뉴를 추천해주는 함수
+:param: condition_obj dict, 현재 사용 가능한 칼로리 및 영양소 수치, 이 수치를 기반으로 적절한 반찬을 추천함
+:return: list[dict], recommend 함수를 통해 추천된 반찬류 menu dict를 리턴
+"""
+
+
+def recommend_side(condition_obj):
+    global side_ratings
+    return recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+
+
 
 """
 하나의 식단을 추천해주는 함수
@@ -268,10 +303,6 @@ def _init_process(request: ChildInfo):
 
 def one_diet_recommend(request: ChildInfo):
     diet = []
-    global soup_ratings
-    global rice_ratings
-    global side_ratings
-
     require_protein = float(request.need.protein)
     require_cellulose = float(request.need.cellulose)
     require_carbohydrate = float(request.need.carbohydrate)
@@ -280,7 +311,7 @@ def one_diet_recommend(request: ChildInfo):
         "CALORIE_QY": require_calories,
         "CARBOH_QY": require_carbohydrate
     }
-    result = recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    result = recommend_rice(condition_obj)
     require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
     diet.append(menu_objs[result[0]])
     for i in reversed(range(len(rice_ratings))):
@@ -291,7 +322,7 @@ def one_diet_recommend(request: ChildInfo):
         "PROTEIN_QY": require_protein,
         "CELLU_QY": require_cellulose,
     }
-    result = recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    result = recommend_soup(condition_obj)
     diet.append(menu_objs[result[0]])
     for i in reversed(range(len(soup_ratings))):
         if soup_ratings[i][1] == result[0]:
@@ -300,14 +331,13 @@ def one_diet_recommend(request: ChildInfo):
     require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
     require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
 
-
     for __ in range(0, 2):
         condition_obj = {
             "CALORIE_QY": require_calories,
             "PROTEIN_QY": require_protein,
             "CELLU_QY": require_cellulose,
         }
-        result = recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+        result = recommend_side(condition_obj)
         diet.append(menu_objs[result[0]])
 
         for i in reversed(range(len(side_ratings))):
@@ -337,6 +367,53 @@ def init_recommendations(request: ChildInfo):
     return result
 
 
+"""
+단일 식단을 새롭게 추천해주는 함수
+:param: request ChildInfo, 아이의 정보 및 가까운 시일내에 추천받았던 메뉴를 제외시키기 위해 클라이언트로 부터 넘어온 정보
+:return: list[dict], 클라이언트로 부터 받은 정보를 바탕으로 1개의 식단을 추천한 결과를 리턴 
+"""
+
+
 def one_recommend(request: ChildInfo):
     _init_process(request)
     return diet_converter(one_diet_recommend(request))
+
+
+"""
+단일 메뉴를 새롭게 추천해주는 함수
+:param: request ChildInfo, 아이의 정보 및 가까운 시일내에 추천받았던 메뉴를 제외시키기 위해 클라이언트로 부터 넘어온 정보
+:return: dict, 클라이언트로 부터 받은 정보를 바탕으로 1개의 메뉴를 추천한 결과를 리턴 
+"""
+
+
+def menu_recommend(request: ChildInfo):
+    _init_process(request)
+    global menu_objs
+    condition_obj = dict()
+    sum_of_cal = 0
+    sum_of_protein = 0
+    sum_of_cellulose = 0
+    for menu_id in request.currentMenuIdOfDiet:
+        if menu_id in menu_objs:
+            sum_of_protein += float(menu_objs[menu_id]["PROTEIN_QY"])
+            sum_of_cal += int(float(menu_objs[menu_id]["CALORIE_QY"]))
+            sum_of_cellulose += float(menu_objs[menu_id]["CELLU_QY"])
+        else:
+            result = find_by_object_id("menu", menu_id)
+            sum_of_protein += float(result["PROTEIN_QY"])
+            sum_of_cal += int(float(result["CALORIE_QY"]))
+            sum_of_cellulose += float(result["CELLU_QY"])
+    condition_obj["CALORIE_QY"] = request.need.calories - sum_of_cal
+    if request.needType == "RICE":
+        condition_obj["CARBOH_QY"] = request.need.carbohydrate
+        new_menu_id = recommend_rice(condition_obj)[0]
+        return menu_converter(menu_objs[new_menu_id])
+    condition_obj["PROTEIN_QY"] = request.need.protein - sum_of_protein
+    condition_obj["CELLU_QY"] = request.need.cellulose - sum_of_cellulose
+    if request.needType == "SOUP":
+        new_menu_id = recommend_soup(condition_obj)[0]
+        return menu_converter(menu_objs[new_menu_id])
+    else:
+        new_menu_id = recommend_side(condition_obj)[0]
+        return menu_converter(menu_objs[new_menu_id])
+
