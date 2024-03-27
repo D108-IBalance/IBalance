@@ -112,9 +112,9 @@ public class ChildController {
         return childService.saveImage(childId, image, member);
     }
 
-    @PutMapping("/profile/default/{childId}")
-    public ChildInfoResponse defaultImage(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                                          @AuthenticationPrincipal Member member) {
-        return childService.defaultImage(childId, member);
+    @DeleteMapping("/profile/default/{childId}")
+    public ChildInfoResponse deleteImage(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                         @AuthenticationPrincipal Member member) {
+        return childService.deleteImage(childId, member);
     }
 }
