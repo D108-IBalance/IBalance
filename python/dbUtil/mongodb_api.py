@@ -88,7 +88,7 @@ def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
         result = collection.find(query, project)
 
     ret = []
-    if is_multiple:
+    if is_multiple and collection_name == "menu":
         for res in result:
             ret.append(menu_pre(res))
 
