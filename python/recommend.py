@@ -184,6 +184,25 @@ def predict_rating(item_id, ratings, similarities, N=10):
     return ratings_for_item.mean()
 
 
+def gen_condition(menu_obj, condition_obj):
+    # print(f'조건: {condition_obj}, {menu_obj}')
+    if "CALORIE_QY" in condition_obj:
+       if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
+           return False
+    if "CARBOH_QY" in condition_obj:
+        if float(menu_obj["CARBOH_QY"]) > float(condition_obj["CARBOH_QY"]):
+            return False
+    if "PROTEIN_QY" in condition_obj:
+        if float(menu_obj["PROTEIN_QY"]) > float(condition_obj["PROTEIN_QY"]):
+            return False
+    if "CELLU_QY" in condition_obj:
+        if float(menu_obj["CELLU_QY"]) > float(condition_obj["CELLU_QY"]):
+            return False
+    return True
+
+
+
+
 """
 레이팅 데이타를 기반으로 유저에게 N개의 메뉴를 추천해준다.
 :param n_neighbors int, 레이팅 예측값을 생성하기 위해 사용되는 이웃의 수
@@ -192,7 +211,8 @@ def predict_rating(item_id, ratings, similarities, N=10):
 """
 
 
-def recommend(cur_ratings, n_neighbors=10, n_recomm=5):
+def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
+    global menu_objs
     rating_pd = pd.DataFrame(data=cur_ratings, columns=['user_id', 'menu_id', 'rating'])
     rating_pd = rating_pd.pivot(index='user_id', columns='menu_id', values='rating')
     ratings_users = rating_pd.loc[user_id, :]
@@ -204,14 +224,22 @@ def recommend(cur_ratings, n_neighbors=10, n_recomm=5):
     sim = compute_similarity(user_id, rating_pd)
     predictions = unrated_items.apply(lambda d: predict_rating(d, rating_pd, sim, N=n_neighbors))
     predictions = predictions.sort_values(ascending=False)
-    recomms = predictions.head(n_recomm)
-    recomms = recomms.to_frame(name='predicted_rating')
+    some_list = list()
+    # recomm_test = predictions
+    # recomm_test = recomm_test.to_frame(name='predicted_rating')
+    # recomm_test = recomm_test.rename_axis('u_index')
+    # recomm_test = recomm_test.reset_index()
+    # recomm_test.u_index.apply(lambda d: some_list.append(menu_objs[unrated_items[int(d)]]))
+
+    recomms = predictions.to_frame(name='predicted_rating')
     recomms = recomms.rename_axis('u_index')
     recomms = recomms.reset_index()
-    recomms['menu_id'] = recomms.u_index.apply(lambda d: unrated_items[int(d)])
-    result = []
-    recomms.menu_id.apply(lambda id: result.append(menu_objs[id]))
-    return result
+    # recomms = recomms.head(n_recomm)
+    recomms.u_index.apply(lambda d: some_list.append(unrated_items[int(d)]))
+
+    filtered_recomms = list(filter(lambda x: gen_condition(menu_objs[x], condition_obj), some_list))
+
+    return filtered_recomms[:n_recomm]
 
 
 """
@@ -220,29 +248,55 @@ def recommend(cur_ratings, n_neighbors=10, n_recomm=5):
 """
 
 
-def one_diet_recommend():
+def one_diet_recommend(request: ChildInfo):
     diet = []
     global soup_ratings
     global rice_ratings
     global side_ratings
-    result = recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1)
-    diet.append(result[0])
+
+    require_protein = float(request.need.protein)
+    require_cellulose = float(request.need.cellulose)
+    require_carbohydrate = float(request.need.carbohydrate)
+    require_calories = float(request.need.calories)
+    condition_obj = {
+        "CALORIE_QY": require_calories,
+        "CARBOH_QY": require_carbohydrate
+    }
+    result = recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
+    diet.append(menu_objs[result[0]])
     for i in reversed(range(len(rice_ratings))):
-        if rice_ratings[i][1] == result[0]["menu_id"]:
+        if rice_ratings[i][1] == result[0]:
             del rice_ratings[i]
-
-    result = recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1)
-    diet.append(result[0])
+    condition_obj = {
+        "CALORIE_QY": require_calories,
+        "PROTEIN_QY": require_protein,
+        "CELLU_QY": require_cellulose,
+    }
+    result = recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    diet.append(menu_objs[result[0]])
     for i in reversed(range(len(soup_ratings))):
-        if soup_ratings[i][1] == result[0]["menu_id"]:
+        if soup_ratings[i][1] == result[0]:
             del soup_ratings[i]
+    require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
+    require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
+    require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
 
-    result = recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=2)
-    for side in result:
-        diet.append(side)
+
+    for __ in range(0, 2):
+        condition_obj = {
+            "CALORIE_QY": require_calories,
+            "PROTEIN_QY": require_protein,
+            "CELLU_QY": require_cellulose,
+        }
+        result = recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+        diet.append(menu_objs[result[0]])
         for i in reversed(range(len(side_ratings))):
-            if side_ratings[i][1] == side["menu_id"]:
+            if side_ratings[i][1] == result[0]:
                 del side_ratings[i]
+        require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
+        require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
+        require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
 
     return diet
 
@@ -268,6 +322,7 @@ def init_recommendations(request: ChildInfo):
     read_allergy(request.allergyList)
     result = []
     for __ in range(7):
-        diet = diet_converter(one_diet_recommend())
+        diet = diet_converter(one_diet_recommend(request))
+
         result.append(diet)
     return result
