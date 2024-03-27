@@ -165,7 +165,6 @@ public class ChildService {
                 .build();
     }
 
-    @Transactional
     public ChildInfoResponse saveImage(Integer childId, MultipartFile file, Member member) {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
