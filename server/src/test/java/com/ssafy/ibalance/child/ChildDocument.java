@@ -43,7 +43,7 @@ public class ChildDocument {
             fieldWithPath("data[].gender").type(JsonFieldType.STRING).description("성별")
     );
 
-    public static final  Snippet deletedChildResponseField = responseFields(
+    public static final Snippet deletedChildResponseField = responseFields(
             fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
             fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("삭제 자녀정보 기존 PK ID"),
             fieldWithPath("data.name").type(JsonFieldType.STRING).description("삭제 자녀정보의 자녀 이름"),
@@ -89,5 +89,13 @@ public class ChildDocument {
             fieldWithPath("data.averageList[].month").type(JsonFieldType.NUMBER).description("개월 수").optional(),
             fieldWithPath("data.averageList[].averageHeight").type(JsonFieldType.NUMBER).description("평균 키").optional(),
             fieldWithPath("data.averageList[].averageWeight").type(JsonFieldType.NUMBER).description("평균 몸무게").optional()
+    );
+
+    public static final Snippet changeProfileImageResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.childId").type(JsonFieldType.NUMBER).description("자녀 PK ID"),
+            fieldWithPath("data.name").type(JsonFieldType.STRING).description("자녀 이름"),
+            fieldWithPath("data.imageUrl").type(JsonFieldType.STRING).description("자녀 이미지 URL"),
+            fieldWithPath("data.gender").type(JsonFieldType.STRING).description("자녀 성별")
     );
 }

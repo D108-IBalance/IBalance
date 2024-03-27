@@ -497,7 +497,7 @@ public class ChildApiTest extends ApiTest {
                                 "<br>100MB 가 넘는 사진 파일을 입력 시, 413 Payload Too Large 가 HTTP Status Code 로 반환됩니다." +
                                 "<br>허용된 사진 파일 확장자가 아닌 다른 확장자의 파일을 입력했을 경우, 415 Unsupported Media Type 이 반환됩니다.",
                         "자녀프로필사진변경", CommonDocument.AccessTokenHeader,
-                        ChildDocument.childIdPathField));
+                        ChildDocument.childIdPathField, ChildDocument.changeProfileImageResponseField));
 
         Mockito.verify(amazonS3, Mockito.times(1))
                 .putObject(anyString(), anyString(), any(), any());
