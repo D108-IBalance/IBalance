@@ -178,7 +178,7 @@ public class ChildService {
         return ChildInfoResponse.ConvertEntityToDto(child);
     }
 
-    public ChildInfoResponse defaultImage(Integer childId, Member member) {
+    public ChildInfoResponse deleteImage(Integer childId, Member member) {
         Child child = childRepository.findById(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
 
