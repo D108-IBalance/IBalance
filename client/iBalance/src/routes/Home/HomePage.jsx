@@ -23,8 +23,9 @@ const HomePage = () => {
         getUserInfo(childId),
       ]);
       setChartInfo(res[0].data.data);
-      setUserProfile(res[1].data.data.childDetailResponse);
+      setUserProfile(res[1].data.data.childMainResponse);
       setUserDiet(res[1].data.data.dietList);
+      console.log(res[1].data.data.childMainResponse);
     };
     getHomeData();
   }, []);

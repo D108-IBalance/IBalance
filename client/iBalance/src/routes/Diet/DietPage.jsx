@@ -1,5 +1,6 @@
 // 외부 모듈
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // 내부 모듈
 import NavbarModule from "../../modules/Navbar/NavbarModule";
@@ -7,9 +8,22 @@ import classes from "./DietPage.module.css";
 import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
+import { getInitDiet } from "./ServerConnect";
 
 const DietPage = () => {
-  let [isEmptyDiet, setIsEmptyDiet] = useState(true);
+  const [dietData, setDietData] = useState([]);
+  const childId = useSelector((state) => state.childId);
+
+  const [isEmptyDiet, setIsEmptyDiet] = useState(true);
+
+  useEffect(() => {
+    const getDietData = async () => {
+      const res = await Promise.all([getInitDiet(childId)]);
+      setDietData(res[0].data.data);
+      console.log(res[0].data.data);
+    };
+    getDietData();
+  }, [childId]);
 
   return (
     <>
@@ -20,7 +34,7 @@ const DietPage = () => {
           {isEmptyDiet ? (
             <EmptyDiet setIsEmptyDiet={setIsEmptyDiet}></EmptyDiet>
           ) : (
-            <DietListPage></DietListPage>
+            <DietListPage dietData={dietData}></DietListPage>
           )}
         </div>
       </div>
