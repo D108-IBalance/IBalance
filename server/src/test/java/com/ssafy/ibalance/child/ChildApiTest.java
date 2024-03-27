@@ -490,9 +490,11 @@ public class ChildApiTest extends ApiTest {
                                 "<br>이 API 는 multipart/form-data 형식으로 입력해야 합니다." +
                                 "<br>100MB 이하 용량의 사진을 입력했을 경우, 200 OK 와 함께 결과 Image URL 정보가 반환됩니다." +
                                 "<br>사진을 입력하지 않았을 경우, 400 Bad Request 가 body 에 반환됩니다." +
+                                "<br>자녀 아이디를 자연수로 입력하지 않았을 경우, 400 Bad Request 가 body 에 반환됩니다." +
                                 "<br>로그인 토큰을 헤더에 넣어주지 않았을 경우, 401 Unauthorized 가 body 에 반환됩니다." +
                                 "<br>해당 자녀의 프로필 사진을 변경할 권한이 없는 유저일 경우, 403 Forbidden 이 body 에 반환됩니다." +
                                 "<br>해당 아이디로 된 자녀가 존재하지 않을 경우, 404 Not Found 가 body 에 반환됩니다." +
+                                "<br>100MB 가 넘는 사진 파일을 입력 시, 413 Payload Too Large 가 HTTP Status Code 로 반환됩니다." +
                                 "<br>허용된 사진 파일 확장자가 아닌 다른 확장자의 파일을 입력했을 경우, 415 Unsupported Media Type 이 반환됩니다.",
                         "자녀프로필사진변경", CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField));
