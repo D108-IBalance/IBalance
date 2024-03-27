@@ -69,6 +69,15 @@ public class DietController {
         return initDietResponseList;
     }
 
+    /**
+     * 한 끼 식단 추가 추천
+     *
+     * @param childId 자녀 아이디
+     * @param dietDay 추천 식단을 추가할 날의 번째 (0~6)
+     * @param request 저장된 쿠키를 가져오기 위한 request
+     * @param response 쿠키 저장을 위한 response
+     * @return 한 끼 식단으로 추천된 메뉴 목록
+     */
     @GetMapping("/{childId}/temp")
     public List<DietMenuResponse> addTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
@@ -78,11 +87,30 @@ public class DietController {
         return menuList;
     }
 
+    /**
+     * 추천중인 식단 중 한 끼 식단을 제거
+     *
+     * @param childId 자녀 아이디
+     * @param dietDay 삭제할 추천 식단의 날의 번째 (0~6)
+     * @param sequence 삭제할 추천 식단의 같은 일자 내의 번째 (0~2)
+     * @return 삭제된 식단의 메뉴 아이디 목록
+     */
     @DeleteMapping("/{childId}/temp")
     public List<String> deleteTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence) {
         return dietService.deleteTempDiet(childId, dietDay, sequence);
     }
 
+    /**
+     * 한 끼 식단에서 하나의 메뉴만 새로고침
+     *
+     * @param childId 자녀 아이디
+     * @param dietDay 삭제할 추천 식단의 날의 번째 (0~6)
+     * @param sequence 삭제할 추천 식단의 같은 일자 내의 번째 (0~2)
+     * @param menuId 삭제할 메뉴의 아이디
+     * @param request 저장된 쿠키를 가져오기 위한 request
+     * @param response 쿠키 저장을 위한 response
+     * @return 추천받은 메뉴 정보
+     */
     @PutMapping("/{childId}/temp")
     public MenuDetailResponse changeMenuOfTempDiet(@PathVariable Integer childId, @RequestParam int dietDay, @RequestParam int sequence, @RequestParam String menuId, HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
@@ -92,6 +120,13 @@ public class DietController {
         return menu;
     }
 
+    /**
+     * 추천받고 있는 식단을 확정
+     *
+     * @param childId 자녀 아이디
+     * @param startDate 시작일자
+     * @return 식단 아이디 목록
+     */
     @GetMapping("/{childId}/insert")
     public List<Long> insertTempDiet(@PathVariable Integer childId, @RequestParam LocalDate startDate) {
         return dietService.insertTempDiet(childId, startDate);
