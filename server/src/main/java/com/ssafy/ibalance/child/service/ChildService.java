@@ -118,11 +118,11 @@ public class ChildService {
 
     public ChildDietResponse getMain(Integer childId, Member member) {
         return ChildDietResponse.builder()
-                .childDetailResponse(getChildDetail(childId, member))
+                .childMainResponse(getChildMain(childId, member))
                 .dietList(dietRepository.getDietByDate(childId, LocalDate.now(), member)).build();
     }
 
-    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
+    private ChildMainResponse getChildMain(Integer childId, Member member) {
         Growth growth = growthRepository
                 .findTopByChildIdOrderByCreatedTimeDesc(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
@@ -131,7 +131,7 @@ public class ChildService {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        return ChildDetailResponse.convertEntityToDto(growth);
+        return ChildMainResponse.convertEntityToDto(growth);
     }
 
     public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
@@ -161,6 +161,10 @@ public class ChildService {
                 .growthList(growthResponseList)
                 .averageList(averageGrowthList)
                 .build();
+    }
+
+    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
+        return childRepository.getChildDetail(childId, member);
     }
 
     public ChildInfoResponse saveProfileImage(Integer childId, MultipartFile file, Member member) {
