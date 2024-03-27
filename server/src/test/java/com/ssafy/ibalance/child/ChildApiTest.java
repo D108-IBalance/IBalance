@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.child;
 
 import com.ssafy.ibalance.ApiTest;
+import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.util.AllergyTestUtil;
@@ -473,7 +474,7 @@ public class ChildApiTest extends ApiTest {
 
         MockMultipartFile profileImage = mockMultipartTestUtil.이미지_간단생성();
 
-        mockMvc.perform(
+        MvcResult mvcResult = mockMvc.perform(
                         multipart("/child/profile/{childId}", childId)
                                 .file(profileImage)
                                 .with(request -> {
@@ -497,7 +498,14 @@ public class ChildApiTest extends ApiTest {
                                 "<br>100MB 가 넘는 사진 파일을 입력 시, 413 Payload Too Large 가 HTTP Status Code 로 반환됩니다." +
                                 "<br>허용된 사진 파일 확장자가 아닌 다른 확장자의 파일을 입력했을 경우, 415 Unsupported Media Type 이 반환됩니다.",
                         "자녀프로필사진변경", CommonDocument.AccessTokenHeader,
-                        ChildDocument.childIdPathField, ChildDocument.changeProfileImageResponseField));
+                        ChildDocument.childIdPathField, ChildDocument.changeProfileImageResponseField))
+                .andReturn();
+
+        String imageUrl = getValueFromJSONBody(mvcResult, "$.data.imageUrl", "");
+
+        Child child = childRepository.findById(childId).get();
+        assertThat(child.getImageUrl()).isEqualTo(imageUrl);
+        assertThat(child.getImageUrl().contains("default_profile")).isFalse();
 
         Mockito.verify(amazonS3, Mockito.times(1))
                 .putObject(anyString(), anyString(), any(), any());
@@ -639,5 +647,98 @@ public class ChildApiTest extends ApiTest {
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_삭제_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        MvcResult mvcResult = mockMvc.perform(
+                        delete("/child/profile/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "자녀 프로필 사진을 삭제하고, 기본 프로필 이미지로 바꾸는 API 입니다. " +
+                                "<br>성공적으로 프로필 사진을 삭제했을 경우, 200 OK 와 함께 자녀의 현재 간단한 상태 정보를 반환합니다. " +
+                                "<br>자녀 아이디를 0 이하의 음수로 입력했을 경우, 400 Bad Request 가 body 에 담겨 나갑니다." +
+                                "<br>로그인 토큰을 헤더에 입력하지 않았을 경우. 401 Unauthorized 가 HTTP Status Code 로 나갑니다." +
+                                "<br>자녀 프로필 사진을 수정할 권한이 없는 경우, 403 Forbidden 이 body 에 담겨 나갑니다. " +
+                                "<br>해당 자녀가 존재하지 않을 경우, 404 Not Found 가 body 에 담겨 나갑니다.", "자녀프로필이미지삭제",
+                        CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
+                        ChildDocument.changeProfileImageResponseField))
+                .andReturn();
+
+        String imageUrl = getValueFromJSONBody(mvcResult, "$.data.imageUrl", "");
+
+        Child child = childRepository.findById(childId).get();
+        assertThat(child.getImageUrl()).isEqualTo(imageUrl);
+        assertThat(child.getImageUrl()).contains("default_profile");
+    }
+
+    @Test
+    void 자녀_프로필_사진_삭제_자녀아이디음수_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                        delete("/child/profile/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_삭제_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        delete("/child/profile/{childId}", childId)
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_삭제_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        delete("/child/profile/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 자녀_프로필_사진_삭제_자녀없음_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 9999999;
+
+        mockMvc.perform(
+                        delete("/child/profile/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField));
     }
 }
