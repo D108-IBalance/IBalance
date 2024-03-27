@@ -94,10 +94,9 @@ def diet_converter(diet):
         new_menu_obj["recipe"] = dict()
         new_menu_obj["recipe"]["content_list"] = menu["COOK_MTH_CONT"].split("<br>")
         new_menu_obj["recipe"]["need"] = menu["MATRL_NM"]
-        new_menu_obj["nutrient"] = dict()
-        new_menu_obj["nutrient"]["protein"] = menu["PROTEIN_QY"]
-        new_menu_obj["nutrient"]["fat"] = menu["FAT_QY"]
-        new_menu_obj["nutrient"]["carbohydrate"] = menu["CARBOH_QY"]
+        new_menu_obj["protein"] = menu["PROTEIN_QY"]
+        new_menu_obj["fat"] = menu["FAT_QY"]
+        new_menu_obj["carbohydrate"] = menu["CARBOH_QY"]
         new_menu_obj["material"] = parse_matrl_name(menu["MATRL_NM"])
         if menu["MEAL_CLSF_NM"] in ["밥류", "죽류"]:
             new_menu_obj["type"] = "밥"
