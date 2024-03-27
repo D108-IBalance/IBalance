@@ -177,4 +177,22 @@ public class ChildService {
 
         return ChildInfoResponse.ConvertEntityToDto(child);
     }
+
+    public ChildInfoResponse deleteImage(Integer childId, Member member) {
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+
+        if(!member.equals(child.getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        if(child.getGender().equals(Gender.MALE)) {
+            child.setImageUrl(defaultBoy);
+        }
+        else {
+            child.setImageUrl(defaultGirl);
+        }
+
+        return ChildInfoResponse.ConvertEntityToDto(child);
+    }
 }
