@@ -8,22 +8,18 @@ import NavbarModule from "../../modules/Navbar/NavbarModule";
 import Calendar from "./Calendar";
 import DiaryCards from "./DiaryCards";
 import DiaryWrite from "./DiaryWrite";
+import DiaryReview from "./DiaryReview";
 import Header from "../../modules/Header/Header";
 import notSelectIcon from "../../assets/diary/img/notselect.svg";
 
 const DiaryPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [pageStep, setPageStep] = useState(0);
-  const cardComponent =
-    pageStep === 0 ? (
-      <DiaryCards
-        selectedDate={selectedDate}
-        pageStep={pageStep}
-        setPageStep={setPageStep}
-      />
-    ) : (
-      <DiaryWrite selectedDate={selectedDate} />
-    );
+  const cardComponent = [
+    <DiaryCards selectedDate={selectedDate} setPageStep={setPageStep} />,
+    <DiaryWrite selectedDate={selectedDate} setPageStep={setPageStep} />,
+    <DiaryReview selectedDate={selectedDate} setPageStep={setPageStep} />,
+  ];
   return (
     <>
       <div className={classes.gridSet}>
@@ -43,7 +39,7 @@ const DiaryPage = () => {
                 </p>
               </div>
             ) : (
-              cardComponent
+              cardComponent[2]
             )}
           </div>
         </div>

@@ -2,7 +2,6 @@ import customAxios from "../../axiosController";
 
 const getUserChart = async (page, CHILDID) => {
   const SIZE = 4;
-
   return customAxios.get(`child/growth/${CHILDID}?page=${page}&size=${SIZE}`);
 };
 

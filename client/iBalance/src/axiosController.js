@@ -1,9 +1,9 @@
-// 현재 작업중이 axios Interceptor로직, 테스트 코드 작성중
+// 외부 모듈
+import axios from "axios";
 
+// 내부 모듈
 import store from "./store";
 import { setToken } from "./store";
-
-import axios from "axios";
 
 const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
