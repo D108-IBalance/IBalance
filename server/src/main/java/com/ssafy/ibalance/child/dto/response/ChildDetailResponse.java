@@ -1,12 +1,13 @@
 package com.ssafy.ibalance.child.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.child.dto.ChildDetailDto;
 import com.ssafy.ibalance.child.type.Gender;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Getter
@@ -22,20 +23,22 @@ public class ChildDetailResponse {
     private Gender gender;
     private Double height;
     private Double weight;
+    private List<Integer> allergies;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate lastUpdateDate;
+    public static ChildDetailResponse convertEntityToDto(ChildDetailDto dto) {
+        List<Integer> allergies = dto.getAllergies().stream()
+                .map(allergy -> allergy.getAllergy().getId())
+                .toList();
 
-    public static ChildDetailResponse convertEntityToDto(Growth growth) {
         return ChildDetailResponse.builder()
-                .childId(growth.getChild().getId())
-                .imageUrl(growth.getChild().getImageUrl())
-                .name(growth.getChild().getName())
-                .birthDate(growth.getChild().getBirthDate())
-                .gender(growth.getChild().getGender())
-                .height(growth.getHeight())
-                .weight(growth.getWeight())
-                .lastUpdateDate(growth.getCreatedTime().toLocalDate())
+                .childId(dto.getChild().getId())
+                .imageUrl(dto.getChild().getImageUrl())
+                .name(dto.getChild().getName())
+                .birthDate(dto.getChild().getBirthDate())
+                .gender(dto.getChild().getGender())
+                .height(dto.getChild().getHeight())
+                .weight(dto.getChild().getWeight())
+                .allergies(allergies)
                 .build();
     }
 }
