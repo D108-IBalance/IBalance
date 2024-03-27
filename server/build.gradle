@@ -108,6 +108,8 @@ dependencies {
 	// Spring Embedded Redis for Test
 	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
+	// S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 
