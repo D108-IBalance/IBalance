@@ -117,4 +117,11 @@ public class ChildController {
                                                 @AuthenticationPrincipal Member member) {
         return childService.deleteProfileImage(childId, member);
     }
+
+    @GetMapping("/{childId}")
+    public ChildDetailResponse getChildDetail(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                              @AuthenticationPrincipal Member member) {
+        return childService.getChildDetail(childId, member);
+    }
+
 }
