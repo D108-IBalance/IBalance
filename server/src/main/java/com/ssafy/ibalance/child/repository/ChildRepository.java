@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface ChildRepository extends JpaRepository<Child, Integer>, ChildCustomRepository {
 
     List<Child> findAllByMemberId(Integer memberId);
-
-    Optional<Child> findChildById(Integer childId);
 }
