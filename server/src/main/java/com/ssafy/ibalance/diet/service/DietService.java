@@ -213,6 +213,9 @@ public class DietService {
         dietMenuRepository.saveAll(dietMenuList);
         dietMaterialRepository.saveAll(dietMaterialList);
 
+        // redis 데이터 삭제
+        redisInitDietRepository.deleteAll(redisRecommendDietList);
+
         List<Long> dietIds = new ArrayList<>();
         for(Diet diet : diets) {
             dietIds.add(diet.getId());

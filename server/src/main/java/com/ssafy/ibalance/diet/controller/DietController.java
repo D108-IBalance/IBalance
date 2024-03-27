@@ -84,7 +84,8 @@ public class DietController {
      */
     @GetMapping("/{childId}/temp")
     public List<DietMenuResponse> addTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                                              @RequestParam int dietDay, HttpServletRequest request, HttpServletResponse response) {
+                                              @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
+                                              HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
         List<DietMenuResponse> menuList = dietService.addTempDiet(childId, dietDay, allergy, doNotRecommend);
@@ -101,7 +102,8 @@ public class DietController {
      * @return 삭제된 식단의 메뉴 아이디 목록
      */
     @DeleteMapping("/{childId}/temp")
-    public List<String> deleteTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId, @RequestParam int dietDay,
+    public List<String> deleteTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                       @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
                                        @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence) {
         return dietService.deleteTempDiet(childId, dietDay, sequence);
     }
@@ -118,9 +120,11 @@ public class DietController {
      * @return 추천받은 메뉴 정보
      */
     @PutMapping("/{childId}/temp")
-    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId, @RequestParam int dietDay,
+    public MenuDetailResponse changeMenuOfTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                   @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
                                                    @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence,
-                                                   @RequestParam String menuId, HttpServletRequest request, HttpServletResponse response) {
+                                                   @RequestParam @Min(value = 1, message = "메뉴 ID 는 1 이상이어야 합니다.") String menuId,
+                                                   HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
         MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);
