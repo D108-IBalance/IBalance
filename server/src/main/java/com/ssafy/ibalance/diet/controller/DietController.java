@@ -123,7 +123,7 @@ public class DietController {
     public MenuDetailResponse changeMenuOfTempDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                                    @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
                                                    @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence,
-                                                   @RequestParam @Min(value = 1, message = "메뉴 ID 는 1 이상이어야 합니다.") String menuId,
+                                                   @RequestParam String menuId,
                                                    HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
         String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
