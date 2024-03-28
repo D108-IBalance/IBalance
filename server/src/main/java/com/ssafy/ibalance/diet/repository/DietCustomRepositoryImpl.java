@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
+import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
@@ -15,7 +16,6 @@ import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.type.MenuType;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +33,7 @@ import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
 public class DietCustomRepositoryImpl implements DietCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
     @Override
     public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member) {
@@ -78,13 +79,8 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     public List<DietMenuResponse> getDietMenuFromMongo(DietByDateDto dietByDateDto) {
-        // TODO : NoSQL에서 메뉴 아이디에 해당하는 메뉴 정보 조회 구현 필요
         return dietByDateDto.getDietMenuList().stream()
-                .map(menu -> DietMenuResponse.builder()
-                        .menuId(menu.getMenuId())
-                        .menuName("MongoDB에서 가져온 메뉴 이름")
-                        .menuType(MenuType.RICE)
-                        .build())
+                .map(menu -> fastAPIConnectionUtil.getApiConnectionResult("/info/" + menu.getMenuId(), DietMenuResponse.builder().build()))
                 .toList();
     }
 
@@ -110,17 +106,8 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
 
         List<DietByDateResponse> childDietResponseList = new ArrayList<>();
 
-        // TODO : MongoDB에서 메뉴 데이터 가져오기
-        for(DietByDateDto dto : dietByDateDtoList) {
-            List<DietMenuResponse> menuDtoList = new ArrayList<>();
-
-            for(DietMenu dietMenu : dto.getDietMenuList()) {
-                menuDtoList.add(DietMenuResponse.builder()
-                        .menuId(dietMenu.getMenuId())
-                        .menuName("메뉴 이름")
-                        .menuType(MenuType.RICE)
-                        .build());
-            }
+        dietByDateDtoList.forEach(dto -> {
+            List<DietMenuResponse> menuDtoList = getDietMenuFromMongo(dto);
 
             childDietResponseList.add(DietByDateResponse.builder()
                     .dietId(dto.getDiet().getId())
@@ -128,7 +115,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                     .sequence(dto.getDiet().getSequence())
                     .menuList(menuDtoList)
                     .build());
-        }
+        });
 
         return childDietResponseList;
     }
