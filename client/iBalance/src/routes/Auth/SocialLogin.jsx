@@ -22,8 +22,8 @@ const SocialLogin = () => {
     let timer = null;
     let login = async () => {
       try {
+        alert("하이하이");
         const value = await getToken(code, provider);
-        alert(code, provider);
         const accessToken = value.data.data.accessToken;
         dispatch(setToken(accessToken));
         timer = setTimeout(() => {
