@@ -27,8 +27,8 @@ const LoginForm = () => {
     const deleteCookie = async () => {
       if (TOKEN) {
         await logout();
-        setAccess(true);
       }
+      setAccess(true);
     };
     deleteCookie();
   }, [TOKEN]);
