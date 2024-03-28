@@ -105,7 +105,6 @@ const Calendar = (props) => {
       let dietDays = [];
       const res = await getDietDates(CHILD_ID, year, month);
       if (res.data.status === 200) {
-        console.log(res);
         dietDays = res.data.data.map((dietDate) => {
           const tempDate = new Date(dietDate[dietDate]);
           return tempDate.getDate();
@@ -113,7 +112,6 @@ const Calendar = (props) => {
       }
       let dayArr = getDayArr([1, 2, 20, 30]);
       const weeks = getWeekArr(dayArr);
-      console.log(weeks);
       setWeekArr(weeks);
     };
     getDietInfo();

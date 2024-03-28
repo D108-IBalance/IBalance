@@ -25,7 +25,6 @@ const EditProfile = () => {
   const handleFileChange = async (e) => {
     if (e.target.files.length === 0) return;
     const file = e.target.files[0];
-    console.log(file.size);
     if (!file) {
       return;
     }
@@ -47,12 +46,11 @@ const EditProfile = () => {
     try {
       // 파일 업로드를 시도합니다.
       const res = await editProfileImg(childId, file);
-      console.log(res);
       if (res.request.status === 200) {
         setUploadedImage(imageUrl);
       }
     } catch (error) {
-      console.log(error);
+      alert("이미지 업데이트 중 에러가 발생하였습니다.");
     }
   };
   return (

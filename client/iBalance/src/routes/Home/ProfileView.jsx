@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./ProfileView.module.css";
-import profileImgfile from "../../assets/auth/img/default_profile1.png";
 import HomeHeader from "../../modules/Header/HomeHeader";
 
 const ProfileView = (props) => {
@@ -35,7 +34,7 @@ const ProfileView = (props) => {
       <HomeHeader></HomeHeader>
       <div className={classes.profileContentBox}>
         <div className={classes.profileImg}>
-          <img src={profileImgfile} />
+          <img src={userProfile?.imageUrl} />
         </div>
         <section className={classes.profileContent}>
           <p className={classes.profileName}>

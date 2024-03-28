@@ -76,7 +76,7 @@ const Profile = () => {
                     <div className={classes.deleteIcon} />
                   </div>
                 ) : null}
-                <div className={classes.profileIcon}></div>
+                <img src={profile.imageUrl} className={classes.profileIcon} />
                 <p className={classes.profileName}>{profile.name}</p>
               </div>
             );

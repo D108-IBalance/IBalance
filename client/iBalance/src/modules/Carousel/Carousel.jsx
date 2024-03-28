@@ -50,7 +50,6 @@ const Carousel = (props) => {
     }
   };
   const onTest = () => {
-    console.log("click");
     setIsOpen(true);
     naviate("/recipe/item");
   };

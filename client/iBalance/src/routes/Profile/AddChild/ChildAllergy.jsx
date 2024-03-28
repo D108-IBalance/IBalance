@@ -34,12 +34,8 @@ const ChildAllergy = (props) => {
     let allergyArr = Object.assign({}, profileData);
     allergyArr.haveAllergies = select;
     setProfileData(allergyArr);
-    try {
-      await addProfile(allergyArr);
-      setCurrent(1);
-    } catch (err) {
-      console.log(err);
-    }
+    await addProfile(allergyArr);
+    setCurrent(1);
   };
   useEffect(() => {
     let timer = null;

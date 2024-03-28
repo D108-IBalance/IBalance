@@ -27,7 +27,6 @@ customAxios.interceptors.response.use(
   (res) => res,
   // 실패시 콜백
   async (err) => {
-    console.log(err);
     if (err.response.status === 401) {
       try {
         let value = await axios.post(
@@ -42,7 +41,7 @@ customAxios.interceptors.response.use(
         customAxios.defaults.headers.Authorization = newToken;
         return axios(err.config);
       } catch (newErr) {
-        console.log(newErr);
+        return Promise.reject(err);
       }
     }
     return Promise.reject(err);

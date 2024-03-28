@@ -25,7 +25,6 @@ const HomePage = () => {
       setChartInfo(res[0].data.data);
       setUserProfile(res[1].data.data.childMainResponse);
       setUserDiet(res[1].data.data.dietList);
-      console.log(res[1].data.data.childMainResponse);
     };
     getHomeData();
   }, []);
