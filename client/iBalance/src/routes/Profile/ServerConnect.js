@@ -1,5 +1,6 @@
 // 내부 모듈
 
+import axios from "axios";
 import customAxios from "../../axiosController";
 
 const getProfile = async () => {
@@ -18,13 +19,18 @@ const deleteProfile = async (id) => {
   return customAxios.delete(`child/${id}`);
 };
 
-const editProfileImg = async (childId, profileImg) => {
+const editProfileImg = async (childId, profileImg, token) => {
   const headers = {
+    Authorization: token,
     "Content-Type": "multipart/form-data",
   };
   const formData = new FormData();
   formData.append("image", profileImg);
-  return customAxios.put(`child/profile/${childId}`, formData, { headers });
+  return axios.put(
+    `https://j10d108.p.ssafy.io/api/child/profile/${childId}`,
+    formData,
+    { headers },
+  );
 };
 
 export {

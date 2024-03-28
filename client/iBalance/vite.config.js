@@ -11,17 +11,17 @@ export default defineConfig({
       manifest: {
         icons: [
           {
-            src: "./public/icon192x192.png",
+            src: "/icon192x192.png",
             type: "image/png",
             sizes: "192x192",
           },
           {
-            src: "./public/icon512x512.png",
+            src: "/icon512x512.png",
             type: "image/png",
             sizes: "512x512",
           },
           {
-            src: "./public/icon-512-maskable.png",
+            src: "/icon-512-maskable.png",
             type: "image/png",
             sizes: "512x512",
             purpose: "maskable",
@@ -30,6 +30,16 @@ export default defineConfig({
         theme_color: "#fff",
         background_color: "#fff",
         display: "fullscreen",
+      },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => {
+              return url.pathname.startsWith("/api");
+            },
+            handler: "NetworkFirst",
+          },
+        ],
       },
     }),
   ],
