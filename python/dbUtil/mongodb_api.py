@@ -74,31 +74,23 @@ private 함수로서 현재 파일내에서만 사용한다.
 
 def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
     result = dict()
-    print(f'query: {query}')
     global client
     if is_multiple:
         result = list()
     if not validation_check(collection_name):
         return result
-
+        
     collection = client[DATABASE_NAME][collection_name]
     if project is None:
         result = collection.find(query)
     else:
         result = collection.find(query, project)
-
     ret = []
-    print(f'type : {type(result)}, data : {result}')
-    if is_multiple:
-        for res in result:
-            if collection_name == "menu":
-                ret.append(menu_pre(res))
-            else: ret.append(res)
-    else:
+    for res in result:
         if collection_name == "menu":
-            ret.append(menu_pre(result.next()))
-        else: ret.append(result.next())
-
+            ret.append(menu_pre(res))
+        else:
+            ret.append(res)
     return ret
 
 

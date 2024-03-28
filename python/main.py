@@ -5,7 +5,7 @@ from pre.data_preprocess import menu_info_converter, parse_matrl_name
 from recommend import init_recommendations, one_recommend, menu_recommend
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_by_object_id, \
-    find_data_by_attr_condition
+    find_data_by_attr_condition, find_all_attr
 from dbUtil.mysql_api import mysql_connect, find_all_rating
 from request.request_dto import ChildInfo, DietOfMenuId
 import warnings
@@ -99,8 +99,9 @@ def get_menu_names(request: list[DietOfMenuId]):
     menu_id_list = list()
     for diet in request:
         menu_id_list += diet.menuIdList
-    mongo_result = find_data_by_attr_condition(menu_id_list, "_id", is_or=True, collection_name="menu", need_attr=["MEAL_NM"],
-                                         exclude_attr=None)
+    mongo_result = find_data_by_attr_condition(menu_id_list, "_id", is_or=True, collection_name="menu",
+                                               need_attr=["MEAL_NM"],
+                                               exclude_attr=None)
     result_table = dict()
     for mongo_data in mongo_result:
         result_table[mongo_data["menu_id"]] = mongo_data["MEAL_NM"]
@@ -115,7 +116,6 @@ def get_menu_names(request: list[DietOfMenuId]):
     return response
 
 
-
 """
 식단 내 4개의 메뉴 id 리스트를 받아서 해당 메뉴의 이름, 식재료 리스트, 이미지를 조회
 """
@@ -123,7 +123,9 @@ def get_menu_names(request: list[DietOfMenuId]):
 @app.post("/recomm/info")
 def get_menu_infos(request: list[str]):
     response = list()
-    mongo_result = find_data_by_attr_condition(request, "_id", is_or=True, collection_name="menu", need_attr=["MEAL_NM", "MATRL_NM", "MEAL_PICTR_FILE_NM"], exclude_attr=None)
+    mongo_result = find_data_by_attr_condition(request, "_id", is_or=True, collection_name="menu",
+                                               need_attr=["MEAL_NM", "MATRL_NM", "MEAL_PICTR_FILE_NM"],
+                                               exclude_attr=None)
     for result in mongo_result:
         new_obj = dict()
         new_obj["menuId"] = result["menu_id"]

@@ -20,6 +20,7 @@ rice_ratings = []  # 밥류 평점 모아놓은 리스트
 side_ratings = []  # 반찬류 평점 모+++아놓은 리스트
 soup_ratings = []  # 국류 평점 모아놓은 리스트
 
+cached_black_list = []  # 식단 추천시 임시로 검색되지 않게 도와주는 리스트
 """
 전역변수 초기화
 """
@@ -184,6 +185,7 @@ def predict_rating(item_id, ratings, similarities, N=10):
 
 
 def gen_condition(menu_obj, condition_obj):
+    global cached_black_list
     if "CALORIE_QY" in condition_obj:
         if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
             return False
@@ -196,6 +198,8 @@ def gen_condition(menu_obj, condition_obj):
     if "CELLU_QY" in condition_obj:
         if float(menu_obj["CELLU_QY"]) > float(condition_obj["CELLU_QY"]):
             return False
+    if menu_obj["menu_id"] in cached_black_list:
+        return False
     return True
 
 
@@ -232,7 +236,6 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     recomms = recomms.reset_index()
     # recomms = recomms.head(n_recomm)
     recomms.u_index.apply(lambda d: some_list.append(unrated_items[int(d)]))
-
     filtered_recomms = list(filter(lambda x: gen_condition(menu_objs[x], condition_obj), some_list))
     if len(filtered_recomms) == 0:
         data = some_list[:n_recomm]
@@ -248,13 +251,14 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
 def _init_process(request: ChildInfo):
     global last_access_time
     global CACHE_LIMIT
+    global cached_black_list
+    cached_black_list = []
     read_allergy(request.allergyList)
     if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
         _init()
         last_access_time = datetime.now()
         read_menu()
         read_ratings(request.cacheList)
-
     set_user_id(request.childId)
 
 
@@ -303,6 +307,7 @@ def recommend_side(condition_obj):
 
 def one_diet_recommend(request: ChildInfo):
     diet = []
+    global cached_black_list
     require_protein = float(request.need.protein)
     require_cellulose = float(request.need.cellulose)
     require_carbohydrate = float(request.need.carbohydrate)
@@ -314,9 +319,10 @@ def one_diet_recommend(request: ChildInfo):
     result = recommend_rice(condition_obj)
     require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
     diet.append(menu_objs[result[0]])
-    for i in reversed(range(len(rice_ratings))):
-        if rice_ratings[i][1] == result[0]:
-            del rice_ratings[i]
+    cached_black_list.append(result[0])
+    # for i in reversed(range(len(rice_ratings))):
+    #     if rice_ratings[i][1] == result[0]:
+    #         del rice_ratings[i]
     condition_obj = {
         "CALORIE_QY": require_calories,
         "PROTEIN_QY": require_protein,
@@ -324,9 +330,10 @@ def one_diet_recommend(request: ChildInfo):
     }
     result = recommend_soup(condition_obj)
     diet.append(menu_objs[result[0]])
-    for i in reversed(range(len(soup_ratings))):
-        if soup_ratings[i][1] == result[0]:
-            del soup_ratings[i]
+    cached_black_list.append(result[0])
+    # for i in reversed(range(len(soup_ratings))):
+    #     if soup_ratings[i][1] == result[0]:
+    #         del soup_ratings[i]
     require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
     require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
     require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
@@ -339,10 +346,10 @@ def one_diet_recommend(request: ChildInfo):
         }
         result = recommend_side(condition_obj)
         diet.append(menu_objs[result[0]])
-
-        for i in reversed(range(len(side_ratings))):
-            if side_ratings[i][1] == result[0]:
-                del side_ratings[i]
+        cached_black_list.append(result[0])
+        # for i in reversed(range(len(side_ratings))):
+        #     if side_ratings[i][1] == result[0]:
+        #         del side_ratings[i]
         require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
         require_protein -= float(menu_objs[result[0]]["PROTEIN_QY"])
         require_cellulose -= float(menu_objs[result[0]]["CELLU_QY"])
