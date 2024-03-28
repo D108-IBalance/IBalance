@@ -7,22 +7,18 @@ import { useSelector } from "react-redux";
 
 const LoginForm = () => {
   const SocialLogin = async (num) => {
-    try {
-      await logout();
-    } finally {
-      let server = "";
-      if (num == 0) {
-        // 구글 로그인
-        server = import.meta.env.VITE_APP_GOOGLE_AUTH_URL;
-      } else if (num == 1) {
-        // 카카오 로그인
-        server = import.meta.env.VITE_APP_KAKAO_AUTH_URL;
-      } else {
-        // 네이버 로그인
-        server = import.meta.env.VITE_APP_NAVER_AUTH_URL;
-      }
-      window.location.href = server;
+    let server = "";
+    if (num == 0) {
+      // 구글 로그인
+      server = import.meta.env.VITE_APP_GOOGLE_AUTH_URL;
+    } else if (num == 1) {
+      // 카카오 로그인
+      server = import.meta.env.VITE_APP_KAKAO_AUTH_URL;
+    } else {
+      // 네이버 로그인
+      server = import.meta.env.VITE_APP_NAVER_AUTH_URL;
     }
+    window.location.href = server;
   };
 
   return (

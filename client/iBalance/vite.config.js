@@ -31,16 +31,6 @@ export default defineConfig({
         background_color: "#fff",
         display: "fullscreen",
       },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => {
-              return url.pathname.startsWith("/api");
-            },
-            handler: "NetworkFirst",
-          },
-        ],
-      },
     }),
   ],
 });

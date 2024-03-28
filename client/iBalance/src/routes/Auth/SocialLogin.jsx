@@ -30,8 +30,7 @@ const SocialLogin = () => {
           navigate("/enter/profile");
         }, 1000);
       } catch (err) {
-        alert(err);
-        // setAlert(1);
+        setAlert(1);
       }
     };
 
