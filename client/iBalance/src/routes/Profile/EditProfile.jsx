@@ -12,6 +12,7 @@ const EditProfile = () => {
   const [userProfile, setUserProfile] = useState({});
   const navigate = useNavigate();
   const childId = useSelector((state) => state.childId);
+  const token = useSelector((state) => state.token);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -45,7 +46,7 @@ const EditProfile = () => {
 
     try {
       // 파일 업로드를 시도합니다.
-      const res = await editProfileImg(childId, file);
+      const res = await editProfileImg(childId, file, token);
       if (res.request.status === 200) {
         setUploadedImage(imageUrl);
       }

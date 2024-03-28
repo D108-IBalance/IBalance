@@ -19,18 +19,25 @@ const SocialLogin = () => {
     // URL 파싱
     const params = new URL(window.location.href).searchParams;
     const code = params.get("code");
+    let timer = null;
     let login = async () => {
       try {
         const value = await getToken(code, provider);
+        console.log(value);
         const accessToken = value.data.data.accessToken;
         dispatch(setToken(accessToken));
-        navigate("/enter/profile");
+        timer = setTimeout(() => {
+          navigate("/enter/profile");
+        }, 1000);
       } catch (err) {
         setAlert(1);
       }
     };
 
     login();
+    return () => {
+      clearTimeout(timer);
+    };
   }, [dispatch, navigate, provider]);
 
   useEffect(() => {
