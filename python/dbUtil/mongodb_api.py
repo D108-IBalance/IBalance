@@ -188,7 +188,10 @@ def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: boo
 
     for condition in condition_list:
         sub_query = dict()
-        sub_query[attr_name] = condition
+        if attr_name == "_id":
+            sub_query[attr_name] = ObjectId(condition)
+        else:
+            sub_query[attr_name] = condition
         query[operator].append(sub_query)
 
     is_multiple=True

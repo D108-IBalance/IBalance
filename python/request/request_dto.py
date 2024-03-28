@@ -11,10 +11,10 @@ from typing import Optional
 
 
 class Need(BaseModel):
-    calories: int   # 필요한 칼로리 수치
-    carbohydrate: float # 필요한 탄수화물 수치
+    calories: int  # 필요한 칼로리 수치
+    carbohydrate: float  # 필요한 탄수화물 수치
     protein: float  # 필요한 단백질 수치
-    cellulose: float    # 필요한 식이섬유 수치
+    cellulose: float  # 필요한 식이섬유 수치
 
 
 class ChildInfo(BaseModel):
@@ -24,3 +24,13 @@ class ChildInfo(BaseModel):
     need: Need  # 필요한 영양분 및 칼로리 수치
     needType: Optional[str]  # 하나의 메뉴를 추천받을 때, 해당 메뉴의 타입
     currentMenuIdOfDiet: Optional[list[str]]  # 추천 받을 식단내 메뉴를 제외한 다른 메뉴의 id 리스트
+
+
+"""
+diet에 대한 정보를 리턴하는 controller에 사용되는 request dto
+"""
+
+
+class DietOfMenuId(BaseModel):
+    dietId: str  # 식단 고유 id
+    menuIdList: list[str]  # 해당 식단 내 포함된 menu 고유번호 리스트

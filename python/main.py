@@ -4,9 +4,10 @@ from pre import pre_call_data
 from pre.data_preprocess import menu_info_converter
 from recommend import init_recommendations, one_recommend, menu_recommend
 from pydantic_settings import BaseSettings
-from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_by_object_id
+from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_by_object_id, \
+    find_data_by_attr_condition
 from dbUtil.mysql_api import mysql_connect, find_all_rating
-from request.request_dto import ChildInfo
+from request.request_dto import ChildInfo, DietOfMenuId
 import warnings
 import importlib
 
@@ -84,3 +85,31 @@ def refresh_recommend(request: ChildInfo):
 @app.post("/recomm/menu")
 def refresh_menu(request: ChildInfo):
     return menu_recommend(request)
+
+
+"""
+요일 내 식단들의 고유 메뉴id리스트를 받아서 각 식단별 메뉴 이름 리스트를 조회하는 컨트롤러
+"""
+
+
+@app.post("/recomm/info/diet")
+def get_menu_names(request: list[DietOfMenuId]):
+    response = list()
+    idx = 0
+    menu_id_list = list()
+    for diet in request:
+        menu_id_list += diet.menuIdList
+    mongo_result = find_data_by_attr_condition(menu_id_list, "_id", is_or=True, collection_name="menu", need_attr=["MEAL_NM"],
+                                         exclude_attr=None)
+    result_table = dict()
+    for mongo_data in mongo_result:
+        result_table[mongo_data["menu_id"]] = mongo_data["MEAL_NM"]
+    for diet in request:
+        new_obj = dict()
+        new_obj["dietId"] = diet.dietId
+        new_obj["menuNameList"] = list()
+        for i in range(idx, idx + 4):
+            new_obj["menuNameList"].append(result_table[menu_id_list[i]])
+        idx += 4
+        response.append(new_obj)
+    return response
