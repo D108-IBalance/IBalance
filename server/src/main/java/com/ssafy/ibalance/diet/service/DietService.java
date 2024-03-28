@@ -152,14 +152,13 @@ public class DietService {
         List<Integer> allergyList = ConvertCookieStringToIntegerList(allergy);
         List<String> doNotRecommendList = ConvertCookieStringToStringList(doNotRecommend);
 
-        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommendList, dietList);
+        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommendList, dietList, menuId);
 
         dietList.add(menu.getMenuId());
         redisInitDietRepository.save(dayDiet);
 
         return menu;
     }
-
 
     @Transactional
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
@@ -313,23 +312,35 @@ public class DietService {
                 ).toList();
     }
 
-    private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList) {
-        // TODO : FastAPI에서 자녀 정보와 해당 식단의 다른 메뉴들을 기준으로 해당 메뉴와 비슷한 영양성분의 추천 메뉴 받기
-        List<String> materials = new ArrayList<>();
-        materials.add("재료1");
-        List<String> recipes = new ArrayList<>();
-        recipes.add("레시피1");
+    private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
+        List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
+        MenuType needType = fastAPIConnectionUtil.getApiConnectionResult("/info/" + refreshMenuId, DietMenuResponse.builder().build()).getMenuType();
+        LinkedHashMap<String, Object> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
+                .childId(childId)
+                .allergyList(allergyName)
+                .cacheList(doNotRecommend)
+                .need(RecommendNeedDto.builder()
+                        .calories(250)
+                        .carbohydrate(45.2)
+                        .protein(21.3)
+                        .cellulose(12.1)
+                        .build())
+                .needType(needType.getMenuType())
+                .currentMenuIdOfDiet(menuList)
+                .build(), new LinkedHashMap<>()
+        );
+        RecommendResponse recommendResponse = ConvertPythonAPIToResponse(recommendResult);
         return MenuDetailResponse.builder()
-                .menuId("메뉴9번")
-                .menuName("메뉴 9번")
-                .menuImgUrl("이미지 url")
-                .menuType(MenuType.SIDE)
-                .calorie(543)
-                .carbohydrate(543.21)
-                .protein(543.21)
-                .fat(543.21)
-                .materials(materials)
-                .recipe(recipes)
+                .menuId(recommendResponse.getMenuId())
+                .menuName(recommendResponse.getMenuName())
+                .menuImgUrl(recommendResponse.getMenuImgUrl())
+                .menuType(MenuType.find(recommendResponse.getMenuType()))
+                .calorie(recommendResponse.getCalorie())
+                .carbohydrate(recommendResponse.getCarbohydrate())
+                .protein(recommendResponse.getProtein())
+                .fat(recommendResponse.getFat())
+                .materials(recommendResponse.getMaterials())
+                .recipe(recommendResponse.getRecipeList())
                 .build();
     }
 
