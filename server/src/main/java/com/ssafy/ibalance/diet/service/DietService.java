@@ -295,19 +295,8 @@ public class DietService {
                 .currentMenuIdOfDiet(null)
                 .build();
 
-        // 임시 데이터
-        List<DietMenuResponse> menuList = new ArrayList<>();
-        for(int i = 0; i < 4; i++) {
-            menuList.add(DietMenuResponse.builder()
-                    .menuId("메뉴" + (i+5) + "번")
-                    .menuName("메뉴 " + (i+5) + "번")
-                    .menuType(MenuType.RICE)
-                    .build());
-        }
-        return menuList;
-
-//        List<LinkedHashMap<String, Object>> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("", recommendRequest, new ArrayList<>());
-//        return convertTempRecommend(recommendResult);
+        List<LinkedHashMap<String, Object>> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("", recommendRequest, new ArrayList<>());
+        return convertTempRecommend(recommendResult);
     }
 
     private List<DietMenuResponse> convertTempRecommend(List<LinkedHashMap<String, Object>> recommendResult) {
