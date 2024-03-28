@@ -22,6 +22,7 @@ const SocialLogin = () => {
     let timer = null;
     let login = async () => {
       try {
+        alert(code, provider);
         const value = await getToken(code, provider);
         const accessToken = value.data.data.accessToken;
         dispatch(setToken(accessToken));
