@@ -64,11 +64,11 @@ public class DietController {
         cookieUtil.initCookie(request, response);
 
         List<Integer> allergyList = dietService.getAllergy(childId);
-        cookieUtil.makeIntegerCookie(response, allergyList, "allergy", "/");
+        cookieUtil.makeCookie(response, allergyList, "allergy", "/");
 
         List<String> pastMenu = dietService.getPastMenu(childId);
         List<InitDietResponse> initDietResponseList = dietService.getInitDiet(childId, allergyList, pastMenu);
-        cookieUtil.makeStringCookie(response, pastMenu, "doNotRecommend", "/");
+        cookieUtil.makeCookie(response, pastMenu, "doNotRecommend", "/");
 
         return initDietResponseList;
     }
