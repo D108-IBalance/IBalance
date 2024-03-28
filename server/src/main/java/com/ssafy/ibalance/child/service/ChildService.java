@@ -1,5 +1,7 @@
 package com.ssafy.ibalance.child.service;
 
+import com.ssafy.ibalance.child.dto.ChildDetailDto;
+import com.ssafy.ibalance.child.dto.request.ModifyChildRequest;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.entity.*;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 @Transactional
@@ -164,7 +167,72 @@ public class ChildService {
     }
 
     public ChildDetailResponse getChildDetail(Integer childId, Member member) {
-        return childRepository.getChildDetail(childId, member);
+        ChildDetailDto dto = childRepository.getChildDetail(childId, member, getRedisAllergy(childId).getChildAllergyId());
+        return ChildDetailResponse.convertEntityToDto(dto);
+    }
+
+    private RedisChildAllergy getRedisAllergy(Integer childId) {
+        return redisChildAllergyRepository.findById(childId)
+                .orElseThrow(()-> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+    }
+
+    public ChildDetailResponse modifyChild(Integer childId, ModifyChildRequest modifyChildRequest, Member member) {
+        RedisChildAllergy redisChildAllergy = getRedisAllergy(childId);
+        ChildDetailDto childDetailDto = childRepository.getChildDetail(childId, member, redisChildAllergy.getChildAllergyId());
+
+        Child child = childDetailDto.getChild();
+
+        child.setHeight(modifyChildRequest.getHeight());
+        child.setWeight(modifyChildRequest.getWeight());
+
+        List<Integer> originalAllergies = childDetailDto.getAllergies().stream()
+                .map(allergy -> allergy.getAllergy().getId())
+                .toList();
+
+        List<Integer> modifyAllergies = modifyChildRequest.getHaveAllergies();
+
+        List<Integer> deleteAllergies = originalAllergies.stream()
+                .filter(origin -> modifyAllergies.stream()
+                        .noneMatch(Predicate.isEqual(origin)))
+                .toList();
+
+        List<Integer> updateAllergies = modifyAllergies.stream()
+                .filter(modify -> originalAllergies.stream()
+                        .noneMatch(Predicate.isEqual(modify)))
+                .toList();
+
+        redisChildAllergy.setChildAllergyId(modifyChildAllergy(deleteAllergies, updateAllergies, child));
+
+        saveGrowth(child);
+
+        return ChildDetailResponse.builder()
+                .childId(child.getId())
+                .imageUrl(child.getImageUrl())
+                .name(child.getName())
+                .birthDate(child.getBirthDate())
+                .gender(child.getGender())
+                .height(child.getHeight())
+                .weight(child.getWeight())
+                .allergies(modifyChildRequest.getHaveAllergies())
+                .build();
+    }
+
+    private List<Long> modifyChildAllergy(List<Integer> deleteAllergies, List<Integer> updateAllergies, Child child) {
+        childAllergyRepository.deleteByAllergyIdIn(deleteAllergies);
+
+        List<Allergy> allergies = allergyRepository.findAllById(updateAllergies);
+        List<ChildAllergy> updateChildAllergy = allergies.stream()
+                .map(allergy -> ChildAllergy.builder()
+                        .child(child)
+                        .allergy(allergy)
+                        .build())
+                .toList();
+
+        childAllergyRepository.saveAll(updateChildAllergy);
+
+        return childAllergyRepository.findByChild_id(child.getId()).stream()
+                .map(ChildAllergy::getId)
+                .toList();
     }
 
     public ChildInfoResponse saveProfileImage(Integer childId, MultipartFile file, Member member) {
