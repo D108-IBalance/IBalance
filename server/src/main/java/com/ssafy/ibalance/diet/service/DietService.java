@@ -226,27 +226,9 @@ public class DietService {
 
     @Transactional(readOnly = true)
     private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
-        // TODO : MongoDB에서 menuId로 메뉴 데이터 가져오기
-        List<MenuDetailResponse> menuDetailResponseList = new ArrayList<>();
-        menuIdList.forEach(s -> {
-            List<String> materials = new ArrayList<>();
-            materials.add("재료 " + s);
-            List<String> recipes = new ArrayList<>();
-            recipes.add("레시피 " + s);
-            menuDetailResponseList.add(MenuDetailResponse.builder()
-                    .menuId(s)
-                    .menuName("메뉴 이름")
-                    .menuImgUrl("메뉴 이미지")
-                    .menuType(MenuType.RICE)
-                    .calorie(123)
-                    .carbohydrate(1.23)
-                    .protein(4.56)
-                    .fat(7.89)
-                    .materials(materials)
-                    .recipe(recipes)
-                    .build());
-        });
-        return menuDetailResponseList;
+        return menuIdList.stream().map(menuId ->
+                fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
+                .toList();
     }
 
     @Transactional(readOnly = true)
