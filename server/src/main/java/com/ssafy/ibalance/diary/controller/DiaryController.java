@@ -3,6 +3,7 @@ package com.ssafy.ibalance.diary.controller;
 import com.ssafy.ibalance.common.dto.annotation.DatePattern;
 import com.ssafy.ibalance.diary.dto.annotation.CheckMonth;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
+import com.ssafy.ibalance.diary.dto.response.DiaryInfoResponse;
 import com.ssafy.ibalance.diary.service.DiaryService;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.member.entity.Member;
@@ -66,13 +67,11 @@ public class DiaryController {
      * @param member 로그인 한 멤버
      * @return
      */
-    @GetMapping("/detail/{childId}/{dietId}")
-    public void getDetailDiet(@AuthenticationPrincipal Member member,
-                              @PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                              @PathVariable @Min(value = 1, message = "식단 아이디는 1 이상이어야 합니다.") Long dietId) {
+    @GetMapping("/detail/{dietId}")
+    public DiaryInfoResponse getDiaryWriteInfo(@AuthenticationPrincipal Member member,
+                                               @PathVariable @Min(value = 1, message = "식단 아이디는 1 이상이어야 합니다.") Long dietId) {
 
-        diaryService.getDetailDietInfo(member, dietId);
-
+        return diaryService.getDiaryWriteInfo(member, dietId);
     }
 
 }

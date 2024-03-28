@@ -11,13 +11,9 @@ import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
+import com.ssafy.ibalance.diet.dto.RedisDietDto;
 import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
 import com.ssafy.ibalance.diet.dto.response.*;
-import com.ssafy.ibalance.diet.dto.RedisDietDto;
-import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
-import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
@@ -25,9 +21,6 @@ import com.ssafy.ibalance.diet.entity.RedisRecommendDiet;
 import com.ssafy.ibalance.diet.exception.CannotAddDietException;
 import com.ssafy.ibalance.diet.exception.RedisWrongDataException;
 import com.ssafy.ibalance.diet.exception.WrongCookieDataException;
-import com.ssafy.ibalance.diet.repository.DietMaterialRepository;
-import com.ssafy.ibalance.diet.repository.DietMenuRepository;
-import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.diet.repository.RedisInitDietRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
@@ -87,7 +80,7 @@ public class DietService {
         List<InitDietResponse> initDietResponseList = getInitRecommend(childId, allergyList, pastMenu);
 
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             List<String> menuList = new ArrayList<>();
             initDietResponseList.get(day).getMenuList().getFirst().forEach(menu -> {
                 menuList.add(menu.getMenuId());
@@ -143,12 +136,12 @@ public class DietService {
         List<String> dietList = dayDiet.getDietList().get(sequence).getMenuList();
         try {
             for (int menuNum = 0; menuNum < 4; menuNum++) {
-                if (dietList.get(menuNum).equals(menuId)) {
+                if(dietList.get(menuNum).equals(menuId)) {
                     dietList.remove(menuNum);
                     break;
                 }
             }
-        } catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             throw new RedisWrongDataException("해당 식단의 메뉴가 4개가 아닙니다.");
         }
 
@@ -171,7 +164,7 @@ public class DietService {
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
         List<String> menuIdList = new ArrayList<>();
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
             diet.getDietList().forEach(menus -> menuIdList.addAll(menus.getMenuList()));
@@ -231,14 +224,14 @@ public class DietService {
     }
 
     @Transactional(readOnly = true)
-    private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
+    protected List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
         return menuIdList.stream().map(menuId ->
-                fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
+                        fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    private List<InitDietResponse> getInitRecommend(Integer childId, List<Integer> allergyList, List<String> pastMenu) {
+    protected List<InitDietResponse> getInitRecommend(Integer childId, List<Integer> allergyList, List<String> pastMenu) {
         // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
         RecommendRequest recommendRequest = RecommendRequest.builder()
@@ -264,7 +257,7 @@ public class DietService {
                 diet -> diet.stream().map(this::ConvertPythonAPIToResponse).toList()).toList();
 
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             List<RecommendResponse> recommend = recommendList.get(day);
             List<DietMenuResponse> menuList = recommend.stream().map(
                     menu -> DietMenuResponse.builder()
@@ -285,7 +278,7 @@ public class DietService {
     }
 
     @Transactional(readOnly = true)
-    private List<DietMenuResponse> getTempRecommend(Integer childId, int dietDay, List<Integer> allergyList, List<String> doNotRecommend) {
+    protected List<DietMenuResponse> getTempRecommend(Integer childId, int dietDay, List<Integer> allergyList, List<String> doNotRecommend) {
         // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
         RecommendRequest recommendRequest = RecommendRequest.builder()
@@ -317,7 +310,7 @@ public class DietService {
                         .menuName(menu.getMenuName())
                         .menuType(MenuType.find(menu.getMenuType()))
                         .build()
-                ).toList();
+        ).toList();
     }
 
     private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
@@ -355,7 +348,7 @@ public class DietService {
     private List<Integer> ConvertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
         String[] cookieSplit = cookie.split("\\|");
-        try{
+        try {
             Arrays.stream(cookieSplit)
                     .forEach(id -> result.add(Integer.parseInt(id)));
         } catch (NumberFormatException e) {
@@ -367,7 +360,7 @@ public class DietService {
     private List<String> ConvertCookieStringToStringList(String cookie) {
         List<String> result;
         String[] cookieSplit = cookie.split("\\|");
-        try{
+        try {
             result = new ArrayList<>(Arrays.asList(cookieSplit));
         } catch (Exception e) {
             throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");

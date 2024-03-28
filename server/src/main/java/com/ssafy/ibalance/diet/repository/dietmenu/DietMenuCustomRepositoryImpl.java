@@ -40,8 +40,9 @@ public class DietMenuCustomRepositoryImpl implements DietMenuCustomRepository {
                         )
                 )
                 .from(dietMenu)
-                .join(diet).on(dietMenu.diet.eq(diet))
-                .join(child).on(diet.child.eq(child))
+                .leftJoin(diet).on(dietMenu.diet.eq(diet))
+                .leftJoin(dietMaterial).on(dietMaterial.diet.eq(diet))
+                .leftJoin(child).on(diet.child.eq(child))
                 .where(diet.id.eq(dietId))
                 .transform(
                         groupBy(child).as(
@@ -55,7 +56,7 @@ public class DietMenuCustomRepositoryImpl implements DietMenuCustomRepository {
                 () -> new DietNotFoundException("해당 식단을 찾을 수 없습니다.")
         );
 
-        if(member.equals(child.getMember())) {
+        if(!child.getMember().equals(member)) {
             throw new ChildAccessDeniedException("해당 식단 정보를 열람할 수 있는 권한이 없습니다.");
         }
 
