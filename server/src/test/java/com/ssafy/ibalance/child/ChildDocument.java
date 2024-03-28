@@ -110,4 +110,10 @@ public class ChildDocument {
             fieldWithPath("data.weight").type(JsonFieldType.NUMBER).description("자녀 몸무게"),
             fieldWithPath("data.allergies").type(JsonFieldType.ARRAY).description("자녀 알러지 아이디 목록")
     );
+
+    public static final Snippet modifyChildRequestField = requestFields(
+            fieldWithPath("height").type(JsonFieldType.NUMBER).attributes(required()).description("변경할 자녀 키"),
+            fieldWithPath("weight").type(JsonFieldType.NUMBER).attributes(required()).description("변경할 자녀 몸무게"),
+            fieldWithPath("haveAllergies").type(JsonFieldType.ARRAY).attributes(required()).description("변경할 알러지 정보")
+    );
 }

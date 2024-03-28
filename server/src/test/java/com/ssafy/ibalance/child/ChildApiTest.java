@@ -830,4 +830,126 @@ public class ChildApiTest extends ApiTest {
                         ChildDocument.childIdPathField
                 ));
     }
+
+    @Test
+    void 자녀_정보_변경_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_생성()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "자녀 정보를 변경하는 API 입니다." +
+                                "<br><br><b>Header</b>에 <b>JWT 토큰과 자녀 아이디</b>를, <b>body</b>에 <b>변경할 아이의 정보</b>를 올바르게 입력하면, <b>200 OK</b> 와 함께 변경된 자녀 정보가 반환됩니다." +
+                                "<br>- 자녀 아이디는 <b>1 이상의 정수</b>로 입력해야 합니다." +
+                                "<br>- 0 이하의 정수를 입력하면 <b>400 Bad Request</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 변경할 아이의 정보가 아래의 조건에 맞지 않으면 <b>400 Bad Request</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br> 1. height, weight 는 반드시 소수점 1자리까지만! 소수점이 없는 것은 상관없습니다." +
+                                "<br> 2. haveAllergies 는 정수 배열이어야 하며, 1부터 18자리 숫자 이하로 입력해야 합니다. " +
+                                "<br> 3. haveAllergies 배열이 비어 있어도 상관없습니다. 대신 빈 배열을 던져 주세요." +
+                                "<br>- <b>Header</b> 에 <b>JWT 토큰</b>이 올바르게 입력되지 않았을 때, <b>401 Unauthorized</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 자녀 정보에 접근 권한이 없을 때, <b>403 Forbidden</b> 이 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, <b>404 Not Found</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다.",
+                        "자녀정보변경", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField,
+                        ChildDocument.childDetailResponseField
+                ));
+    }
+
+    @Test
+    void 자녀_정보_변경_잘못된아이디_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_생성()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField
+                ));
+    }
+
+    @Test
+    void 자녀_정보_변경_정보이상_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_잘못_생성()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField
+                ));
+    }
+
+    @Test
+    void 자녀_정보_변경_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_생성()))
+                )
+                .andExpect(status().is(401))
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField
+                ));
+    }
+
+    @Test
+    void 자녀_정보_변경_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_생성()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField
+                ));
+    }
+
+    @Test
+    void 자녀_정보_변경_없는아이_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 999999;
+
+        mockMvc.perform(
+                        put("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(childSteps.아이변경정보_생성()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.modifyChildRequestField
+                ));
+    }
 }
