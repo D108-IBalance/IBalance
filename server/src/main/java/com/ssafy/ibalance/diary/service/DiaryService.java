@@ -2,7 +2,7 @@ package com.ssafy.ibalance.diary.service;
 
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.repository.DietRepository;
+import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
