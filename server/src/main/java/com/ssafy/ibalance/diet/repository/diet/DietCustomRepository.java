@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.diet.repository;
+package com.ssafy.ibalance.diet.repository.diet;
 
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;

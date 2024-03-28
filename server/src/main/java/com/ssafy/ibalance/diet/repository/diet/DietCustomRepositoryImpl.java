@@ -1,4 +1,4 @@
-package com.ssafy.ibalance.diet.repository;
+package com.ssafy.ibalance.diet.repository.diet;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -12,9 +12,9 @@ import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
+import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.type.MenuType;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.querydsl.core.group.GroupBy.*;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.ssafy.ibalance.child.entity.QChild.child;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
 import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
@@ -111,10 +112,10 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
         List<DietByDateResponse> childDietResponseList = new ArrayList<>();
 
         // TODO : MongoDB에서 메뉴 데이터 가져오기
-        for(DietByDateDto dto : dietByDateDtoList) {
+        for (DietByDateDto dto : dietByDateDtoList) {
             List<DietMenuResponse> menuDtoList = new ArrayList<>();
 
-            for(DietMenu dietMenu : dto.getDietMenuList()) {
+            for (DietMenu dietMenu : dto.getDietMenuList()) {
                 menuDtoList.add(DietMenuResponse.builder()
                         .menuId(dietMenu.getMenuId())
                         .menuName("메뉴 이름")
