@@ -7,9 +7,7 @@ import { useSelector } from "react-redux";
 
 const LoginForm = () => {
   const TOKEN = useSelector((state) => state.token);
-  const [access, setAccess] = useState(false);
   const SocialLogin = (num) => {
-    if (access === false) return;
     let server = "";
     if (num == 0) {
       // 구글 로그인
@@ -28,7 +26,6 @@ const LoginForm = () => {
       if (TOKEN) {
         await logout();
       }
-      setAccess(true);
     };
     deleteCookie();
   }, [TOKEN]);
