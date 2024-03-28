@@ -100,17 +100,8 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
 
         List<DietByDateResponse> childDietResponseList = new ArrayList<>();
 
-        // TODO : MongoDB에서 메뉴 데이터 가져오기
-        for(DietByDateDto dto : dietByDateDtoList) {
-            List<DietMenuResponse> menuDtoList = new ArrayList<>();
-
-            for(DietMenu dietMenu : dto.getDietMenuList()) {
-                menuDtoList.add(DietMenuResponse.builder()
-                        .menuId(dietMenu.getMenuId())
-                        .menuName("메뉴 이름")
-                        .menuType(MenuType.RICE)
-                        .build());
-            }
+        dietByDateDtoList.forEach(dto -> {
+            List<DietMenuResponse> menuDtoList = getDietMenuFromMongo(dto);
 
             childDietResponseList.add(DietByDateResponse.builder()
                     .dietId(dto.getDiet().getId())
@@ -118,7 +109,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                     .sequence(dto.getDiet().getSequence())
                     .menuList(menuDtoList)
                     .build());
-        }
+        });
 
         return childDietResponseList;
     }
