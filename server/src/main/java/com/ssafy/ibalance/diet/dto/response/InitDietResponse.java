@@ -10,5 +10,5 @@ import java.util.List;
 public class InitDietResponse {
 
     private int dietDay;
-    private List<DietMenuResponse> menuList;
+    private List<List<DietMenuResponse>> menuList;
 }
