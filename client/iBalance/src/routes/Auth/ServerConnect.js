@@ -3,6 +3,7 @@ import axios from "axios";
 
 // 내부 모듈
 import servers from "../../server.jsx";
+import customAxios from "../../axiosController.js";
 
 // accessToken 받기 위한 API 요청
 const getToken = async (code, provider) => {
@@ -29,4 +30,8 @@ const getToken = async (code, provider) => {
   }
 };
 
-export { getToken };
+const logout = async () => {
+  return customAxios("member/logout");
+};
+
+export { getToken, logout };

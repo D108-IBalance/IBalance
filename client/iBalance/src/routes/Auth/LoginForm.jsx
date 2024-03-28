@@ -1,9 +1,15 @@
-/* eslint-disable */
+import { useEffect, useState } from "react";
 import classes from "./LoginForm.module.css";
 import { Container, Row } from "react-bootstrap";
 
+import { logout } from "./ServerConnect";
+import { useSelector } from "react-redux";
+
 const LoginForm = () => {
+  const TOKEN = useSelector((state) => state.token);
+  const [access, setAccess] = useState(false);
   const SocialLogin = (num) => {
+    if (access === false) return;
     let server = "";
     if (num == 0) {
       // 구글 로그인
@@ -17,7 +23,15 @@ const LoginForm = () => {
     }
     window.location.href = server;
   };
-
+  useEffect(() => {
+    const deleteCookie = async () => {
+      if (TOKEN) {
+        await logout();
+        setAccess(true);
+      }
+    };
+    deleteCookie();
+  }, [TOKEN]);
   return (
     <div className={classes.loginFormbox}>
       <Container className={classes.loginForm}>
