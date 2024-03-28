@@ -2,7 +2,6 @@ package com.ssafy.ibalance.child.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.dto.ChildDetailDto;
-import com.ssafy.ibalance.child.dto.response.ChildDetailResponse;
 import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.child.entity.ChildAllergy;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
@@ -40,11 +39,11 @@ public class ChildCustomRepositoryImpl implements ChildCustomRepository {
     }
 
     @Override
-    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
+    public ChildDetailDto getChildDetail(Integer childId, Member member, List<Long> childAllergyList) {
         Map<Child, List<ChildAllergy>> transform = jpaQueryFactory.select(child, childAllergy)
                 .from(child)
                 .leftJoin(childAllergy).on(child.id.eq(childAllergy.child.id))
-                .where(child.id.eq(childId))
+                .where(child.id.eq(childId).and(childAllergy.id.in(childAllergyList)))
                 .transform(
                         groupBy(child).as(
                                 list(childAllergy)
@@ -63,6 +62,6 @@ public class ChildCustomRepositoryImpl implements ChildCustomRepository {
             throw new ChildAccessDeniedException("조회 권한이 없습니다.");
         }
 
-        return ChildDetailResponse.convertEntityToDto(childDetailDto);
+        return childDetailDto;
     }
 }
