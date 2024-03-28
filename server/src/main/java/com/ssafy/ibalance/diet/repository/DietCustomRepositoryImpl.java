@@ -1,12 +1,12 @@
 package com.ssafy.ibalance.diet.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
+import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
@@ -14,7 +14,6 @@ import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.type.MenuType;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +31,7 @@ import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
 public class DietCustomRepositoryImpl implements DietCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
     @Override
     public List<DietByDateResponse> getDietByDate(Integer childId, LocalDate date, Member member) {
@@ -68,13 +68,8 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
     }
 
     public List<DietMenuResponse> getDietMenuFromMongo(DietByDateDto dietByDateDto) {
-        // TODO : NoSQL에서 메뉴 아이디에 해당하는 메뉴 정보 조회 구현 필요
         return dietByDateDto.getDietMenuList().stream()
-                .map(menu -> DietMenuResponse.builder()
-                        .menuId(menu.getMenuId())
-                        .menuName("MongoDB에서 가져온 메뉴 이름")
-                        .menuType(MenuType.RICE)
-                        .build())
+                .map(menu -> fastAPIConnectionUtil.getApiConnectionResult("/info/" + menu.getMenuId(), DietMenuResponse.builder().build()))
                 .toList();
     }
 
