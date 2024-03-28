@@ -1,6 +1,5 @@
 package com.ssafy.ibalance.diet.repository.dietmaterial;
 
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.ssafy.ibalance.child.entity.QChild.child;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
@@ -36,7 +36,7 @@ public class DietMaterialCustomRepositoryImpl implements DietMaterialCustomRepos
                         .and(diet.createdTime.after(startDate.atStartOfDay()))
                         .and(dietMaterial.picky.eq(true)))
                 .transform(
-                        GroupBy.groupBy(child).as(list(dietMaterial.material))
+                        groupBy(child).as(list(dietMaterial.material))
                 );
 
         Child child = pickyResult.keySet().stream().findFirst().orElseGet(null);
