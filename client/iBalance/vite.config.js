@@ -11,17 +11,17 @@ export default defineConfig({
       manifest: {
         icons: [
           {
-            src: "/icon192x192.png",
+            src: "./public/icon192x192.png",
             type: "image/png",
             sizes: "192x192",
           },
           {
-            src: "/icon512x512.png",
+            src: "./public/icon512x512.png",
             type: "image/png",
             sizes: "512x512",
           },
           {
-            src: "/icon-512-maskable.png",
+            src: "./public/icon-512-maskable.png",
             type: "image/png",
             sizes: "512x512",
             purpose: "maskable",
