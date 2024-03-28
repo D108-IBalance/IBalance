@@ -82,7 +82,7 @@ public class DietService {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
         for(int day = 0; day < 7; day++) {
             List<String> menuList = new ArrayList<>();
-            initDietResponseList.get(day).getMenuList().forEach(menu -> {
+            initDietResponseList.get(day).getMenuList().getFirst().forEach(menu -> {
                 menuList.add(menu.getMenuId());
                 pastMenu.add(menu.getMenuId());
             });
@@ -266,10 +266,11 @@ public class DietService {
                             .menuType(MenuType.find(menu.getMenuType()))
                             .build()
             ).toList();
-
+            List<List<DietMenuResponse>> menuWrapper = new ArrayList<>();
+            menuWrapper.add(menuList);
             initDietResponseList.add(InitDietResponse.builder()
                     .dietDay(day)
-                    .menuList(menuList)
+                    .menuList(menuWrapper)
                     .build());
         }
 
