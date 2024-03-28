@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from pre import pre_call_data
-from pre.data_preprocess import menu_info_converter
+from pre.data_preprocess import menu_info_converter, parse_matrl_name
 from recommend import init_recommendations, one_recommend, menu_recommend
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect, find_attr_by_id, find_all_data, find_by_object_id, \
@@ -111,5 +111,24 @@ def get_menu_names(request: list[DietOfMenuId]):
         for i in range(idx, idx + 4):
             new_obj["menuNameList"].append(result_table[menu_id_list[i]])
         idx += 4
+        response.append(new_obj)
+    return response
+
+
+
+"""
+식단 내 4개의 메뉴 id 리스트를 받아서 해당 메뉴의 이름, 식재료 리스트, 이미지를 조회
+"""
+
+@app.post("/recomm/info")
+def get_menu_infos(request: list[str]):
+    response = list()
+    mongo_result = find_data_by_attr_condition(request, "_id", is_or=True, collection_name="menu", need_attr=["MEAL_NM", "MATRL_NM", "MEAL_PICTR_FILE_NM"], exclude_attr=None)
+    for result in mongo_result:
+        new_obj = dict()
+        new_obj["menuId"] = result["menu_id"]
+        new_obj["menuName"] = result["MEAL_NM"]
+        new_obj["menuMaterial"] = parse_matrl_name(result["MATRL_NM"])
+        new_obj["menuImgUrl"] = result["MEAL_PICTR_FILE_NM"]
         response.append(new_obj)
     return response
