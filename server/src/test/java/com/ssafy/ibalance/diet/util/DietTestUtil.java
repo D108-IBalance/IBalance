@@ -26,12 +26,18 @@ public class DietTestUtil extends TestBase {
     private ChildRepository childRepository;
 
     public void 식단_메뉴_저장(List<Diet> dietList) {
-        List<Integer> intList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+        List<String> menuIdList = List.of("65fa83bf3eb83d319efa85da", "65fa83f63eb83d319efa85de",
+        "65fa83bf3eb83d319efa85b9", "65fa83f63eb83d319efa8629", "65fa83f63eb83d319efa8615",
+                "65fa83f63eb83d319efa85e9", "65fa83bf3eb83d319efa85d0", "65fa83f63eb83d319efa8609",
+        "65fa84203eb83d319efa868a", "65fa83f63eb83d319efa85ee", "65fa83bf3eb83d319efa85d6",
+        "65fa83f63eb83d319efa861d");
 
-        List<DietMenu> dietMenuList = intList.stream().map(x -> DietMenu.builder()
-                        .menuId(Integer.toString(x))
-                        .diet(dietList.get((x - 1) / 4))
-                        .build())
+        List<DietMenu> dietMenuList = menuIdList.stream()
+                .flatMap(menuId -> dietList.stream()
+                        .map(diet -> DietMenu.builder()
+                                .menuId(menuId)
+                                .diet(diet)
+                                .build()))
                 .toList();
 
         dietMenuRepository.saveAll(dietMenuList);
