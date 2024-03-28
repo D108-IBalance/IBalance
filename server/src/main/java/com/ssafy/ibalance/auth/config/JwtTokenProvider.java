@@ -142,8 +142,8 @@ public class JwtTokenProvider {
         if(request.getCookies() != null && request.getCookies().length != 0) {
             Arrays.stream(request.getCookies())
                     .filter(c -> c.getName().equals("refreshToken"))
-                    .findFirst()
-                    .ifPresent(c -> redisRepository.deleteByRefreshToken(c.getAttribute("refreshToken")));
+                    .findFirst().flatMap(c -> redisRepository.findByRefreshToken(c.getValue()))
+                    .ifPresent(redisRepository::delete);
         }
 
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());

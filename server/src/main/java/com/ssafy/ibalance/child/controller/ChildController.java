@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.child.controller;
 
 import com.ssafy.ibalance.child.dto.annotation.CheckFile;
+import com.ssafy.ibalance.child.dto.request.ModifyChildRequest;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
 import com.ssafy.ibalance.child.service.ChildService;
@@ -98,6 +99,34 @@ public class ChildController {
     }
 
     /**
+     * 자녀 상세 정보 조회
+     *
+     * @param childId 자녀 아이디
+     * @param member 로그인 한 멤버
+     * @return 자녀의 상세 정보 (자녀 아이디, 이미지, 이름, 생년월일, 성별, 키, 몸무게, 알러지 목록)
+     */
+    @GetMapping("/{childId}")
+    public ChildDetailResponse getChildDetail(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                              @AuthenticationPrincipal Member member) {
+        return childService.getChildDetail(childId, member);
+    }
+
+    /**
+     * 자녀 정보 변경 (키, 몸무게, 알러지)
+     *
+     * @param childId 자녀 아이디
+     * @param modifyChildRequest 변경된 자녀 정보
+     * @param member 로그인 한 멤버
+     * @return 변경된 자녀 정보 (자녀 아이디, 이미지, 이름, 생년월일, 성별, 키, 몸무게, 알러지 목록)
+     */
+    @PutMapping("/{childId}")
+    public ChildDetailResponse modifyChild(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                           @RequestBody @Valid ModifyChildRequest modifyChildRequest,
+                                           @AuthenticationPrincipal Member member) {
+        return childService.modifyChild(childId, modifyChildRequest, member);
+    }
+
+    /**
      * 자녀 프로필 변경
      *
      * @param childId 자녀 아이디
@@ -112,16 +141,16 @@ public class ChildController {
         return childService.saveProfileImage(childId, image, member);
     }
 
+    /**
+     * 자녀 프로필 사진 삭제 (기본 이미지로 변경)
+     *
+     * @param childId 자녀 아이디
+     * @param member 로그인 한 멤버
+     * @return 기본 이미지로 변경된 자녀 정보
+     */
     @DeleteMapping("/profile/{childId}")
     public ChildInfoResponse deleteProfileImage(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                                 @AuthenticationPrincipal Member member) {
         return childService.deleteProfileImage(childId, member);
     }
-
-    @GetMapping("/{childId}")
-    public ChildDetailResponse getChildDetail(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                                              @AuthenticationPrincipal Member member) {
-        return childService.getChildDetail(childId, member);
-    }
-
 }
