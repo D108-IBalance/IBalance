@@ -30,41 +30,43 @@ const ProfileView = (props) => {
     }
   }, [userProfile]);
   return (
-    <main className={classes.profileBox}>
-      <HomeHeader></HomeHeader>
-      <div className={classes.profileContentBox}>
-        <div className={classes.profileImg}>
-          <img src={userProfile?.imageUrl} />
-        </div>
-        <section className={classes.profileContent}>
-          <p className={classes.profileName}>
-            {userProfile ? userProfile.name : ""}
-            <span>({currentAge})</span>
-          </p>
-          <div className={classes.growthBack}>
-            <div className={classes.growthLine}></div>
-            <div className={classes.profiletextBox}>
-              <div>
-                <p className={classes.profiletext}>신장</p>
-                <p className={classes.profiledata}>
-                  {userProfile ? `${userProfile.height}cm` : ""}
-                </p>
-              </div>
-              <div>
-                <p className={classes.profiletext}>몸무게</p>
-                <p className={classes.profiledata}>
-                  {userProfile ? `${userProfile.weight}kg` : ""}
-                </p>
-              </div>
-              <div>
-                <p className={classes.profiletext}>BMI</p>
-                <p className={classes.profiledata}>{BMI}</p>
+    <>
+      <main className={classes.profileBox}>
+        <HomeHeader></HomeHeader>
+        <div className={classes.profileContentBox}>
+          <div className={classes.profileImg}>
+            <img src={userProfile?.imageUrl} />
+          </div>
+          <section className={classes.profileContent}>
+            <p className={classes.profileName}>
+              {userProfile ? userProfile.name : ""}
+              <span>({currentAge})</span>
+            </p>
+            <div className={classes.growthBack}>
+              <div className={classes.growthLine}></div>
+              <div className={classes.profiletextBox}>
+                <div>
+                  <p className={classes.profiletext}>신장</p>
+                  <p className={classes.profiledata}>
+                    {userProfile ? `${userProfile.height}cm` : ""}
+                  </p>
+                </div>
+                <div>
+                  <p className={classes.profiletext}>몸무게</p>
+                  <p className={classes.profiledata}>
+                    {userProfile ? `${userProfile.weight}kg` : ""}
+                  </p>
+                </div>
+                <div>
+                  <p className={classes.profiletext}>BMI</p>
+                  <p className={classes.profiledata}>{BMI}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
-    </main>
+          </section>
+        </div>
+      </main>
+    </>
   );
 };
 

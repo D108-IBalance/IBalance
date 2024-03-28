@@ -4,14 +4,14 @@ import { useState } from "react";
 
 // 내부 모듈
 import classes from "./DietSummary.module.css";
-import NavbarModule from "../../modules/Navbar/NavbarModule";
 import sample1 from "../../assets/diet/sample1.png";
 import sample2 from "../../assets/diet/sample2.png";
 import sample3 from "../../assets/diet/sample3.png";
 import sample4 from "../../assets/diet/sample4.png";
 
-const DietSummary = () => {
+const DietSummary = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setSummaryInfo, summaryInfo } = props;
   const navigate = useNavigate();
   const dietList = [
     {
@@ -73,15 +73,13 @@ const DietSummary = () => {
   ];
   return (
     <div className={classes.gridSet}>
-      <NavbarModule isClick={2}></NavbarModule>
-
       <div className={classes.container}>
         <div className={classes.leftBox}>
           <div className={classes.titleBox}>
             <div
               className={classes.backIcon}
               onClick={() => {
-                navigate("/diet");
+                setSummaryInfo({});
               }}></div>
             <div className={classes.titleTextBox}>
               <div className={classes.titleIcon}></div>

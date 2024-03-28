@@ -9,7 +9,8 @@ import WeekCard from "./WeekCard";
 import DayDiet from "./DayDiet";
 import SaveModalPage from "./SaveModalPage";
 
-const DietListPage = () => {
+const DietListPage = (props) => {
+  const { userDiet, setUserDiet, setSummaryInfo } = props;
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
 
   const weekList = useMemo(() => {
@@ -49,33 +50,26 @@ const DietListPage = () => {
   // 카드 클릭 시 카드 색 변환
   const [isClick, setIsClick] = useState(0);
 
-  // 기존 7일치 식단 생성
-  const initialDietData = weekListKo.map(() => [
-    {
-      riceMenu: "현미밥",
-      mainMenu: "수제 함박 스테이크",
-      sideMenu: "어묵볶음",
-      soupMenu: "두부 계란탕",
-    },
-  ]);
-  // 식단 상태 변경을 위한 설정
-  const [dietData, setDietData] = useState(initialDietData);
-  // console.log(dietData);
+  const [dietData, setDietData] = useState([]);
+  useEffect(() => {
+    if (userDiet[0].length > 0) {
+      setDietData(userDiet[0]);
+    }
+  }, [userDiet]); // userDiet이 변경될 때마다 실행됩니다.
 
-  //식단 추가시
-  const addDietCard = useCallback(
-    (dayIndex) => {
-      const newDietData = [...dietData];
-      newDietData[dayIndex].push({
-        riceMenu: "치즈밥",
-        mainMenu: "갈치구이",
-        sideMenu: "김계란말이",
-        soupMenu: "오징어무국",
-      });
-      setDietData(newDietData);
-    },
-    [dietData],
-  );
+  // const addDietCard = useCallback(
+  //   (dayIndex) => {
+  //     const newDietData = [...dietData];
+  //     newDietData[dayIndex].push({
+  //       riceMenu: "치즈밥",
+  //       mainMenu: "갈치구이",
+  //       sideMenu: "김계란말이",
+  //       soupMenu: "오징어무국",
+  //     });
+  //     setDietData(newDietData);
+  //   },
+  //   [dietData],
+  // );
 
   //식단 저장 상태 관리
   const [saveDiet, setSaveDiet] = useState(false);
@@ -93,17 +87,24 @@ const DietListPage = () => {
               setIsClick={setIsClick}></WeekCard>
 
             <div className={classes.DietListBack}>
-              {weekListKo
-                .filter((_, idx) => isClick === 0 || isClick === idx + 1)
-                .map((day, idx) => (
-                  <div key={idx}>
-                    <DayDiet
-                      day={day}
-                      diets={dietData[idx]}
-                      saveDiet={saveDiet}
-                      addDietCard={() => addDietCard(idx)}></DayDiet>
-                  </div>
-                ))}
+              {dietData.length > 0
+                ? dietData.map((menu, idx) => {
+                    return isClick === 0 ||
+                      Number.parseInt(isClick) === Number.parseInt(idx) + 1 ? (
+                      <div key={idx}>
+                        <DayDiet
+                          day={weekListKo[idx]}
+                          diets={menu}
+                          setUserDiet={setUserDiet}
+                          dayIdx={idx}
+                          setSummaryInfo={setSummaryInfo}
+                          // saveDiet={saveDiet}
+                          // addDietCard={() => addDietCard(idx)}
+                        ></DayDiet>
+                      </div>
+                    ) : null;
+                  })
+                : null}
             </div>
             {saveDiet === false ? (
               <div

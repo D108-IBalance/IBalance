@@ -1,46 +1,65 @@
 // 외부 모듈
 import { useNavigate } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { add } from "./dummy.js";
+import { useSelector } from "react-redux";
+
+import { addTempDiet } from "./ServerConnect";
 
 // 내부 모듈
 import classes from "./DayDiet.module.css";
 
 const DayDiet = (props) => {
+  const childId = useSelector((state) => state.childId);
   const navigate = useNavigate();
-  const { day, diets, addDietCard, saveDiet } = props;
-
+  const { diets, day, setUserDiet, dayIdx, setSummaryInfo } = props;
   // "식단 추가" 버튼의 표시 여부를 메모이제이션
-  const showAddDiet = useMemo(() => {
-    return diets.length <= 2 && !saveDiet;
-  }, [diets.length, saveDiet]);
-
+  // const showAddDiet = useMemo(() => {
+  //   return dietList.length <= 2 && !saveDiet;
+  // }, [dietList.length, saveDiet]);
+  const addDietCard = async () => {
+    // const res = await addTempDiet(childId, diets.dietDay);
+    const res = add.data;
+    setUserDiet((prev) => {
+      let nextDiets = JSON.parse(JSON.stringify(prev));
+      let nextDiet = nextDiets[0];
+      nextDiet.map((data, idx) => {
+        if (idx === dayIdx) {
+          data.menuList.push(res);
+        }
+        return data;
+      });
+      return nextDiets;
+    });
+  };
+  const goSummary = (sequence) => {
+    setSummaryInfo({ dietDay: diets.dietDay, sequence: sequence });
+  };
   return (
     <div className={classes.dayDietBox}>
       <div className={classes.dayTitleBox}>
         <p className={classes.dayTitle}>{day}</p>
-        {showAddDiet ? (
-          <p className={classes.addTitle} onClick={() => addDietCard()}>
-            식단 추가
-          </p>
-        ) : null}
+
+        <p className={classes.addTitle} onClick={() => addDietCard()}>
+          식단 추가
+        </p>
       </div>
       <div className={classes.dayCardBox}>
-        {diets.map((diet, index) => {
+        {Array.from(diets.menuList).map((diet, idx) => {
           return (
             <div
+              key={idx}
               className={classes.dayCard}
-              key={index}
               onClick={() => {
-                navigate("/detail");
+                goSummary(idx);
               }}>
               <div className={classes.cardIcon}></div>
               <div className={classes.cardLine}></div>
               <div className={classes.dietContentBox}>
                 <div>
-                  <p>{diet.riceMenu}</p>
-                  <p>{diet.mainMenu}</p>
-                  <p>{diet.sideMenu}</p>
-                  <p>{diet.soupMenu}</p>
+                  {diet.map((menu, id) => {
+                    return <p key={id}>{menu.menuName}</p>;
+                  })}
                 </div>
               </div>
             </div>
