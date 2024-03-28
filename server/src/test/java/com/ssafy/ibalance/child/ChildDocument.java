@@ -98,4 +98,16 @@ public class ChildDocument {
             fieldWithPath("data.imageUrl").type(JsonFieldType.STRING).description("자녀 이미지 URL"),
             fieldWithPath("data.gender").type(JsonFieldType.STRING).description("자녀 성별")
     );
+
+    public static final Snippet childDetailResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.childId").type(JsonFieldType.NUMBER).description("자녀 PK 아이디"),
+            fieldWithPath("data.imageUrl").type(JsonFieldType.STRING).description("자녀 이미지 Url"),
+            fieldWithPath("data.name").type(JsonFieldType.STRING).description("자녀 이름"),
+            fieldWithPath("data.birthDate").type(JsonFieldType.STRING).description("자녀 생년월일"),
+            fieldWithPath("data.gender").type(JsonFieldType.STRING).description("자녀 성별"),
+            fieldWithPath("data.height").type(JsonFieldType.NUMBER).description("자녀 키"),
+            fieldWithPath("data.weight").type(JsonFieldType.NUMBER).description("자녀 몸무게"),
+            fieldWithPath("data.allergies").type(JsonFieldType.ARRAY).description("자녀 알러지 아이디 목록")
+    );
 }

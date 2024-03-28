@@ -741,4 +741,93 @@ public class ChildApiTest extends ApiTest {
                 .andDo(document(DEFAULT_RESTDOC_PATH,
                         CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField));
     }
+
+    @Test
+    void 자녀_상세_조회_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        get("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, "마이페이지에서 자녀의 상세 정보를 조회하는 API 입니다." +
+                                "<br><b>JWT 토큰과 자녀 아이디</b>를 올바르게 입력하면, <b>200 OK</b> 와 함께 자녀의 상세 정보가 반환됩니다." +
+                                "<br>- 자녀 아이디는 <b>1 이상의 정수</b>로 입력해야 합니다." +
+                                "<br>- 0 이하의 정수를 입력하면 <b>400 Bad Request</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- <b>Header</b> 에 <b>JWT 토큰</b>이 올바르게 입력되지 않았을 때, <b>401 Unauthorized</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 자녀 정보에 접근 권한이 없을 때, <b>403 Forbidden</b> 이 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, <b>404 Not Found</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다.",
+                                "자녀상세정보조회", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField,
+                        ChildDocument.childDetailResponseField
+                ));
+    }
+
+    @Test
+    void 자녀_상세_조회_잘못된아이디_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                get("/child/{childId}", childId)
+                        .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField
+                ));
+    }
+
+    @Test
+    void 자녀_상세_조회_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        get("/child/{childId}", childId)
+                )
+                .andExpect(status().is(401))
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        ChildDocument.childIdPathField
+                ));
+    }
+
+    @Test
+    void 자녀_상세_조회_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        get("/child/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField
+                ));
+    }
+
+    @Test
+    void 자녀_상세_조회_없는아이_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 999999;
+
+        mockMvc.perform(
+                        get("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField
+                ));
+    }
 }
