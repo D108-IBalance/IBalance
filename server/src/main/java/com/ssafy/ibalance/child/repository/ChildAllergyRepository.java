@@ -12,4 +12,6 @@ public interface ChildAllergyRepository extends JpaRepository<ChildAllergy, Long
     List<ChildAllergy> findByChild_id(Integer id);
 
     List<ChildAllergy> findByIdIn(List<Long> id);
+
+    void deleteByAllergyIdIn(List<Integer> allergyIdList);
 }
