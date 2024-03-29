@@ -15,7 +15,7 @@ import static java.lang.annotation.ElementType.FIELD;
 @Constraint(validatedBy = CheckMenuRateValidator.class)
 public @interface CheckMenuRate {
 
-    String message() default "메뉴 별점은 0.5점부터 5점까지 입력할 수 있습니다.";
+    String message() default "메뉴 별점은 1점부터 5점까지 입력할 수 있습니다.";
 
     Class[] groups() default {};
 

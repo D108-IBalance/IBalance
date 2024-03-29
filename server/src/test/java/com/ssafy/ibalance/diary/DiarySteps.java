@@ -44,7 +44,6 @@ public class DiarySteps {
                 .build();
     }
 
-
     private MenuRateRequest getMenuRate(Double rate, String menuId) {
         return MenuRateRequest.builder()
                 .rate(rate)

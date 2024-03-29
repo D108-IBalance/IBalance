@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiarySaveRequest {
+
     @NotNull(message = "식단 아이디를 입력해 주세요.")
     @Min(value = 1, message = "식단 아이디는 1 이상의 정수를 입력해야 합니다.")
     private Long dietId;

@@ -67,7 +67,6 @@ public class DiaryService {
 
     @Transactional
     public DiarySaveResponse saveDiaryInfo(Member member, Integer childId, DiarySaveRequest request) {
-
         DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(request.getDietId());
 
         Diet diet = dietTotalInfo.getDiet();
@@ -78,6 +77,7 @@ public class DiaryService {
         }
 
         diet.setDiary(request.getContent());
+        diet.setReviewed(true);
         saveMenuScore(dietTotalInfo.getDietMenuList(), request.getMenuRate());
         savePickyResult(dietTotalInfo.getDietMaterialList(), request.getPickyIdList());
 

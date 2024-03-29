@@ -13,6 +13,6 @@ public class CheckMenuRateValidator implements ConstraintValidator<CheckMenuRate
     public boolean isValid(List<MenuRateRequest> menuRateRequests, ConstraintValidatorContext constraintValidatorContext) {
         return menuRateRequests.size() == 4 && menuRateRequests.stream()
                 .allMatch(req -> !req.getMenuId().isBlank() && !req.getMenuId().isEmpty()
-                        && 0.5 <= req.getRate() && req.getRate() <= 5);
+                        && 1 <= req.getRate() && req.getRate() <= 5);
     }
 }
