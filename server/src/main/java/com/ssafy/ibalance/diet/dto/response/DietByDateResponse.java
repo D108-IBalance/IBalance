@@ -16,6 +16,6 @@ public class DietByDateResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dietDate;
 
-    private Integer sequence;
+    private String mealTime;
     private List<DietMenuResponse> menuList;
 }
