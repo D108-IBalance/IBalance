@@ -2,13 +2,12 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from pre.data_preprocess import menu_pre
+from static.mongo_statics import DATABASE_NAME
 
 """
 @Author: 김회창
 """
 
-DATABASE_NAME = "ibalance"  #
-# 접속 할 데이터베이스 이름
 client = None  # pymongo 클라이언트 접속 객체
 collection_name_list = []  # 현재 mongodb 내 컬렌션 이름들
 last_uri = None  # 마지막 접속 uri를 캐싱해놓는 전역변수
@@ -72,7 +71,7 @@ private 함수로서 현재 파일내에서만 사용한다.
 """
 
 
-def _execute(collection_name, query: dict, project: dict, is_multiple: bool):
+def _execute(collection_name, query: dict, project: dict, is_multiple: bool) -> list[dict]:
     result = dict()
     global client
     if is_multiple:
@@ -102,11 +101,11 @@ mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 �
 """
 
 
-def find_by_object_id(collection_name, _id: str):
+def find_by_object_id(collection_name: str, _id: str) -> dict:
     query = {"_id": ObjectId(_id)}
     project = None
     result = _execute(collection_name, query, project, is_multiple=False)
-    return result
+    return result[0]
 
 
 """
@@ -116,7 +115,7 @@ mongodb 내 모든 데이터 조회하는 함수
 """
 
 
-def find_all_data(collection_name):
+def find_all_data(collection_name) -> list[dict]:
     query = {}
     project = None
     result = _execute(collection_name, query, project, is_multiple=True)
@@ -131,7 +130,7 @@ mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
 """
 
 
-def find_all_attr(collection_name, attr_name):
+def find_all_attr(collection_name, attr_name) -> list[dict]:
     result = list()
     query = {}
     project = {
@@ -148,14 +147,15 @@ mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
 """
 
 
-def find_attr_by_id(collection_name, attr_name, id):
+def find_attr_by_id(collection_name, attr_name, id) -> dict:
     query = {
         "_id": ObjectId(id)
     }
     project = {
         attr_name: 1
     }
-    return _execute(collection_name, query, project, is_multiple=False)
+    result = _execute(collection_name, query, project, is_multiple=False)
+    return result[0]
 
 
 """
@@ -165,7 +165,7 @@ mongodb 내 allergy 컬렉션에 대해서 allergy_name 기준으로 데이터�
 """
 
 
-def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str, need_attr=None, exclude_attr=None):
+def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str, need_attr=None, exclude_attr=None) -> list[dict]:
     operator = "$or"
     if not is_or:
         operator = "$and"

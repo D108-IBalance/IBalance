@@ -305,7 +305,7 @@ def recommend_side(condition_obj):
 """
 
 
-def one_diet_recommend(request: ChildInfo):
+def one_diet_recommend(request: ChildInfo) -> list[dict]:
     diet = []
     global cached_black_list
     require_protein = float(request.need.protein)
@@ -363,7 +363,7 @@ def one_diet_recommend(request: ChildInfo):
 """
 
 
-def init_recommendations(request: ChildInfo):
+def init_recommendations(request: ChildInfo) -> list[list[dict]]:
     _init_process(request)
 
     result = []
@@ -381,7 +381,7 @@ def init_recommendations(request: ChildInfo):
 """
 
 
-def one_recommend(request: ChildInfo):
+def one_recommend(request: ChildInfo) -> list[dict]:
     _init_process(request)
     return diet_converter(one_diet_recommend(request))
 
@@ -393,7 +393,7 @@ def one_recommend(request: ChildInfo):
 """
 
 
-def menu_recommend(request: ChildInfo):
+def menu_recommend(request: ChildInfo) -> dict:
     _init_process(request)
     global menu_objs
     condition_obj = dict()
