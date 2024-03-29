@@ -11,9 +11,12 @@ import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
-import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
-import com.ssafy.ibalance.diet.dto.response.*;
 import com.ssafy.ibalance.diet.dto.RedisDietDto;
+import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
+import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
+import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
+import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
+import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
@@ -25,6 +28,7 @@ import com.ssafy.ibalance.diet.repository.RedisInitDietRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
 import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
+import com.ssafy.ibalance.diet.type.MealTime;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -136,7 +140,7 @@ public class DietService {
     public List<String> deleteTempDiet(Integer childId, int dietDay, int sequence) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
 
-        if(dayDiet.getDietList().size() < sequence + 1){
+        if(dayDiet.getDietList().size() < sequence + 1) {
             throw new RedisWrongDataException("Redis에 해당 날짜, 해당 순서의 식단 데이터가 없습니다.");
         }
 
@@ -156,7 +160,7 @@ public class DietService {
         }
 
         for (int menuNum = 0; menuNum < 4; menuNum++) {
-            if (dietList.get(menuNum).equals(menuId)) {
+            if(dietList.get(menuNum).equals(menuId)) {
                 dietList.remove(menuNum);
                 break;
             }
@@ -202,7 +206,7 @@ public class DietService {
                 // Diet DB 추가
                 Diet diet = Diet.builder()
                         .dietDate(startDate.plusDays(day))
-                        .sequence(1)
+                        .mealTime(MealTime.NONE)
                         .diary(null)
                         .child(child)
                         .build();
@@ -244,7 +248,7 @@ public class DietService {
 
     private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
         return menuIdList.stream().map(menuId ->
-                fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
+                        fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
                 .toList();
     }
 
