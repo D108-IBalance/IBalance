@@ -1,24 +1,51 @@
 // 외부 모듈
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./EditProfile.module.css";
-import { getChildProfile, editProfileImg } from "./ServerConnect";
-import { useEffect, useState } from "react";
+import { getChildProfile, editProfileImg, editProfile } from "./ServerConnect";
+import allergy from "./AddChild/allergy";
+import ChildHeight from "./AddChild/ChildHeight";
+import ChildWeight from "./AddChild/ChildWeight";
+import ChildAllergy from "./AddChild/ChildAllergy";
 
 const EditProfile = () => {
   const [uploadedImage, setUploadedImage] = useState("");
   const [userProfile, setUserProfile] = useState({});
+  const [profileData, setProfileData] = useState({});
+  const [step, setStep] = useState(0);
+
   const navigate = useNavigate();
   const childId = useSelector((state) => state.childId);
   const token = useSelector((state) => state.token);
-
+  const sendProps = {
+    setStep,
+    setProfileData,
+    profileData,
+    step,
+  };
+  const component = [
+    <ChildHeight {...sendProps} key="ChildHeight" />,
+    <ChildWeight {...sendProps} key="ChildWeight" />,
+    <ChildAllergy {...sendProps} key="ChildAllergy" />,
+  ];
   useEffect(() => {
     const getUserData = async () => {
-      const res = await Promise.all([getChildProfile(childId)]);
-      setUserProfile(res[0].data.data.childMainResponse);
-      setUploadedImage(res[0].data.data.childMainResponse.imageUrl);
+      try {
+        const res = await getChildProfile(childId);
+        setUserProfile(res.data.data);
+        let tempProfile = {};
+        tempProfile["name"] = res.data.data.name;
+        tempProfile["height"] = res.data.data.height;
+        tempProfile["weight"] = res.data.data.weight;
+        tempProfile["haveAllergies"] = res.data.data.allergies;
+        setProfileData(tempProfile);
+        setUploadedImage(res.data.data.imageUrl);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getUserData();
   }, [childId]);
@@ -54,72 +81,126 @@ const EditProfile = () => {
       alert("이미지 업데이트 중 에러가 발생하였습니다.");
     }
   };
+  const changeProfile = async () => {
+    try {
+      await editProfile(childId, profileData);
+      navigate(-1);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <main className={classes.container}>
-      <section className={classes.formBox}>
-        <div
-          className={classes.backIcon}
-          onClick={() => {
-            navigate(-1);
-          }}></div>
-        <div className={classes.imgBox}>
-          <div className={classes.settingLine}>
-            <img
-              src={uploadedImage}
-              alt="Profile"
-              className={classes.profileImg}
-            />{" "}
-            <div className={classes.settingIconBox}>
-              <input
-                style={{ display: "none" }}
-                id="file"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-              />{" "}
-              <label className={classes.settingIcon} htmlFor="file"></label>
-            </div>
-          </div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 이름</p>
-          <div className={classes.dataBox}>{userProfile.name}</div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 생년월일</p>
-          <div className={classes.dataBox}>{userProfile.birthDate}</div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 성별</p>
-          <div className={classes.dataBox}>
-            {userProfile.gender === "MALE" ? "남자" : "여자"}
-          </div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 키</p>
-          <div className={classes.dataBox}>{userProfile.height}cm</div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 몸무게</p>
-          <div className={classes.dataBox}>{userProfile.weight}kg</div>
-        </div>
-        <div className={classes.flexBet}>
-          <p>자녀 알레르기</p>
-          <div className={classes.dataBox}>
-            토마토, 우유, 대두, 계란, 고등어
-          </div>
-        </div>
-        <div className={classes.btnList}>
+      {step === 0 ? (
+        <section className={classes.formBox}>
           <div
-            className={classes.cancleBtn}
+            className={classes.backIcon}
             onClick={() => {
               navigate(-1);
-            }}>
-            취소
+            }}></div>
+          <div className={classes.imgBox}>
+            <div className={classes.settingLine}>
+              <img
+                src={uploadedImage}
+                alt="Profile"
+                className={classes.profileImg}
+              />{" "}
+              <div className={classes.settingIconBox}>
+                <input
+                  style={{ display: "none" }}
+                  id="file"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />{" "}
+                <label className={classes.settingIcon} htmlFor="file"></label>
+              </div>
+            </div>
           </div>
-          <div className={classes.confirmBtn}>확인</div>
-        </div>
-      </section>
+          <div className={classes.flexBet}>
+            <p>자녀 이름</p>
+            <div
+              className={classes.dataBox}
+              style={{ color: "#9796a1", cursor: "auto" }}>
+              {userProfile.name}
+            </div>
+          </div>
+          <div className={classes.flexBet}>
+            <p>자녀 생년월일</p>
+            <div
+              className={classes.dataBox}
+              style={{ color: "#9796a1", cursor: "auto" }}>
+              {userProfile.birthDate}
+            </div>
+          </div>
+          <div className={classes.flexBet}>
+            <p>자녀 성별</p>
+            <div
+              className={classes.dataBox}
+              style={{ color: "#9796a1", cursor: "auto" }}>
+              {userProfile.gender === "MALE" ? "남자" : "여자"}
+            </div>
+          </div>
+          <div
+            className={classes.flexBet}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setStep(1);
+            }}>
+            <p>자녀 키</p>
+            <div className={classes.dataBox}>{profileData.height}cm</div>
+          </div>
+          <div
+            className={classes.flexBet}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setStep(2);
+            }}>
+            <p>자녀 몸무게</p>
+            <div className={classes.dataBox}>{profileData.weight}kg</div>
+          </div>
+          <div
+            className={classes.flexBet}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setStep(3);
+            }}>
+            <p>자녀 알레르기</p>
+            <div className={classes.dataBox}>
+              {profileData.haveAllergies &&
+              profileData.haveAllergies.length > 0 ? (
+                profileData.haveAllergies.map((food, idx) => {
+                  return profileData.haveAllergies.length - 1 !== idx ? (
+                    <span key={idx}>{allergy[food - 1].name} ,</span>
+                  ) : (
+                    <span key={idx}>{allergy[food - 1].name}</span>
+                  );
+                })
+              ) : (
+                <span>-</span>
+              )}
+            </div>
+          </div>
+          <div className={classes.btnList}>
+            <div
+              className={classes.cancleBtn}
+              onClick={() => {
+                navigate(-1);
+              }}>
+              취소
+            </div>
+            <div
+              className={classes.confirmBtn}
+              onClick={() => {
+                changeProfile();
+              }}>
+              확인
+            </div>
+          </div>
+        </section>
+      ) : (
+        component[step - 1]
+      )}
     </main>
   );
 };

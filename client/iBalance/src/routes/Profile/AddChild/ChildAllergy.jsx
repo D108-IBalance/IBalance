@@ -8,7 +8,7 @@ import allergy from "./allergy.js";
 import { addProfile } from "../ServerConnect.js";
 
 const ChildAllergy = (props) => {
-  const { setProfileData, profileData } = props;
+  const { setProfileData, profileData, step, setStep } = props;
   const [animation, setAnimation] = useState("fadeIn");
   const [current, setCurrent] = useState(0);
   const [select, setSelect] = useState([]);
@@ -34,15 +34,33 @@ const ChildAllergy = (props) => {
     let allergyArr = Object.assign({}, profileData);
     allergyArr.haveAllergies = select;
     setProfileData(allergyArr);
-    await addProfile(allergyArr);
+    if (step !== 3) {
+      await addProfile(allergyArr);
+    }
     setCurrent(1);
   };
+  useEffect(() => {
+    if (profileData.haveAllergies) {
+      let tempShadow = [...new Array(allergy.length)].map(() => {
+        return "0px 4px 4px 0px rgba(0,0,0,0.25)";
+      });
+      for (let id of profileData.haveAllergies) {
+        tempShadow[id - 1] = "0px 4px 4px 0px rgba(254, 114, 76, 0.8)";
+      }
+      setShadow(tempShadow);
+      setSelect([...profileData.haveAllergies]);
+    }
+  }, [profileData]);
   useEffect(() => {
     let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
-        navigate("/enter/profile");
+        if (step === 3) {
+          setStep(0);
+        } else {
+          navigate("/enter/profile");
+        }
       }, 500);
     }
     return () => {

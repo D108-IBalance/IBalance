@@ -8,7 +8,7 @@ const getProfile = async () => {
 };
 
 const getChildProfile = async (idx) => {
-  return customAxios.get(`child/main/${idx}`);
+  return customAxios.get(`child/${idx}`);
 };
 
 const addProfile = async (profile) => {
@@ -33,10 +33,15 @@ const editProfileImg = async (childId, profileImg, token) => {
   );
 };
 
+const editProfile = async (childId, profileData) => {
+  return customAxios.put(`child/${childId}`, JSON.stringify(profileData));
+};
+
 export {
   getProfile,
   getChildProfile,
   addProfile,
   deleteProfile,
   editProfileImg,
+  editProfile,
 };

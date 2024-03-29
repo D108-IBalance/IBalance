@@ -82,7 +82,7 @@
     height: 30px;
   }
   .settingIcon:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   .flexBet {
     display: flex;
@@ -101,7 +101,6 @@
     color: #fe724c;
     cursor: pointer;
   }
-
   .btnList {
     display: flex;
     flex-direction: row;
@@ -125,7 +124,7 @@
   }
   .cancleBtn:hover,
   .confirmBtn:hover {
-    transform: scale(1.1);
+    transform: scale(1.02);
   }
 
   .confirmBtn {
@@ -230,7 +229,7 @@
     height: 30px;
   }
   .settingIcon:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   .flexBet {
     display: flex;
@@ -276,7 +275,7 @@
   }
   .cancleBtn:hover,
   .confirmBtn:hover {
-    transform: scale(1.1);
+    transform: scale(1.02);
   }
 
   .confirmBtn {
