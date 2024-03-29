@@ -2,6 +2,7 @@ package com.ssafy.ibalance.diet.entity;
 
 import com.ssafy.ibalance.child.entity.Child;
 import com.ssafy.ibalance.common.util.BaseTime;
+import com.ssafy.ibalance.diet.type.MealTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 @Setter
 public class Diet extends BaseTime {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -24,7 +26,9 @@ public class Diet extends BaseTime {
     private LocalDate dietDate;
 
     @Column(nullable = false)
-    private Integer sequence;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private MealTime mealTime = MealTime.NONE;
 
     @Column
     private String diary;

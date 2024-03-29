@@ -79,7 +79,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                 .map(dto -> DietByDateResponse.builder()
                         .dietId(dto.getDiet().getId())
                         .dietDate(dto.getDiet().getDietDate())
-                        .sequence(dto.getDiet().getSequence())
+                        .mealTime(dto.getDiet().getMealTime().toString())
                         .menuList(getDietMenuFromMongo(dto))
                         .build())
                 .toList();
@@ -119,7 +119,7 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
             childDietResponseList.add(DietByDateResponse.builder()
                     .dietId(dto.getDiet().getId())
                     .dietDate(dto.getDiet().getDietDate())
-                    .sequence(dto.getDiet().getSequence())
+                    .mealTime(dto.getDiet().getMealTime().toString())
                     .menuList(menuDtoList)
                     .build());
         });
