@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuRateRequest {
+    
     private String menuId;
     private Double rate;
 }

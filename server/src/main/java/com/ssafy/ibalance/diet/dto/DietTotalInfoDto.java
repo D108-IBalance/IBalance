@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class DietTotalInfoDto {
+
     private Diet diet;
     private List<DietMaterial> dietMaterialList;
     private List<DietMenu> dietMenuList;
