@@ -41,7 +41,7 @@ public class DiaryDocument {
             fieldWithPath("data.date").type(JsonFieldType.STRING).description("식단 추천일자"),
             fieldWithPath("data.menu[].menuId").type(JsonFieldType.STRING).description("추천받은 메뉴의 아이디"),
             fieldWithPath("data.menu[].menuName").type(JsonFieldType.STRING).description("추천받은 메뉴 이름"),
-            fieldWithPath("data.menu[].menuMaterial").type(JsonFieldType.ARRAY).description("추천받은 메뉴 재료"),
+            fieldWithPath("data.menu[].menuMaterial").type(JsonFieldType.VARIES).description("추천받은 메뉴 재료"),
             fieldWithPath("data.menu[].menuImgUrl").type(JsonFieldType.STRING).description("추천받은 메뉴 사진 url"),
             fieldWithPath("data.materials[].id").type(JsonFieldType.NUMBER).description("식재료 아이디"),
             fieldWithPath("data.materials[].picky").type(JsonFieldType.BOOLEAN).description("편식 여부"),
