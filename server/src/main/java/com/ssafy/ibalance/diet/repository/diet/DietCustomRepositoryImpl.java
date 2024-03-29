@@ -1,7 +1,9 @@
 package com.ssafy.ibalance.diet.repository.diet;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.group.Group;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -12,12 +14,13 @@ import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diary.dto.CalendarDto;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diet.dto.DietByDateDto;
+import com.ssafy.ibalance.diet.dto.DietTotalInfoDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
+import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.type.MenuType;
+import com.ssafy.ibalance.diet.exception.DietNotFoundException;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +33,7 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.ssafy.ibalance.child.entity.QChild.child;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
+import static com.ssafy.ibalance.diet.entity.QDietMaterial.dietMaterial;
 import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
 
 @RequiredArgsConstructor
@@ -168,5 +172,36 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
         }
 
         return calendarList.stream().map(CalendarResponse::convertEntityToDto).toList();
+    }
+
+    @Override
+    public DietTotalInfoDto getDietTotalInfo(Long dietId) {
+        Map<Diet, Group> transform = jpaQueryFactory.select(Projections.bean(
+                        DietTotalInfoDto.class,
+                        diet,
+                        list(dietMenu).as("dietMenuList"),
+                        list(dietMaterial).as("dietMaterialList")
+                )).from(diet)
+                .leftJoin(dietMenu).on(dietMenu.diet.eq(diet))
+                .leftJoin(dietMaterial).on(dietMaterial.diet.eq(diet))
+                .where(diet.id.eq(dietId)
+                        .and(dietMenu.diet.eq(dietMaterial.diet)))
+                .transform(
+                        groupBy(diet).as(list(dietMenu), list(dietMaterial))
+                );
+
+        Diet diet = transform.keySet().stream().findFirst().orElseThrow(
+                () -> new DietNotFoundException("입력한 아이디로 된 식단이 존재하지 않습니다.")
+        );
+
+
+        List<DietMaterial> dietMaterialList = getDistinctResult(transform, diet, dietMaterial);
+        List<DietMenu> dietMenuList = getDistinctResult(transform, diet, dietMenu);
+
+        return new DietTotalInfoDto(diet, dietMaterialList, dietMenuList);
+    }
+
+    private <T> List<T> getDistinctResult(Map<Diet, Group> transform, Diet diet, EntityPathBase<T> pathBase) {
+        return transform.get(diet).getList(pathBase).stream().distinct().toList();
     }
 }

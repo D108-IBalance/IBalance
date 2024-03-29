@@ -38,7 +38,7 @@ public class DietTestUtil extends TestBase {
 
     private final List<String> pickyMaterials = List.of("대추", "마늘");
 
-    public void 식단_메뉴_저장(List<Diet> dietList) {
+    public List<DietMenu> 식단_메뉴_저장(List<Diet> dietList) {
         List<String> menuIdList = List.of("65fa83bf3eb83d319efa85da", "65fa83f63eb83d319efa85de",
                 "65fa83bf3eb83d319efa85b9", "65fa83f63eb83d319efa8629", "65fa83f63eb83d319efa8615",
                 "65fa83f63eb83d319efa85e9", "65fa83bf3eb83d319efa85d0", "65fa83f63eb83d319efa8609",
@@ -52,7 +52,7 @@ public class DietTestUtil extends TestBase {
                         .build())
                 .toList();
 
-        dietMenuRepository.saveAll(dietMenuList);
+        return dietMenuRepository.saveAll(dietMenuList);
     }
 
     public List<Diet> 식단정보_저장(Integer childId) {
@@ -77,15 +77,15 @@ public class DietTestUtil extends TestBase {
         return dietRepository.saveAll(dietList);
     }
 
-    public void 편식정보_저장(List<Diet> dietList) {
+    public List<DietMaterial> 편식정보_저장(List<Diet> dietList, boolean realSave) {
         List<DietMaterial> firstMaterials = foodMaterials.stream()
                 .map(m -> DietMaterial.builder()
                         .diet(dietList.getFirst())
                         .material(m)
-                        .picky(pickyMaterials.contains(m))
+                        .picky(pickyMaterials.contains(m) && realSave)
                         .build())
                 .toList();
 
-        dietMaterialRepository.saveAll(firstMaterials);
+        return dietMaterialRepository.saveAll(firstMaterials);
     }
 }

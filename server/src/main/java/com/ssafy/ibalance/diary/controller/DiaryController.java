@@ -2,11 +2,14 @@ package com.ssafy.ibalance.diary.controller;
 
 import com.ssafy.ibalance.common.dto.annotation.DatePattern;
 import com.ssafy.ibalance.diary.dto.annotation.CheckMonth;
+import com.ssafy.ibalance.diary.dto.request.DiarySaveRequest;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diary.dto.response.DiaryInfoResponse;
+import com.ssafy.ibalance.diary.dto.response.DiarySaveResponse;
 import com.ssafy.ibalance.diary.service.DiaryService;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.member.entity.Member;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,11 +64,11 @@ public class DiaryController {
     }
 
     /**
-     * 선택한 날짜의 식단 목록 조회
+     * 선택한 식단의 일기용 상세 정보 조회
      *
      * @param dietId 확인하고자 하는 상세 diet 의 ID
      * @param member 로그인 한 멤버
-     * @return
+     * @return 식단 일기용 상세 정보
      */
     @GetMapping("/detail/{dietId}")
     public DiaryInfoResponse getDiaryWriteInfo(@AuthenticationPrincipal Member member,
@@ -74,4 +77,20 @@ public class DiaryController {
         return diaryService.getDiaryWriteInfo(member, dietId);
     }
 
+    /**
+     * 선택한 식단의 일기 작성
+     *
+     * @param childId 작성하는 아이의 아이디
+     * @param member  로그인 한 멤버
+     * @param request 일기를 작성하는 request 정보
+     * @return 식단 일기 저장 결과
+     */
+
+    @PostMapping("/{childId}")
+    public DiarySaveResponse saveDiary(@AuthenticationPrincipal Member member,
+                                       @PathVariable @Min(value = 1, message = "아이 아이디는 1 이상이어야 합니다.") Integer childId,
+                                       @Valid @RequestBody DiarySaveRequest request) {
+
+        return diaryService.saveDiaryInfo(member, childId, request);
+    }
 }
