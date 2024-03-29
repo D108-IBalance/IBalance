@@ -21,7 +21,6 @@ const EmptyModal = (props) => {
     // const res = await getInitDiet(childId);
     const res = init;
     setUserDiet([res.data, false]);
-    console.log(res.data);
   };
   return (
     <div

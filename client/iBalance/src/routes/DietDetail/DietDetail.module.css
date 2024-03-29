@@ -178,10 +178,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* position: fixed; */
-    /* top: 0; */
-    /* right: 0; */
-    /* background: blue; */
+    position: fixed;
+    top: 0;
+    right: 0;
     background: rgba(0, 0, 0, 30%);
     height: 100vh;
     width: 375px;
