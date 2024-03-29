@@ -48,19 +48,16 @@ public class DietService {
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
 
-    @Transactional(readOnly = true)
     public List<DietByDateResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
         return dietRepository.getDietByDateBetween(childId, today, endday);
     }
 
-    @Transactional(readOnly = true)
     public List<MenuDetailResponse> getDietDetail(Long dietId) {
         List<String> menuIdList = dietRepository.getMenuIdByDietId(dietId);
         return getMenuDetailByMenuId(menuIdList);
     }
 
-    @Transactional(readOnly = true)
     public List<Integer> getAllergy(Integer childId) {
         Optional<RedisChildAllergy> redisChildAllergy = redisChildAllergyRepository.findById(childId);
         List<Integer> allergyList = new ArrayList<>();
@@ -71,7 +68,6 @@ public class DietService {
         return allergyList;
     }
 
-    @Transactional(readOnly = true)
     public List<String> getPastMenu(Integer childId) {
         return childRepository.getMenuIdByChildIdAndDate(childId, LocalDate.now());
     }
@@ -223,14 +219,12 @@ public class DietService {
         return dietIds;
     }
 
-    @Transactional(readOnly = true)
     private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
         return menuIdList.stream().map(menuId ->
                 fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     private List<InitDietResponse> getInitRecommend(Integer childId, List<Integer> allergyList, List<String> pastMenu) {
         // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
@@ -277,7 +271,6 @@ public class DietService {
         return initDietResponseList;
     }
 
-    @Transactional(readOnly = true)
     private List<DietMenuResponse> getTempRecommend(Integer childId, int dietDay, List<Integer> allergyList, List<String> doNotRecommend) {
         // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
