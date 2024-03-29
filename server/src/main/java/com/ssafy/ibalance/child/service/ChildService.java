@@ -203,6 +203,8 @@ public class ChildService {
 
         redisChildAllergy.setChildAllergyId(modifyChildAllergy(deleteAllergies, updateAllergies, child));
 
+        redisChildAllergyRepository.save(redisChildAllergy);
+
         saveGrowth(child);
 
         return ChildDetailResponse.builder()
