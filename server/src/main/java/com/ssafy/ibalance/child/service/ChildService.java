@@ -138,7 +138,7 @@ public class ChildService {
     }
 
     public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
-        Page<Growth> growthPage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable);
+        Page<Growth> growthPage = growthRepository.getGrowthList(childId, pageable);
 
         if(growthPage.isEmpty()) {
             throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
