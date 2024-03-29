@@ -1,5 +1,5 @@
 // 외부 모듈
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 // 내부 모듈
@@ -10,7 +10,8 @@ import DayDiet from "./DayDiet";
 import SaveModalPage from "./SaveModalPage";
 
 const DietListPage = (props) => {
-  const { userDiet, setUserDiet, setSummaryInfo } = props;
+  const { userDiet, setUserDiet, setSummaryInfo, weekListKo, setSelectDate } =
+    props;
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
 
   const weekList = useMemo(() => {
@@ -19,18 +20,6 @@ const DietListPage = (props) => {
       const newDate = new Date();
       newDate.setDate(newDate.getDate() + idx);
       return { date: newDate.getDate(), day: WEEKDAY[newDate.getDay()] };
-    });
-  }, []); // 초기 마운트 시에만 실행
-
-  const weekListKo = useMemo(() => {
-    const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
-    return [...new Array(7)].map((_, idx) => {
-      const newDate = new Date();
-      newDate.setDate(newDate.getDate() + idx);
-      const month = newDate.getMonth() + 1; // JavaScript에서 월은 0부터 시작하므로 +1
-      const date = newDate.getDate();
-      const dayOfWeek = arrDayStr[newDate.getDay()];
-      return `${month}월 ${date}일 (${dayOfWeek})`;
     });
   }, []); // 초기 마운트 시에만 실행
 
@@ -57,20 +46,6 @@ const DietListPage = (props) => {
     }
   }, [userDiet]); // userDiet이 변경될 때마다 실행됩니다.
 
-  // const addDietCard = useCallback(
-  //   (dayIndex) => {
-  //     const newDietData = [...dietData];
-  //     newDietData[dayIndex].push({
-  //       riceMenu: "치즈밥",
-  //       mainMenu: "갈치구이",
-  //       sideMenu: "김계란말이",
-  //       soupMenu: "오징어무국",
-  //     });
-  //     setDietData(newDietData);
-  //   },
-  //   [dietData],
-  // );
-
   //식단 저장 상태 관리
   const [saveDiet, setSaveDiet] = useState(false);
   const [saveModal, setSaveModal] = useState(false);
@@ -93,13 +68,13 @@ const DietListPage = (props) => {
                       Number.parseInt(isClick) === Number.parseInt(idx) + 1 ? (
                       <div key={idx}>
                         <DayDiet
+                          setSelectDate={setSelectDate}
                           day={weekListKo[idx]}
                           diets={menu}
                           setUserDiet={setUserDiet}
                           dayIdx={idx}
                           setSummaryInfo={setSummaryInfo}
                           // saveDiet={saveDiet}
-                          // addDietCard={() => addDietCard(idx)}
                         ></DayDiet>
                       </div>
                     ) : null;
@@ -111,6 +86,7 @@ const DietListPage = (props) => {
                 className={classes.saveBtn}
                 onClick={() => {
                   setSaveModal(true);
+                  setUserDiet([dietData, true]);
                 }}>
                 식단 저장
               </div>

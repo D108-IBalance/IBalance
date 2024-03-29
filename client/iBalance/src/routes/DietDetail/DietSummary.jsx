@@ -1,6 +1,6 @@
 // 외부 모듈
-import { useNavigate, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./DietSummary.module.css";
@@ -8,11 +8,18 @@ import sample1 from "../../assets/diet/sample1.png";
 import sample2 from "../../assets/diet/sample2.png";
 import sample3 from "../../assets/diet/sample3.png";
 import sample4 from "../../assets/diet/sample4.png";
+import DietDetail from "./DietDetail";
+import { getInitDietDetail } from "../Diet/ServerConnect";
 
 const DietSummary = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setSummaryInfo, summaryInfo } = props;
-  const navigate = useNavigate();
+  const { setSummaryInfo, summaryInfo, selectDate, setSelectDate } = props;
+  console.log(selectDate);
+  useEffect(() => {
+    const getDietDetailData = async () => {
+      const res = await getInitDietDetail();
+    };
+  });
   const dietList = [
     {
       foodId: 0,
@@ -83,7 +90,7 @@ const DietSummary = (props) => {
               }}></div>
             <div className={classes.titleTextBox}>
               <div className={classes.titleIcon}></div>
-              <div className={classes.titleText}>2024.03.04 (월)</div>
+              <div className={classes.titleText}>{selectDate}</div>
             </div>
             <div className={classes.tempIcon}></div>
           </div>
@@ -96,7 +103,7 @@ const DietSummary = (props) => {
                   style={{ zIndex: idx }}
                   onClick={() => {
                     setIsOpen(true);
-                    navigate(`/detail/menu`);
+                    setSelectDate("");
                   }}>
                   <div className={classes.leftCard}>
                     <img src={menu.img} className={classes.cardImg}></img>
@@ -118,9 +125,10 @@ const DietSummary = (props) => {
             })}
           </div>
         </div>
-
-        <Outlet context={{ isOpen, setIsOpen }}></Outlet>
       </div>
+      {isOpen ? (
+        <DietDetail isOpen={isOpen} setIsOpen={setIsOpen}></DietDetail>
+      ) : null}
     </div>
   );
 };

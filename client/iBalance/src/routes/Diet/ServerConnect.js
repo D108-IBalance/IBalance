@@ -23,4 +23,39 @@ const addTempDiet = async (CHILDID, dayId) => {
   return customAxios.get(`diet/${CHILDID}?dietDay=${dayId}`);
 };
 
-export { getUserInfo, getRecommendedDiet, getInitDiet, addTempDiet };
+const getDietDetail = async (CHILDID, dayId) => {
+  return customAxios.get(`diet/detail/${dayId}`);
+};
+
+const getInitDietDetail = async (CHILDID, dayId, sequence) => {
+  return customAxios.get(
+    `diet/${CHILDID}/detail?dietDay=${dayId}&sequence=${sequence}`,
+  );
+};
+
+const changeMenuOfTempDiet = async (CHILDID, dayId, sequence, menuId) => {
+  return customAxios.put(
+    `diet/${CHILDID}/temp?dietDay=${dayId}&sequence=${sequence}&menuId=${menuId}`,
+  );
+};
+
+const insertTempDiet = async (CHILDID) => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const formMonth = month.toString().padStart(2, "0");
+  const formDay = day.toString().padStart(2, "0");
+  const form = `${year}-${formMonth}-${formDay}`;
+  return customAxios.get(`diet/${CHILDID}/insert?startDate=${form}`);
+};
+export {
+  getUserInfo,
+  getRecommendedDiet,
+  getInitDiet,
+  addTempDiet,
+  getDietDetail,
+  getInitDietDetail,
+  changeMenuOfTempDiet,
+  insertTempDiet,
+};

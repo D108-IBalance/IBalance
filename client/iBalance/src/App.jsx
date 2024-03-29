@@ -71,16 +71,13 @@ const App = () => {
           </Route>
           {/* 식단페이지 */}
           <Route path="/diet" element={<DietPage />}></Route>
-          {/* 식단상세페이지 */}
-          <Route path="/detail" element={<DietSummary></DietSummary>}>
-            <Route path="menu" element={<DietDetail></DietDetail>}></Route>
-          </Route>
+
           {/* 일기장페이지 */}
           <Route path="/diary" element={<DiaryPage />}></Route>
         </Route>
 
         {/* 오류 페이지 */}
-        <Route path="*" element={<Error />} />
+        {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </>
   );

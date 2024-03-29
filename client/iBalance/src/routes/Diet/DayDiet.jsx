@@ -12,11 +12,13 @@ import classes from "./DayDiet.module.css";
 const DayDiet = (props) => {
   const childId = useSelector((state) => state.childId);
   const navigate = useNavigate();
-  const { diets, day, setUserDiet, dayIdx, setSummaryInfo } = props;
+  const { diets, day, setUserDiet, dayIdx, setSummaryInfo, setSelectDate } =
+    props;
   // "식단 추가" 버튼의 표시 여부를 메모이제이션
   // const showAddDiet = useMemo(() => {
   //   return dietList.length <= 2 && !saveDiet;
   // }, [dietList.length, saveDiet]);
+
   const addDietCard = async () => {
     // const res = await addTempDiet(childId, diets.dietDay);
     const res = add.data;
@@ -34,6 +36,7 @@ const DayDiet = (props) => {
   };
   const goSummary = (sequence) => {
     setSummaryInfo({ dietDay: diets.dietDay, sequence: sequence });
+    setSelectDate(day);
   };
   return (
     <div className={classes.dayDietBox}>
