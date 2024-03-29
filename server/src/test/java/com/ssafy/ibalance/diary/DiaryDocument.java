@@ -6,14 +6,17 @@ import org.springframework.restdocs.snippet.Snippet;
 import static com.ssafy.ibalance.common.DocumentFormatProvider.required;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class DiaryDocument {
 
     public static final Snippet yearMonthQueryField = queryParameters(
             parameterWithName("year").attributes(required()).description("조회할 연도"),
             parameterWithName("month").attributes(required()).description("조회할 월 (1월 ~ 12월)")
+    );
+
+    public static final Snippet dietIdPathField = pathParameters(
+            parameterWithName("dietId").attributes(required()).description("path 에 들어가는 Diet 아이디")
     );
 
     public static final Snippet getCalendarListResponseField = responseFields(
@@ -31,5 +34,17 @@ public class DiaryDocument {
             fieldWithPath("data[].menuList[].menuId").type(JsonFieldType.STRING).description("메뉴 아이디"),
             fieldWithPath("data[].menuList[].menuName").type(JsonFieldType.STRING).description("메뉴명"),
             fieldWithPath("data[].menuList[].menuType").type(JsonFieldType.STRING).description("메뉴 타입 (밥 : RICE, 국 : SOUP, 반찬 : SIDE)")
+    );
+
+    public static final Snippet diaryInfoResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.date").type(JsonFieldType.STRING).description("식단 추천일자"),
+            fieldWithPath("data.menu[].menuId").type(JsonFieldType.STRING).description("추천받은 메뉴의 아이디"),
+            fieldWithPath("data.menu[].menuName").type(JsonFieldType.STRING).description("추천받은 메뉴 이름"),
+            fieldWithPath("data.menu[].menuMaterial").type(JsonFieldType.ARRAY).description("추천받은 메뉴 재료"),
+            fieldWithPath("data.menu[].menuImgUrl").type(JsonFieldType.STRING).description("추천받은 메뉴 사진 url"),
+            fieldWithPath("data.materials[].id").type(JsonFieldType.NUMBER).description("식재료 아이디"),
+            fieldWithPath("data.materials[].picky").type(JsonFieldType.BOOLEAN).description("편식 여부"),
+            fieldWithPath("data.materials[].material").type(JsonFieldType.STRING).description("식재료 이름")
     );
 }
