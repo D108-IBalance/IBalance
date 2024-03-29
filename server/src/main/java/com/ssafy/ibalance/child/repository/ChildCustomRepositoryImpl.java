@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.child.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.dto.ChildDetailDto;
 import com.ssafy.ibalance.child.entity.Child;
@@ -40,10 +41,18 @@ public class ChildCustomRepositoryImpl implements ChildCustomRepository {
 
     @Override
     public ChildDetailDto getChildDetail(Integer childId, Member member, List<Long> childAllergyList) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if(childAllergyList == null) {
+            builder.and(child.id.eq(childId));
+        }
+        else {
+            builder.and(child.id.eq(childId).and(childAllergy.id.in(childAllergyList)));
+        }
+
         Map<Child, List<ChildAllergy>> transform = jpaQueryFactory.select(child, childAllergy)
                 .from(child)
                 .leftJoin(childAllergy).on(child.id.eq(childAllergy.child.id))
-                .where(child.id.eq(childId).and(childAllergy.id.in(childAllergyList)))
+                .where(builder)
                 .transform(
                         groupBy(child).as(
                                 list(childAllergy)
