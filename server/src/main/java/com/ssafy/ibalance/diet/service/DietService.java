@@ -21,10 +21,10 @@ import com.ssafy.ibalance.diet.entity.RedisRecommendDiet;
 import com.ssafy.ibalance.diet.exception.CannotAddDietException;
 import com.ssafy.ibalance.diet.exception.RedisWrongDataException;
 import com.ssafy.ibalance.diet.exception.WrongCookieDataException;
-import com.ssafy.ibalance.diet.repository.DietMaterialRepository;
-import com.ssafy.ibalance.diet.repository.DietMenuRepository;
-import com.ssafy.ibalance.diet.repository.DietRepository;
 import com.ssafy.ibalance.diet.repository.RedisInitDietRepository;
+import com.ssafy.ibalance.diet.repository.diet.DietRepository;
+import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
+import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,7 @@ public class DietService {
 
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
 
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             List<String> menuList = new ArrayList<>();
 
             initDietResponseList.get(day).getMenuList().getFirst().forEach(menu -> {
@@ -182,7 +182,7 @@ public class DietService {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
         List<String> menuIdList = new ArrayList<>();
 
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
             diet.getDietList().forEach(menus -> menuIdList.addAll(menus.getMenuList()));
@@ -196,9 +196,9 @@ public class DietService {
         List<DietMaterial> dietMaterialList = new ArrayList<>();
         List<DietMenu> dietMenuList = new ArrayList<>();
 
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             RedisRecommendDiet recommendDiet = redisRecommendDietList.get(day);
-            for(int sequence = 0; sequence < recommendDiet.getDietList().size(); sequence++) {
+            for (int sequence = 0; sequence < recommendDiet.getDietList().size(); sequence++) {
                 // Diet DB 추가
                 Diet diet = Diet.builder()
                         .dietDate(startDate.plusDays(day))
@@ -274,7 +274,7 @@ public class DietService {
                 diet -> diet.stream().map(this::convertPythonAPIToResponse).toList()).toList();
 
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             List<MenuDetailResponse> recommend = recommendList.get(day);
 
             List<DietMenuResponse> menuList = recommend.stream().map(
@@ -328,7 +328,7 @@ public class DietService {
                         .menuName(menu.getMenuName())
                         .menuType(menu.getMenuType())
                         .build()
-                ).toList();
+        ).toList();
     }
 
     private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
@@ -357,7 +357,7 @@ public class DietService {
     private List<Integer> convertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
         String[] cookieSplit = cookie.split("\\|");
-        try{
+        try {
             Arrays.stream(cookieSplit)
                     .forEach(id -> result.add(Integer.parseInt(id)));
         } catch (NumberFormatException e) {
@@ -369,7 +369,7 @@ public class DietService {
     private List<String> convertCookieStringToStringList(String cookie) {
         List<String> result;
         String[] cookieSplit = cookie.split("\\|");
-        try{
+        try {
             result = new ArrayList<>(Arrays.asList(cookieSplit));
         } catch (Exception e) {
             throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");

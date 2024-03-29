@@ -1,6 +1,5 @@
 package com.ssafy.ibalance.diet.entity;
 
-import com.ssafy.ibalance.material.entity.Material;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +11,8 @@ import lombok.*;
 @Setter
 public class DietMaterial {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "boolean default false")
