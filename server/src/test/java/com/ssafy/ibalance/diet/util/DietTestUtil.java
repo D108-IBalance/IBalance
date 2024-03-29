@@ -62,12 +62,9 @@ public class DietTestUtil extends TestBase {
         List<LocalDate> testDates = List.of(LocalDate.of(2024, 3, 20),
                 LocalDate.of(2024, 3, 21), LocalDate.now());
 
-        Integer sequence = 4;
-
         List<Diet> dietList = testDates.stream().map(date -> Diet.builder()
                 .dietDate(date)
                 .child(child)
-                .sequence(sequence)
                 .build()).toList();
 
 
