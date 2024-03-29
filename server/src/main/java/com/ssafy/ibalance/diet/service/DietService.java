@@ -60,11 +60,14 @@ public class DietService {
 
     public List<Integer> getAllergy(Integer childId) {
         Optional<RedisChildAllergy> redisChildAllergy = redisChildAllergyRepository.findById(childId);
+
         List<Integer> allergyList = new ArrayList<>();
+
         if(redisChildAllergy.isPresent()) {
             List<ChildAllergy> childAllergyList = childAllergyRepository.findByIdIn(redisChildAllergy.get().getChildAllergyId());
             childAllergyList.forEach(childAllergy -> allergyList.add(childAllergy.getAllergy().getId()));
         }
+
         return allergyList;
     }
 
@@ -76,18 +79,24 @@ public class DietService {
         List<InitDietResponse> initDietResponseList = getInitRecommend(childId, allergyList, pastMenu);
 
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
+
         for(int day = 0; day < 7; day++) {
             List<String> menuList = new ArrayList<>();
+
             initDietResponseList.get(day).getMenuList().getFirst().forEach(menu -> {
                 menuList.add(menu.getMenuId());
                 pastMenu.add(menu.getMenuId());
             });
+
             List<RedisDietDto> diet = new ArrayList<>();
+
             diet.add(RedisDietDto.builder().menuList(menuList).build());
+
             redisRecommendDietList.add(RedisRecommendDiet.builder()
                     .id(childId + "_" + day)
                     .dietList(diet).build());
         }
+
         redisInitDietRepository.saveAll(redisRecommendDietList);
 
         return initDietResponseList;
@@ -98,17 +107,19 @@ public class DietService {
         List<String> menuList = diet.getDietList().get(sequence).getMenuList();
 
         List<LinkedHashMap<String, Object>> menuDetailList = fastAPIConnectionUtil.postApiConnectionResult("/info", menuList, new ArrayList<>());
-        return menuDetailList.stream().map(this::ConvertPythonAPIToResponse).toList();
+        return menuDetailList.stream().map(this::convertPythonAPIToResponse).toList();
     }
 
     public List<DietMenuResponse> addTempDiet(Integer childId, int dietDay, String allergy, String doNotRecommend) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
         List<RedisDietDto> dietList = dayDiet.getDietList();
+
         if(dietList.size() >= 3) {
             throw new CannotAddDietException("일일 추천 가능 식단 개수를 초과했습니다.");
         }
-        List<Integer> allergyList = ConvertCookieStringToIntegerList(allergy);
-        List<String> doNotRecommendList = ConvertCookieStringToStringList(doNotRecommend);
+
+        List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
+        List<String> doNotRecommendList = convertCookieStringToStringList(doNotRecommend);
 
         List<DietMenuResponse> tempDiet = getTempRecommend(childId, dietDay, allergyList, doNotRecommendList);
         List<String> menuList = tempDiet.stream().map(DietMenuResponse::getMenuId).toList();
@@ -153,8 +164,8 @@ public class DietService {
             throw new RedisWrongDataException("해당 메뉴는 존재하지 않습니다.");
         }
 
-        List<Integer> allergyList = ConvertCookieStringToIntegerList(allergy);
-        List<String> doNotRecommendList = ConvertCookieStringToStringList(doNotRecommend);
+        List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
+        List<String> doNotRecommendList = convertCookieStringToStringList(doNotRecommend);
 
         MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommendList, dietList, menuId);
 
@@ -168,6 +179,7 @@ public class DietService {
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
         List<String> menuIdList = new ArrayList<>();
+
         for(int day = 0; day < 7; day++) {
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
@@ -181,6 +193,7 @@ public class DietService {
         List<Diet> dietList = new ArrayList<>();
         List<DietMaterial> dietMaterialList = new ArrayList<>();
         List<DietMenu> dietMenuList = new ArrayList<>();
+
         for(int day = 0; day < 7; day++) {
             RedisRecommendDiet recommendDiet = redisRecommendDietList.get(day);
             for(int sequence = 0; sequence < recommendDiet.getDietList().size(); sequence++) {
@@ -256,11 +269,12 @@ public class DietService {
 
     private List<InitDietResponse> convertInitRecommend(List<List<LinkedHashMap<String, Object>>> recommendResult) {
         List<List<MenuDetailResponse>> recommendList = recommendResult.stream().map(
-                diet -> diet.stream().map(this::ConvertPythonAPIToResponse).toList()).toList();
+                diet -> diet.stream().map(this::convertPythonAPIToResponse).toList()).toList();
 
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
         for(int day = 0; day < 7; day++) {
             List<MenuDetailResponse> recommend = recommendList.get(day);
+
             List<DietMenuResponse> menuList = recommend.stream().map(
                     menu -> DietMenuResponse.builder()
                             .menuId(menu.getMenuId())
@@ -268,6 +282,7 @@ public class DietService {
                             .menuType(menu.getMenuType())
                             .build()
             ).toList();
+
             List<List<DietMenuResponse>> menuWrapper = new ArrayList<>();
             menuWrapper.add(menuList);
             initDietResponseList.add(InitDietResponse.builder()
@@ -302,7 +317,7 @@ public class DietService {
 
     private List<DietMenuResponse> convertTempRecommend(List<LinkedHashMap<String, Object>> recommendResult) {
         List<MenuDetailResponse> recommendList = recommendResult.stream()
-                .map(this::ConvertPythonAPIToResponse).toList();
+                .map(this::convertPythonAPIToResponse).toList();
 
 
         return recommendList.stream().map(
@@ -316,25 +331,28 @@ public class DietService {
 
     private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
+
         MenuType needType = fastAPIConnectionUtil.getApiConnectionResult("/info/" + refreshMenuId, DietMenuResponse.builder().build()).getMenuType();
-        LinkedHashMap<String, Object> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
-                .childId(childId)
-                .allergyList(allergyName)
-                .cacheList(doNotRecommend)
-                .need(RecommendNeedDto.builder()
-                        .calories(250)
-                        .carbohydrate(45.2)
-                        .protein(21.3)
-                        .cellulose(12.1)
-                        .build())
-                .needType(needType.getMenuType())
-                .currentMenuIdOfDiet(menuList)
-                .build(), new LinkedHashMap<>()
+
+        return convertPythonAPIToResponse(
+                fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
+                        .childId(childId)
+                        .allergyList(allergyName)
+                        .cacheList(doNotRecommend)
+                        .need(RecommendNeedDto.builder()
+                                .calories(250)
+                                .carbohydrate(45.2)
+                                .protein(21.3)
+                                .cellulose(12.1)
+                                .build())
+                        .needType(needType.getMenuType())
+                        .currentMenuIdOfDiet(menuList)
+                        .build(), new LinkedHashMap<>()
+                )
         );
-        return ConvertPythonAPIToResponse(recommendResult);
     }
 
-    private List<Integer> ConvertCookieStringToIntegerList(String cookie) {
+    private List<Integer> convertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
         String[] cookieSplit = cookie.split("\\|");
         try{
@@ -346,7 +364,7 @@ public class DietService {
         return result;
     }
 
-    private List<String> ConvertCookieStringToStringList(String cookie) {
+    private List<String> convertCookieStringToStringList(String cookie) {
         List<String> result;
         String[] cookieSplit = cookie.split("\\|");
         try{
@@ -357,7 +375,7 @@ public class DietService {
         return result;
     }
 
-    private MenuDetailResponse ConvertPythonAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
+    private MenuDetailResponse convertPythonAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
         return MenuDetailResponse.builder()
                 .menuId((String) recommendResult.get("menu_id"))
                 .menuName((String) recommendResult.get("menu_name"))
