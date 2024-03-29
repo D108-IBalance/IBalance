@@ -124,13 +124,8 @@ def get_menu_names(request: list[DietOfMenuId]):
 def get_menu_infos(request: list[str]):
     response = list()
     mongo_result = find_data_by_attr_condition(request, "_id", is_or=True, collection_name="menu",
-                                               need_attr=["MEAL_NM", "MATRL_NM", "MEAL_PICTR_FILE_NM"],
+                                               need_attr=None,
                                                exclude_attr=None)
     for result in mongo_result:
-        new_obj = dict()
-        new_obj["menuId"] = result["menu_id"]
-        new_obj["menuName"] = result["MEAL_NM"]
-        new_obj["menuMaterial"] = parse_matrl_name(result["MATRL_NM"])
-        new_obj["menuImgUrl"] = result["MEAL_PICTR_FILE_NM"]
-        response.append(new_obj)
+        response.append(menu_info_converter(result))
     return response
