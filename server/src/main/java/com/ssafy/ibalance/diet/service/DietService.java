@@ -93,6 +93,14 @@ public class DietService {
         return initDietResponseList;
     }
 
+    public List<MenuDetailResponse> getInitDietDetail(Integer childId, int dietDay, int sequence) {
+        RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("해당 식단이 존재하지 않습니다."));
+        List<String> menuList = diet.getDietList().get(sequence).getMenuList();
+
+        List<LinkedHashMap<String, Object>> menuDetailList = fastAPIConnectionUtil.postApiConnectionResult("/info", menuList, new ArrayList<>());
+        return menuDetailList.stream().map(this::ConvertPythonAPIToResponse).toList();
+    }
+
     public List<DietMenuResponse> addTempDiet(Integer childId, int dietDay, String allergy, String doNotRecommend) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
         List<RedisDietDto> dietList = dayDiet.getDietList();

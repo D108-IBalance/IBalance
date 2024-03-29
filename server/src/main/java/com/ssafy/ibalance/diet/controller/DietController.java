@@ -73,6 +73,13 @@ public class DietController {
         return initDietResponseList;
     }
 
+    @GetMapping("/{childId}/detail")
+    public List<MenuDetailResponse> getInitDeitDetail(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                      @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
+                                                      @RequestParam @Range(min = 0, max = 2, message = "식단 순서는 0~2까지 가능합니다.") int sequence) {
+        return dietService.getInitDietDetail(childId, dietDay, sequence);
+    }
+
     /**
      * 한 끼 식단 추가 추천
      *
