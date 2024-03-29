@@ -65,7 +65,7 @@ public class DietService {
 
         if(redisChildAllergy.isPresent()) {
             List<ChildAllergy> childAllergyList = childAllergyRepository.findByIdIn(redisChildAllergy.get().getChildAllergyId());
-            childAllergyList.forEach(childAllergy -> allergyList.add(childAllergy.getAllergy().getId()));
+            allergyList = childAllergyList.stream().map(childAllergy -> childAllergy.getAllergy().getId()).toList();
         }
 
         return allergyList;
@@ -135,13 +135,14 @@ public class DietService {
 
     public List<String> deleteTempDiet(Integer childId, int dietDay, int sequence) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
-        List<String> menuList;
-        try {
-            menuList = dayDiet.getDietList().get(sequence).getMenuList();
-            dayDiet.getDietList().remove(sequence);
-        } catch (IndexOutOfBoundsException e) {
+
+        if(dayDiet.getDietList().size() < sequence + 1){
             throw new RedisWrongDataException("Redis에 해당 날짜, 해당 순서의 식단 데이터가 없습니다.");
         }
+
+        List<String> menuList = dayDiet.getDietList().get(sequence).getMenuList();
+        dayDiet.getDietList().remove(sequence);
+
         redisInitDietRepository.save(dayDiet);
         return menuList;
     }
@@ -149,15 +150,16 @@ public class DietService {
     public MenuDetailResponse changeMenuOfTempDiet(Integer childId, int dietDay, int sequence, String menuId, String allergy, String doNotRecommend) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
         List<String> dietList = dayDiet.getDietList().get(sequence).getMenuList();
-        try {
-            for (int menuNum = 0; menuNum < 4; menuNum++) {
-                if (dietList.get(menuNum).equals(menuId)) {
-                    dietList.remove(menuNum);
-                    break;
-                }
-            }
-        } catch (IndexOutOfBoundsException e){
+
+        if(dietList.size() != 4) {
             throw new RedisWrongDataException("해당 식단의 메뉴가 4개가 아닙니다.");
+        }
+
+        for (int menuNum = 0; menuNum < 4; menuNum++) {
+            if (dietList.get(menuNum).equals(menuId)) {
+                dietList.remove(menuNum);
+                break;
+            }
         }
 
         if(dietList.size() != 3) {
