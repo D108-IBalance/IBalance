@@ -121,7 +121,7 @@ public class DietService {
         List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
         List<String> doNotRecommendList = convertCookieStringToStringList(doNotRecommend);
 
-        List<DietMenuResponse> tempDiet = getTempRecommend(childId, dietDay, allergyList, doNotRecommendList);
+        List<DietMenuResponse> tempDiet = getTempRecommend(childId, allergyList, doNotRecommendList);
         List<String> menuList = tempDiet.stream().map(DietMenuResponse::getMenuId).toList();
 
         dietList.add(RedisDietDto.builder().menuList(menuList).build());
@@ -296,7 +296,7 @@ public class DietService {
         return initDietResponseList;
     }
 
-    private List<DietMenuResponse> getTempRecommend(Integer childId, int dietDay, List<Integer> allergyList, List<String> doNotRecommend) {
+    private List<DietMenuResponse> getTempRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend) {
         // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
         RecommendRequest recommendRequest = RecommendRequest.builder()
