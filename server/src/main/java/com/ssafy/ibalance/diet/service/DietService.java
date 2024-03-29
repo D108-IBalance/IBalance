@@ -247,17 +247,17 @@ public class DietService {
     }
 
     private List<InitDietResponse> convertInitRecommend(List<List<LinkedHashMap<String, Object>>> recommendResult) {
-        List<List<RecommendResponse>> recommendList = recommendResult.stream().map(
+        List<List<MenuDetailResponse>> recommendList = recommendResult.stream().map(
                 diet -> diet.stream().map(this::ConvertPythonAPIToResponse).toList()).toList();
 
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
         for(int day = 0; day < 7; day++) {
-            List<RecommendResponse> recommend = recommendList.get(day);
+            List<MenuDetailResponse> recommend = recommendList.get(day);
             List<DietMenuResponse> menuList = recommend.stream().map(
                     menu -> DietMenuResponse.builder()
                             .menuId(menu.getMenuId())
                             .menuName(menu.getMenuName())
-                            .menuType(MenuType.find(menu.getMenuType()))
+                            .menuType(menu.getMenuType())
                             .build()
             ).toList();
             List<List<DietMenuResponse>> menuWrapper = new ArrayList<>();
@@ -293,7 +293,7 @@ public class DietService {
     }
 
     private List<DietMenuResponse> convertTempRecommend(List<LinkedHashMap<String, Object>> recommendResult) {
-        List<RecommendResponse> recommendList = recommendResult.stream()
+        List<MenuDetailResponse> recommendList = recommendResult.stream()
                 .map(this::ConvertPythonAPIToResponse).toList();
 
 
@@ -301,7 +301,7 @@ public class DietService {
                 menu -> DietMenuResponse.builder()
                         .menuId(menu.getMenuId())
                         .menuName(menu.getMenuName())
-                        .menuType(MenuType.find(menu.getMenuType()))
+                        .menuType(menu.getMenuType())
                         .build()
                 ).toList();
     }
@@ -323,19 +323,7 @@ public class DietService {
                 .currentMenuIdOfDiet(menuList)
                 .build(), new LinkedHashMap<>()
         );
-        RecommendResponse recommendResponse = ConvertPythonAPIToResponse(recommendResult);
-        return MenuDetailResponse.builder()
-                .menuId(recommendResponse.getMenuId())
-                .menuName(recommendResponse.getMenuName())
-                .menuImgUrl(recommendResponse.getMenuImgUrl())
-                .menuType(MenuType.find(recommendResponse.getMenuType()))
-                .calorie(recommendResponse.getCalorie())
-                .carbohydrate(recommendResponse.getCarbohydrate())
-                .protein(recommendResponse.getProtein())
-                .fat(recommendResponse.getFat())
-                .materials(recommendResponse.getMaterials())
-                .recipe(recommendResponse.getRecipeList())
-                .build();
+        return ConvertPythonAPIToResponse(recommendResult);
     }
 
     private List<Integer> ConvertCookieStringToIntegerList(String cookie) {
@@ -361,18 +349,18 @@ public class DietService {
         return result;
     }
 
-    private RecommendResponse ConvertPythonAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
-        return RecommendResponse.builder()
+    private MenuDetailResponse ConvertPythonAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
+        return MenuDetailResponse.builder()
                 .menuId((String) recommendResult.get("menu_id"))
                 .menuName((String) recommendResult.get("menu_name"))
                 .menuImgUrl((String) recommendResult.get("img_url"))
-                .menuType((String) recommendResult.get("type"))
+                .menuType(MenuType.find((String) recommendResult.get("type")))
                 .calorie(Integer.parseInt((String) recommendResult.get("cal")))
                 .carbohydrate(Double.parseDouble((String) recommendResult.get("carbohydrate")))
                 .protein(Double.parseDouble((String) recommendResult.get("protein")))
                 .fat(Double.parseDouble((String) recommendResult.get("fat")))
                 .materials((List<String>) recommendResult.get("material"))
-                .recipeList((List<String>) ((Map<String, Object>) recommendResult.get("recipe")).get("content_list"))
+                .recipe((List<String>) ((Map<String, Object>) recommendResult.get("recipe")).get("content_list"))
                 .need((String) ((Map<String, Object>) recommendResult.get("recipe")).get("need"))
                 .build();
     }

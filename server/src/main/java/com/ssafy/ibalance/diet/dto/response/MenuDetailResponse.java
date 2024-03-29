@@ -20,4 +20,5 @@ public class MenuDetailResponse {
     private double fat;
     private List<String> materials;
     private List<String> recipe;
+    private String need;
 }
