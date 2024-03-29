@@ -151,4 +151,5 @@ def menu_info_converter(menu_obj):
     new_obj["fat"] = float(menu_obj["FAT_QY"])
     new_obj["materials"] = parse_matrl_name(menu_obj["MATRL_NM"])
     new_obj["recipe"] = menu_obj["COOK_MTH_CONT"].split("<br>")
+    new_obj["need"] = menu_obj["MATRL_NM"]
     return new_obj
