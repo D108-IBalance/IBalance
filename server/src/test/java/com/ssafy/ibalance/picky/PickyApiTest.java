@@ -79,7 +79,7 @@ public class PickyApiTest extends ApiTest {
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
-        dietTestUtil.편식정보_저장(dietList);
+        dietTestUtil.편식정보_저장(dietList, true);
 
         return List.of(token, Integer.toString(childId));
     }
