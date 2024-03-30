@@ -1,12 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query, Body
 from custom_exception.exception.custom_http_exception import NotFoundException, BodyValidationException
 from custom_exception.handler.custom_exception_handler import not_found_exception_handler, body_validation_exception_handler
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect
 from dbUtil.mysql_api import mysql_connect
 from request.request_dto import ChildInfo, DietOfMenuId
-from service import diet_init, menu_info, one_diet_recommend, new_menu_recommend, get_menu_names_by_ids, menu_infos
-from request.validation_check import child_info_request_validation_checker, menu_id_validation_checker, diet_of_menu_id_validation_checker, menu_id_list_validation_checker
+from service import diet_init, menu_info, one_diet_recommend, new_menu_recommend, get_menu_names_by_ids, menu_infos, picky_recipes
+from request.validation_check import child_info_request_validation_checker, object_id_validation_checker, diet_of_menu_id_validation_checker, menu_id_list_validation_checker
 from bson.objectid import ObjectId, InvalidId
 import warnings
 
@@ -65,7 +65,7 @@ def init_recommend(request: ChildInfo) -> list[list[dict]]:
 def get_menu_info(menu_id: str) -> dict:
     wrap = dict()
     wrap["msgList"] = list()
-    menu_id_validation_checker(menu_id, msg_dict=wrap)
+    object_id_validation_checker(menu_id, "menu_id", msg_dict=wrap)
     return menu_info(menu_id)
 
 
@@ -97,7 +97,7 @@ def refresh_menu(request: ChildInfo) -> dict:
 
 
 @app.post("/recomm/info/diet")
-def get_menu_names(request: list[DietOfMenuId]) -> list[dict]:
+def get_menu_names(request: list[DietOfMenuId] = Body(description="각 식단별 고유 dietId와 그에 대응되는 menuId 리스트")) -> list[dict]:
     diet_of_menu_id_validation_checker(request)
     return get_menu_names_by_ids(request)
 
@@ -108,6 +108,26 @@ def get_menu_names(request: list[DietOfMenuId]) -> list[dict]:
 
 
 @app.post("/recomm/info")
-def get_menu_infos(request: list[str]) -> list[dict]:
+def get_menu_infos(request: list[str] = Body(description="식단 내 4개의 메뉴 id 리스트를 받아서 해당 메뉴의 이름, 식재료 리스트, 이미지를 조회")) -> list[dict]:
     menu_id_list_validation_checker(request)
     return menu_infos(request)
+
+
+"""
+편식 식재료에 따른 레시피 추천
+"""
+
+
+@app.post("/recomm/picky")
+def get_picky_recipes(
+        lastid: str = Query(default=None, description="마지막으로 받았던 레시피의 recipeId"),
+        offset: int = Query(10, description="페이지 당 보여줄 개수", gt=0),
+        matrl: str = Query(description="편식 식재료 명"),
+        request: list[str] = Body(description="알러지 이름들")
+) -> list[dict]:
+    wrap = dict()
+    wrap["msgList"] = list()
+    if lastid is not None and not lastid == "":
+        object_id_validation_checker(lastid, "lastid",msg_dict=wrap)
+    print(f'lastid: {lastid}, allergy_list: {request}, offset: {offset}, matrl: {matrl}')
+    return picky_recipes(lastid, offset, request, matrl)
