@@ -13,6 +13,7 @@ public record DiarySaveResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate date,
         String content,
+        String mealTime,
         List<DietMaterialResponse> materials
 ) {
 }

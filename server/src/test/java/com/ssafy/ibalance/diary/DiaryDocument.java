@@ -23,7 +23,8 @@ public class DiaryDocument {
             fieldWithPath("content").attributes(required()).description("식단 일기 글 내용"),
             fieldWithPath("menuRate[].menuId").attributes(required()).description("별점 데이터 내의 메뉴 아이디"),
             fieldWithPath("menuRate[].rate").attributes(required()).description("1~5점 내의 별점 데이터"),
-            fieldWithPath("pickyIdList").attributes(required()).description("편식한 아이디 리스트")
+            fieldWithPath("pickyIdList").attributes(required()).description("편식한 아이디 리스트"),
+            fieldWithPath("mealTime").type(JsonFieldType.VARIES).description("식사 시간(BREAKFAST, LUNCH, DINNER, NONE)").optional()
     );
 
     public static final Snippet getCalendarListResponseField = responseFields(
@@ -60,6 +61,7 @@ public class DiaryDocument {
             fieldWithPath("data.dietId").type(JsonFieldType.NUMBER).description("저장된 식단 아이디"),
             fieldWithPath("data.date").type(JsonFieldType.STRING).description("식단이 생성된 날짜"),
             fieldWithPath("data.content").type(JsonFieldType.STRING).description("식단 일기 내용"),
+            fieldWithPath("data.mealTime").type(JsonFieldType.STRING).description("식사 시간"),
             fieldWithPath("data.materials[].id").type(JsonFieldType.NUMBER).description("식단 식재료 아이디"),
             fieldWithPath("data.materials[].material").type(JsonFieldType.STRING).description("식단 식재료 이름"),
             fieldWithPath("data.materials[].picky").type(JsonFieldType.BOOLEAN).description("식단 식재료 편식여부")
