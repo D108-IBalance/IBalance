@@ -351,7 +351,7 @@ public class DietService {
                                 .protein(21.3)
                                 .cellulose(12.1)
                                 .build())
-                        .needType(needType.getMenuType())
+                        .needType(needType)
                         .currentMenuIdOfDiet(menuList)
                         .build(), new LinkedHashMap<>()
                 )
