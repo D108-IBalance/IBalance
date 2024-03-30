@@ -101,11 +101,11 @@ mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 �
 """
 
 
-def find_by_object_id(collection_name: str, _id: str) -> dict:
+def find_by_object_id(collection_name: str, _id: str) -> list[dict]:
     query = {"_id": ObjectId(_id)}
     project = None
     result = _execute(collection_name, query, project, is_multiple=False)
-    return result[0]
+    return result
 
 
 """
@@ -147,7 +147,7 @@ mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
 """
 
 
-def find_attr_by_id(collection_name, attr_name, id) -> dict:
+def find_attr_by_id(collection_name, attr_name, id) -> list[dict]:
     query = {
         "_id": ObjectId(id)
     }
@@ -155,7 +155,7 @@ def find_attr_by_id(collection_name, attr_name, id) -> dict:
         attr_name: 1
     }
     result = _execute(collection_name, query, project, is_multiple=False)
-    return result[0]
+    return result
 
 
 """

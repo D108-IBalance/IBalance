@@ -4,7 +4,7 @@ from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
 from pre.data_preprocess import diet_converter, parse_matrl_name, menu_converter
 from datetime import datetime
-
+from custom_exception.exception.custom_http_exception import NotFoundException
 """
 @Author: 김회창
 """
@@ -407,9 +407,11 @@ def menu_recommend(request: ChildInfo) -> dict:
             sum_of_cellulose += float(menu_objs[menu_id]["CELLU_QY"])
         else:
             result = find_by_object_id("menu", menu_id)
-            sum_of_protein += float(result["PROTEIN_QY"])
-            sum_of_cal += int(float(result["CALORIE_QY"]))
-            sum_of_cellulose += float(result["CELLU_QY"])
+            if len(result) == 0:
+                raise NotFoundException(f'menu_id에 해당하는 데이터가 없습니다, req: {request}, menu_id={menu_id} not in')
+            sum_of_protein += float(result[0]["PROTEIN_QY"])
+            sum_of_cal += int(float(result[0]["CALORIE_QY"]))
+            sum_of_cellulose += float(result[0]["CELLU_QY"])
     condition_obj["CALORIE_QY"] = request.need.calories - sum_of_cal
     if request.needType == "RICE":
         condition_obj["CARBOH_QY"] = request.need.carbohydrate
