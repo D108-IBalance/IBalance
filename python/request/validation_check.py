@@ -6,7 +6,6 @@ from custom_exception.exception.custom_http_exception import BodyValidationExcep
 @Author: 김회창
 """
 
-NEED_ATTR_NAME_LIST = ["calories", "carbohydrate", "protein", "cellulose"]
 NEED_TYPE_LIST = ["RICE", "SOUP", "SIDE"]
 
 
@@ -36,9 +35,12 @@ def menu_id_validation_checker(menu_id, list_name=None, msg_dict=None) -> dict:
     return msg_dict
 
 
-def menu_id_list_validation_checker(menu_id_list: list[str]):
+def menu_id_list_validation_checker(menu_id_list: list[str], is_can_duplicated=None):
     response = dict()
     response["msgList"] = list()
+    menu_id_set = set(menu_id_list)
+    if is_can_duplicated and not len(menu_id_set) == len(menu_id_list):
+        response["msgList"].append(f'menu_id 리스트속 중복된 menu_id가 존재합니다.')
     for menu_id in menu_id_list:
         response = menu_id_validation_checker(menu_id, msg_dict=response)
     if len(response["msgList"]) > 0:
@@ -78,7 +80,6 @@ def _allergy_list_validation_checker(allergy_list) -> str:
 
 
 def _need_validation_checker(need) -> str:
-    global NEED_ATTR_NAME_LIST
     if not type(need) == Need:
         return f'잘못된 need 형식, need의 타입이 잘못되었습니다. req: need={type(need)}'
     if need.protein <= 0 or need.calories <= 0 or need.cellulose <= 0 or need.carbohydrate <= 0:
@@ -139,23 +140,26 @@ def child_info_request_validation_checker(request: ChildInfo):
 def diet_of_menu_id_validation_checker(request: list[DietOfMenuId]) -> dict:
     response = dict()
     response["msgList"] = list()
-    if not type[request] == list:
+    if not type(request) == list:
         response["msgList"].append(f'잘못된 형식, req: {type(request)}')
     if len(request) == 0:
         response["msgList"].append(f'잘못된 형식, 사이즈가 0입니다.')
     if not len(request) == 0:
         for diet_of_menu_id in request:
             if diet_of_menu_id.dietId == "":
-                response["msgList"].append(f'잘못된 형식, req: value{diet_of_menu_id.dietId}')
+                response["msgList"].append(f'잘못된 형식, req: diet_id가 비었습니다.')
                 break
-            if len(diet_of_menu_id.menuIdList) == 0:
+            if len(diet_of_menu_id.menuIdList) < 4:
                 response["msgList"].append(
-                    f'잘못된 형식, req: dietId={diet_of_menu_id.dietId}, menuIdList={diet_of_menu_id.menuIdList}')
+                    f'잘못된 형식, req: dietId={diet_of_menu_id.dietId}, menuIdList의 크기가 4보다 작습니다.')
                 break
             if not len(diet_of_menu_id.menuIdList) == 0:
-                for menu_id in diet_of_menu_id:
+                for menu_id in diet_of_menu_id.menuIdList:
                     result = menu_id_validation_checker(menu_id, "menuIdList", response)
                     response = result
 
     if len(response["msgList"]) > 0:
         raise BodyValidationException(response["msgList"])
+
+
+
