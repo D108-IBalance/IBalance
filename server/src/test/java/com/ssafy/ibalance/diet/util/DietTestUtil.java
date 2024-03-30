@@ -6,9 +6,9 @@ import com.ssafy.ibalance.common.TestBase;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
+import com.ssafy.ibalance.diet.repository.DietMenuRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
-import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
