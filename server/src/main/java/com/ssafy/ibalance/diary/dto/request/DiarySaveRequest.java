@@ -1,6 +1,7 @@
 package com.ssafy.ibalance.diary.dto.request;
 
 
+import com.ssafy.ibalance.diary.dto.annotation.CheckMealTime;
 import com.ssafy.ibalance.diary.dto.annotation.CheckMenuRate;
 import com.ssafy.ibalance.diary.dto.annotation.CheckPickyId;
 import jakarta.validation.constraints.Min;
@@ -32,4 +33,7 @@ public class DiarySaveRequest {
     @NotNull(message = "편식한 재료 아이디를 입력해 주세요")
     @CheckPickyId
     private List<Long> pickyIdList;
+
+    @CheckMealTime
+    private String mealTime;
 }

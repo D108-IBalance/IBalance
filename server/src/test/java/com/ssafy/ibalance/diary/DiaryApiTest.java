@@ -431,7 +431,7 @@ public class DiaryApiTest extends ApiTest {
 
         List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
         Long targetDietId = dietList.getFirst().getId();
-        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId);
+        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId, "LUNCH");
 
         mockMvc.perform(
                         post("/diary/{childId}", childId)
@@ -448,6 +448,7 @@ public class DiaryApiTest extends ApiTest {
                                 "<br>2. 일기 내용 또한 반드시 입력해야 하며, 1자 이상의 내용을 입력해야 합니다." +
                                 "<br>3. 메뉴 4개에 대한 별점을 반드시 입력해야 하며, 1점 이상 5점 이하로 입력해야 합니다." +
                                 "<br>4. 받은 식재료 아이디는 1 이상의 정수로 입력해야 하며, 편식 정보가 없는 경우에도 빈 배열을 넣어 주어야 합니다." +
+                                "<br>5. 아침/점심/저녁/해당없음 은 BREAKFAST/LUNCH/DINNER/NONE 으로, 대문자로 적어 주셔야 하며, 입력하지 않았을 경우 자동으로 NONE 저장됩니다." +
                                 "<br><br>토큰을 입력하지 않았을 경우, 401 Unauthorized 가 HTTP Status Code 에 반환됩니다." +
                                 "<br>식단이 저장된 child 가 입력한 child id 와 다르거나, 권한이 없는 사용자가 해당 식단 아이디로 일기를 저장하려고 하는 경우, " +
                                 "<br>403 Forbidden 이 body 에 담겨 반환됩니다." +
@@ -461,6 +462,28 @@ public class DiaryApiTest extends ApiTest {
 
         assertThat(dietTotalInfo.getDiet().getDiary()).isEqualTo(DiarySteps.content);
         assertThat(dietTotalInfo.getDietMaterialList().getFirst().isPicky()).isTrue();
+    }
+
+    @Test
+    void 식단_일기_저장_성공_식사시간누락_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
+        Long targetDietId = dietList.getFirst().getId();
+        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId);
+
+        mockMvc.perform(
+                        post("/diary/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
+                        DiaryDocument.saveDiaryRequestField, DiaryDocument.diarySaveResponseField))
+                .andDo(this::print);
     }
 
     @Test
@@ -582,10 +605,148 @@ public class DiaryApiTest extends ApiTest {
                 .andDo(this::print);
     }
 
+    @Test
+    void 식단_일기_조회_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        Long dietId = 식단_일기_저장(token, childId, "BREAKFAST");
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, dietId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, "작성된 식단의 일기를 조회하는 API 입니다." +
+                                "<br>정상적으로 일기를 조회했을 경우, 200 OK 와 함께 식단 일기 정보가 반환됩니다." +
+                                "<br>childId 나 dietId 를 음수로 입력했을 경우, 400 Bad Request 가 body 에 담겨 반환됩니다." +
+                                "<br>로그인 토큰을 헤더에 담지 않았을 경우, 401 Unauthorized 가 HTTP Status Code 로 반환됩니다." +
+                                "<br>childId 의 아이에 접근할 권한이 없거나, diet 에 접근할 권한이 없을 경우, 403 Forbidden 이 " +
+                                "<br>body 에 담겨 반환됩니다." +
+                                "<br>dietId 에 접근할 권한이 없을 경우, 404 Not Found 가 body 에 담겨 반환됩니다." +
+                                "<br>아직 일기를 작성하지 못했음에도 불구하고 식단 일기를 확인하고자 하는 경우, 409 Conflict 가 반횐됩니다.",
+                        "식단일기조회", CommonDocument.AccessTokenHeader, DiaryDocument.childAndDietIdPathField,
+                        DiaryDocument.writtenDiaryResponseField))
+                .andDo(this::print);
+    }
+
+    @Test
+    void 식단_일기_조회_아이디음수_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        식단_일기_저장(token, childId, "BREAKFAST");
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, -1)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        DiaryDocument.childAndDietIdPathField))
+                .andDo(this::print);
+    }
+
+    @Test
+    void 식단_일기_조회_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        Long dietId = 식단_일기_저장(token, childId, "BREAKFAST");
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, dietId)
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH, DiaryDocument.childAndDietIdPathField))
+                .andDo(this::print);
+    }
+
+    @Test
+    void 식단_일기_조회_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        Long dietId = 식단_일기_저장(token, childId, "BREAKFAST");
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, dietId)
+                                .header(AUTH_HEADER, otherToken)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        DiaryDocument.childAndDietIdPathField))
+                .andDo(this::print);
+    }
+
+    @Test
+    void 식단_일기_조회_식단없음_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        식단_일기_저장(token, childId, "BREAKFAST");
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, 9999999)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        DiaryDocument.childAndDietIdPathField))
+                .andDo(this::print);
+    }
+
+    @Test
+    void 식단_일기_조회_일기없음_409() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
+        Long targetDietId = dietList.getFirst().getId();
+        식단_전반_정보_저장(dietList, targetDietId);
+
+        mockMvc.perform(
+                        get("/diary/{childId}/detail/{dietId}", childId, targetDietId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(409))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader, DiaryDocument.childAndDietIdPathField))
+                .andDo(this::print);
+    }
+
+    Long 식단_일기_저장(String token, Integer childId, String mealTime) throws Exception {
+        List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
+        Long targetDietId = dietList.getFirst().getId();
+        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId, mealTime);
+
+        mockMvc.perform(
+                        post("/diary/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200));
+
+        return targetDietId;
+    }
+
     DiarySaveRequest 식단_전반_정보_저장(List<Diet> dietList, Long targetId) {
+        return 식단_전반_정보_저장(dietList, targetId, null);
+    }
+
+    DiarySaveRequest 식단_전반_정보_저장(List<Diet> dietList, Long targetId, String mealTime) {
         List<DietMenu> dietMenuList = dietTestUtil.식단_메뉴_저장(dietList);
         List<DietMaterial> materials = dietTestUtil.편식정보_저장(dietList, false);
 
-        return diarySteps.식단_일기_저장(targetId, dietMenuList, materials, List.of(1L, 4L));
+        return diarySteps.식단_일기_저장(targetId, dietMenuList, materials, List.of(1L, 4L), mealTime);
     }
 }

@@ -6,9 +6,9 @@ import com.ssafy.ibalance.common.TestBase;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
+import com.ssafy.ibalance.diet.repository.DietMenuRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
-import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,8 +68,8 @@ public class DietTestUtil extends TestBase {
                 .build()).toList();
 
 
-        dietList.getFirst().setReviewed(true);
-        dietList.getFirst().setDiary("잘 먹었음");
+        dietList.getLast().setReviewed(true);
+        dietList.getLast().setDiary("잘 먹었음");
 
         return dietRepository.saveAll(dietList);
     }
