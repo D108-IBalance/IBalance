@@ -83,19 +83,35 @@ public class ChildController {
     }
 
     /**
-     * 성장 데이터 조회
+     * 키 성장 데이터 조회
      *
      * @param childId  자녀 아이디
      * @param pageable 현재 조회하고 있는 페이지. page, size=4
      * @param member   로그인 한 멤버
-     * @return 자녀의 성장 데이터 (성별, 생년월일, 개월 수, 기록일, 기록일 기준 일주일의 시작일과 종료일, 키, 몸무게)와
+     * @return 자녀의 성장 데이터 (성별, 생년월일, 개월 수, 기록일, 기록일 기준 일주일의 시작일과 종료일, 키)와
      * 평균 데이터 (개월 수, 평균 키, 평균 몸무게)
      */
-    @GetMapping("/growth/{childId}")
-    public GrowthPageResponse getGrowthList(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+    @GetMapping("/height/{childId}")
+    public HeightPageResponse getHeightList(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
                                             Pageable pageable,
                                             @AuthenticationPrincipal Member member) {
-        return childService.getGrowthList(childId, pageable, member);
+        return childService.getHeightList(childId, pageable, member);
+    }
+
+    /**
+     * 몸무게 성장 데이터 조회
+     *
+     * @param childId  자녀 아이디
+     * @param pageable 현재 조회하고 있는 페이지. page, size=4
+     * @param member   로그인 한 멤버
+     * @return 자녀의 성장 데이터 (성별, 생년월일, 개월 수, 기록일, 기록일 기준 일주일의 시작일과 종료일, 몸무게)와
+     * 평균 데이터 (개월 수, 평균 키, 평균 몸무게)
+     */
+    @GetMapping("/weight/{childId}")
+    public WeightPageResponse getWeightList(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                            Pageable pageable,
+                                            @AuthenticationPrincipal Member member) {
+        return childService.getWeightList(childId, pageable, member);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.ssafy.ibalance.child.service;
 
 import com.ssafy.ibalance.child.dto.ChildDetailDto;
+import com.ssafy.ibalance.child.dto.HeightGrowthDto;
+import com.ssafy.ibalance.child.dto.WeightGrowthDto;
 import com.ssafy.ibalance.child.dto.request.ModifyChildRequest;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
@@ -137,31 +139,60 @@ public class ChildService {
         return ChildMainResponse.convertEntityToDto(growth);
     }
 
-    public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
-        Page<Growth> growthPage = growthRepository.getGrowthList(childId, pageable);
+    public HeightPageResponse getHeightList(Integer childId, Pageable pageable, Member member) {
+        Page<HeightGrowthDto> heightPage = growthRepository.getHeightList(childId, pageable);
 
-        if(growthPage.isEmpty()) {
+        if(heightPage.isEmpty()) {
             throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
         }
 
-        if(!member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
+        if(!member.equals(heightPage.getContent().getFirst().getChild().getMember())) {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        Page<GrowthResponse> growthResponsePage = growthPage.map(GrowthResponse::ConvertEntityToDto);
+        Page<HeightGrowthResponse> growthResponsePage = heightPage.map(HeightGrowthResponse::ConvertEntityToDto);
 
-        List<GrowthResponse> growthResponseList = growthResponsePage.getContent();
-        List<Long> monthList = growthResponseList.stream().map(GrowthResponse::getMonth).toList();
+        List<HeightGrowthResponse> heightGrowthResponseList = growthResponsePage.getContent();
+        List<Long> monthList = heightGrowthResponseList.stream().map(HeightGrowthResponse::getMonth).toList();
 
         // 평균 성장 데이터 조회
-        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponseList.getFirst().getGender(), monthList)
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(heightGrowthResponseList.getFirst().getGender(), monthList)
                 .stream()
                 .map(AverageGrowthResponse::ConvertEntityToDto)
                 .toList();
 
-        return GrowthPageResponse.builder()
+        return HeightPageResponse.builder()
                 .last(growthResponsePage.isLast())
-                .growthList(growthResponseList)
+                .growthList(heightGrowthResponseList)
+                .averageList(averageGrowthList)
+                .build();
+    }
+
+    public WeightPageResponse getWeightList(Integer childId, Pageable pageable, Member member) {
+        Page<WeightGrowthDto> weightPage = growthRepository.getWeightList(childId, pageable);
+
+        if(weightPage.isEmpty()) {
+            throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
+        }
+
+        if(!member.equals(weightPage.getContent().getFirst().getChild().getMember())) {
+            throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
+        }
+
+        Page<WeightGrowthResponse> growthResponsePage = weightPage.map(WeightGrowthResponse::ConvertEntityToDto);
+
+        List<WeightGrowthResponse> weightGrowthResponseList = growthResponsePage.getContent();
+        List<Long> monthList = weightGrowthResponseList.stream().map(WeightGrowthResponse::getMonth).toList();
+
+        // 평균 성장 데이터 조회
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(weightGrowthResponseList.getFirst().getGender(), monthList)
+                .stream()
+                .map(AverageGrowthResponse::ConvertEntityToDto)
+                .toList();
+
+        return WeightPageResponse.builder()
+                .last(growthResponsePage.isLast())
+                .growthList(weightGrowthResponseList)
                 .averageList(averageGrowthList)
                 .build();
     }

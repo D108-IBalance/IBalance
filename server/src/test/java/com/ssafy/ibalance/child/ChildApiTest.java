@@ -369,38 +369,38 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 메인_성장_조회_성공_200() throws Exception {
+    void 메인_키_조회_성공_200() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                        get("/child/growth/{childId}", childId)
+                        get("/child/height/{childId}", childId)
                                 .header(AUTH_HEADER, token)
                                 .param("page", "0")
                                 .param("size", "4")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 자녀의 성장 데이터와 평균 데이터를 조회하는 API 입니다." +
-                                "<br><b>JWT 토큰과 자녀 아이디, page와 size</b>를 올바르게 입력하면, <b>200 OK</b> 와 함께 성장 데이터와 평균 데이터가 반환됩니다." +
+                .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 자녀의 키 데이터와 평균 데이터를 조회하는 API 입니다." +
+                                "<br><b>JWT 토큰과 자녀 아이디, page와 size</b>를 올바르게 입력하면, <b>200 OK</b> 와 함께 키 데이터와 평균 데이터가 반환됩니다." +
                                 "<br>- 자녀 아이디는 <b>1 이상의 정수</b>로 입력해야 합니다." +
                                 "<br>- 0 이하의 정수를 입력하면 <b>400 Bad Request</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
                                 "<br>- <b>Header</b> 에 <b>JWT 토큰</b>이 올바르게 입력되지 않았을 때, <b>401 Unauthorized</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
                                 "<br>- 해당 자녀 정보에 접근 권한이 없을 때, <b>403 Forbidden</b> 이 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
                                 "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, <b>404 Not Found</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다.",
-                        "메인_자녀 성장 데이터, 평균 데이터 조회", CommonDocument.AccessTokenHeader,
+                        "메인_자녀 키 데이터, 평균 데이터 조회", CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField, ChildDocument.pageableQueryField,
-                        ChildDocument.getGrowthListResponseField
+                        ChildDocument.getHeightListResponseField
                 ));
     }
 
     @Test
-    void 메인_성장_조회_잘못된아이디_400() throws Exception {
+    void 메인_키_조회_잘못된아이디_400() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = -1;
 
         mockMvc.perform(
-                        get("/child/growth/{childId}", childId)
+                        get("/child/height/{childId}", childId)
                                 .header(AUTH_HEADER, token)
                                 .param("page", "0")
                                 .param("size", "4")
@@ -413,12 +413,12 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 메인_성장_조회_토큰없음_401() throws Exception {
+    void 메인_키_조회_토큰없음_401() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         mockMvc.perform(
-                        get("/child/growth/{childId}", childId)
+                        get("/child/height/{childId}", childId)
                                 .param("page", "0")
                                 .param("size", "4")
                 )
@@ -430,14 +430,14 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 메인_성장_조회_권한없음_403() throws Exception {
+    void 메인_키_조회_권한없음_403() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = childTestUtil.아이_등록(token, mockMvc);
 
         String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
 
         mockMvc.perform(
-                        get("/child/growth/{childId}", childId)
+                        get("/child/height/{childId}", childId)
                                 .header(AUTH_HEADER, otherToken)
                                 .param("page", "0")
                                 .param("size", "4")
@@ -450,12 +450,111 @@ public class ChildApiTest extends ApiTest {
     }
 
     @Test
-    void 메인_성장_조회_없는아이_404() throws Exception {
+    void 메인_키_조회_없는아이_404() throws Exception {
         String token = memberTestUtil.회원가입_토큰반환(mockMvc);
         Integer childId = 9999999;
 
         mockMvc.perform(
-                        get("/child/growth/{childId}", childId)
+                        get("/child/height/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.pageableQueryField
+                ));
+    }
+
+    @Test
+    void 메인_몸무게_조회_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        get("/child/weight/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, "메인 페이지에서 자녀의 몸무게 데이터와 평균 데이터를 조회하는 API 입니다." +
+                                "<br><b>JWT 토큰과 자녀 아이디, page와 size</b>를 올바르게 입력하면, <b>200 OK</b> 와 함께 몸무게 데이터와 평균 데이터가 반환됩니다." +
+                                "<br>- 자녀 아이디는 <b>1 이상의 정수</b>로 입력해야 합니다." +
+                                "<br>- 0 이하의 정수를 입력하면 <b>400 Bad Request</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- <b>Header</b> 에 <b>JWT 토큰</b>이 올바르게 입력되지 않았을 때, <b>401 Unauthorized</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 자녀 정보에 접근 권한이 없을 때, <b>403 Forbidden</b> 이 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
+                                "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, <b>404 Not Found</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다.",
+                        "메인_자녀 몸무게 데이터, 평균 데이터 조회", CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.pageableQueryField,
+                        ChildDocument.getWeightListResponseField
+                ));
+    }
+
+    @Test
+    void 메인_몸무게_조회_잘못된아이디_400() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = -1;
+
+        mockMvc.perform(
+                        get("/child/weight/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.pageableQueryField
+                ));
+    }
+
+    @Test
+    void 메인_몸무게_조회_토큰없음_401() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        mockMvc.perform(
+                        get("/child/weight/{childId}", childId)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
+                .andExpect(status().is(401))
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        ChildDocument.childIdPathField, ChildDocument.pageableQueryField
+                ));
+    }
+
+    @Test
+    void 메인_몸무게_조회_권한없음_403() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+
+        mockMvc.perform(
+                        get("/child/weight/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                                .param("page", "0")
+                                .param("size", "4")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField, ChildDocument.pageableQueryField
+                ));
+    }
+
+    @Test
+    void 메인_몸무게_조회_없는아이_404() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = 9999999;
+
+        mockMvc.perform(
+                        get("/child/weight/{childId}", childId)
                                 .header(AUTH_HEADER, token)
                                 .param("page", "0")
                                 .param("size", "4")

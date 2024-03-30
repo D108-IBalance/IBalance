@@ -1,7 +1,7 @@
 package com.ssafy.ibalance.child.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.ibalance.child.entity.Growth;
+import com.ssafy.ibalance.child.dto.WeightGrowthDto;
 import com.ssafy.ibalance.child.type.Gender;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.time.temporal.TemporalAdjusters;
 @Builder
 @Getter
 @Setter
-public class GrowthResponse {
+public class WeightGrowthResponse {
 
     private Gender gender;
 
@@ -31,20 +31,18 @@ public class GrowthResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    private double height;
     private double weight;
 
-    public static GrowthResponse ConvertEntityToDto(Growth growth) {
-        LocalDate recordDate = growth.getCreatedTime().toLocalDate();
+    public static WeightGrowthResponse ConvertEntityToDto(WeightGrowthDto weightGrowth) {
+        LocalDate recordDate = weightGrowth.getCreatedTime().toLocalDate();
         return builder()
-                .gender(growth.getChild().getGender())
-                .birthDate(growth.getChild().getBirthDate())
-                .month(ChronoUnit.MONTHS.between(growth.getChild().getBirthDate(), recordDate))
+                .gender(weightGrowth.getChild().getGender())
+                .birthDate(weightGrowth.getChild().getBirthDate())
+                .month(ChronoUnit.MONTHS.between(weightGrowth.getChild().getBirthDate(), recordDate))
                 .recordDate(recordDate)
                 .startDate(recordDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)))
                 .endDate(recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY)))
-                .height(growth.getHeight())
-                .weight(growth.getWeight())
+                .weight(weightGrowth.getWeight())
                 .build();
     }
 }
