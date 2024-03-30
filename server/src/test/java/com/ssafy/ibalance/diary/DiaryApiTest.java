@@ -431,7 +431,7 @@ public class DiaryApiTest extends ApiTest {
 
         List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
         Long targetDietId = dietList.getFirst().getId();
-        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId);
+        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId, "LUNCH");
 
         mockMvc.perform(
                         post("/diary/{childId}", childId)
@@ -448,6 +448,7 @@ public class DiaryApiTest extends ApiTest {
                                 "<br>2. 일기 내용 또한 반드시 입력해야 하며, 1자 이상의 내용을 입력해야 합니다." +
                                 "<br>3. 메뉴 4개에 대한 별점을 반드시 입력해야 하며, 1점 이상 5점 이하로 입력해야 합니다." +
                                 "<br>4. 받은 식재료 아이디는 1 이상의 정수로 입력해야 하며, 편식 정보가 없는 경우에도 빈 배열을 넣어 주어야 합니다." +
+                                "<br>5. 아침/점심/저녁/해당없음 은 BREAKFAST/LUNCH/DINNER/NONE 으로, 대문자로 적어 주셔야 하며, 입력하지 않았을 경우 자동으로 NONE 저장됩니다." +
                                 "<br><br>토큰을 입력하지 않았을 경우, 401 Unauthorized 가 HTTP Status Code 에 반환됩니다." +
                                 "<br>식단이 저장된 child 가 입력한 child id 와 다르거나, 권한이 없는 사용자가 해당 식단 아이디로 일기를 저장하려고 하는 경우, " +
                                 "<br>403 Forbidden 이 body 에 담겨 반환됩니다." +
@@ -461,6 +462,28 @@ public class DiaryApiTest extends ApiTest {
 
         assertThat(dietTotalInfo.getDiet().getDiary()).isEqualTo(DiarySteps.content);
         assertThat(dietTotalInfo.getDietMaterialList().getFirst().isPicky()).isTrue();
+    }
+
+    @Test
+    void 식단_일기_저장_성공_식사시간누락_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+        Integer childId = childTestUtil.아이_등록(token, mockMvc);
+
+        List<Diet> dietList = dietTestUtil.식단정보_저장(childId);
+        Long targetDietId = dietList.getFirst().getId();
+        DiarySaveRequest requestBody = 식단_전반_정보_저장(dietList, targetDietId);
+
+        mockMvc.perform(
+                        post("/diary/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
+                        DiaryDocument.saveDiaryRequestField, DiaryDocument.diarySaveResponseField))
+                .andDo(this::print);
     }
 
     @Test
@@ -583,9 +606,13 @@ public class DiaryApiTest extends ApiTest {
     }
 
     DiarySaveRequest 식단_전반_정보_저장(List<Diet> dietList, Long targetId) {
+        return 식단_전반_정보_저장(dietList, targetId, null);
+    }
+
+    DiarySaveRequest 식단_전반_정보_저장(List<Diet> dietList, Long targetId, String mealTime) {
         List<DietMenu> dietMenuList = dietTestUtil.식단_메뉴_저장(dietList);
         List<DietMaterial> materials = dietTestUtil.편식정보_저장(dietList, false);
 
-        return diarySteps.식단_일기_저장(targetId, dietMenuList, materials, List.of(1L, 4L));
+        return diarySteps.식단_일기_저장(targetId, dietMenuList, materials, List.of(1L, 4L), mealTime);
     }
 }

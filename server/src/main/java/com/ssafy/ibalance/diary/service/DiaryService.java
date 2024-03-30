@@ -16,6 +16,7 @@ import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.exception.MenuInfoNotMatchException;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
+import com.ssafy.ibalance.diet.type.MealTime;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -76,8 +77,15 @@ public class DiaryService {
             throw new ChildAccessDeniedException("해당 식단의 일기를 작성할 권한이 없습니다.");
         }
 
+        if(request.getMealTime() == null) {
+            request.setMealTime("NONE");
+        }
+
         diet.setDiary(request.getContent());
         diet.setReviewed(true);
+        diet.setMealTime(MealTime.valueOf(request.getMealTime()));
+
+
         saveMenuScore(dietTotalInfo.getDietMenuList(), request.getMenuRate());
         savePickyResult(dietTotalInfo.getDietMaterialList(), request.getPickyIdList());
 
@@ -117,6 +125,7 @@ public class DiaryService {
                 .dietId(diet.getId())
                 .date(diet.getDietDate())
                 .content(diet.getDiary())
+                .mealTime(diet.getMealTime().toString())
                 .materials(dietMaterialList)
                 .build();
     }
