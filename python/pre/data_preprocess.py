@@ -4,11 +4,7 @@ from bson.objectid import ObjectId
 @Author: 김회창
 """
 
-"""
-해당 메뉴의 주요 식재료를 파싱하는 함수
-:param: matrl_name str, mongodb에서 가져오는 파싱 전 식재료 문자열
-:return: list[str], 파싱 후 문자열
-"""
+
 
 BLACK_LIST_OF_MATRL = """
                     생것 푸른것 노지 일반형 왜간장 유자차 보통 날것 생것 위너 분말 말린것 부산물 재래종 뿌리 자연산 붉은것 튀김가루 생칼국수 돼지고기가공품 삶은국물 볶은것 말린것 일품 가당 자연산 중력분
@@ -56,7 +52,14 @@ PARSING_TABLE = {  # 비슷한 이름의 음식을 획일화 하기 위한 파�
 }
 
 
-def parse_matrl_name(matrl_nm: str):
+"""
+해당 메뉴의 주요 식재료를 파싱하는 함수
+:param: matrl_name str, mongodb에서 가져오는 파싱 전 식재료 문자열
+:return: list[str], 파싱 후 문자열 리스트 리턴
+"""
+
+
+def parse_matrl_name(matrl_nm: str) -> list[str]:
     global BLACK_LIST_OF_MATRL
     global PARSING_TABLE
     matrl_list = set()
@@ -77,18 +80,19 @@ def parse_matrl_name(matrl_nm: str):
 
 
 """
-menu 데이터의 mongodb에서 부여받은 고유 id값을 menu_id로 변환
-:param: menu_obj dictionary, 메뉴 하나의 데이터
-:return: menu_obj dictionary
+데이터의 mongodb에서 부여받은 고유 id값을 menu_id로 변환
+:param: mongo_obj dict, mongodb에서 쿼리를 실행한 결과값들 중 하나의 document
+:return: dict, 고유 id가 있으면 파싱을 한 채로 리턴
 """
 
 
-def menu_pre(menu_obj):
-    if "_id" not in menu_obj.keys():
-        return menu_obj
-    menu_obj["menu_id"] = str(ObjectId(menu_obj["_id"]))
-    del menu_obj["_id"]
-    return menu_obj
+def object_id_converter(mongo_obj, id_alias) -> dict:
+    if "_id" not in mongo_obj.keys():
+        return mongo_obj
+    id_name = id_alias+"_id"
+    mongo_obj[id_name] = str(ObjectId(mongo_obj["_id"]))
+    del mongo_obj["_id"]
+    return mongo_obj
 
 
 """
@@ -98,7 +102,7 @@ def menu_pre(menu_obj):
 """
 
 
-def menu_converter(menu_obj):
+def menu_converter(menu_obj) -> dict:
     new_menu_obj = dict()
     new_menu_obj["recipe"] = dict()
     new_menu_obj["recipe"]["content_list"] = menu_obj["COOK_MTH_CONT"].split("<br>")
@@ -122,11 +126,12 @@ def menu_converter(menu_obj):
 
 """
 하나의 식단내 4가지 메뉴를 반복문을 통해 api 명세에 맞춘 key : value 쌍으로 정제
+:param: diet list[dict], 식단 내 메뉴리스트
 :return: result list[dict], 하나의 식단에 밥류 1개, 반찬류 2개, 국 1개의 총 4개 메뉴 정보를 정제한 리스트 리턴
 """
 
 
-def diet_converter(diet):
+def diet_converter(diet: list[dict]) -> list[dict]:
     new_diet = list()
     for menu in diet:
         new_diet.append(menu_converter(menu))
@@ -136,11 +141,11 @@ def diet_converter(diet):
 """
 메뉴 정보조회 전용 converter
 :param: mongodb에서 object_id를 통해 조회한 단일 menu 객체
-:return: 필요한 요소만 담긴 response 객체 반환
+:return: 필요한 요소만 담긴 response 객체 리턴
 """
 
 
-def menu_info_converter(menu_obj):
+def menu_info_converter(menu_obj) -> dict:
     new_obj = dict()
     new_obj["menuId"] = menu_obj["menu_id"]
     new_obj["menuName"] = menu_obj["MEAL_NM"]
