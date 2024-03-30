@@ -63,11 +63,7 @@ public class DiaryService {
         DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(request.getDietId());
 
         Diet diet = dietTotalInfo.getDiet();
-        Child child = diet.getChild();
-
-        if(!child.getId().equals(childId) || !child.getMember().equals(member)) {
-            throw new ChildAccessDeniedException("해당 식단의 일기를 작성할 권한이 없습니다.");
-        }
+        checkAccessGranted(member, childId, diet);
 
         if(request.getMealTime() == null) {
             request.setMealTime("NONE");
@@ -84,6 +80,46 @@ public class DiaryService {
         return getDiarySaveResponse(dietTotalInfo, diet);
     }
 
+    public WrittenDiaryResponse getDiaryDetail(Member member, Integer childId, Long dietId) {
+        DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(dietId);
+        Diet diet = dietTotalInfo.getDiet();
+        checkAccessGranted(member, childId, diet);
+
+        if(!diet.isReviewed()) {
+            throw new DiaryNotWrittenException("아직 식단이 작성되지 않았습니다.");
+        }
+
+        List<DiaryMenuResponse> diaryMenuList = getDiaryMenuListFromFastAPI(dietTotalInfo.getDietMenuList());
+        List<DietMaterialResponse> dietMaterialResponses
+                = DietMaterialResponse.convertToResponse(dietTotalInfo.getDietMaterialList());
+
+        return WrittenDiaryResponse.builder()
+                .date(diet.getDietDate())
+                .content(diet.getDiary())
+                .mealTime(diet.getMealTime().toString())
+                .diaryMenuList(diaryMenuList)
+                .materials(dietMaterialResponses)
+                .build();
+    }
+
+    private void checkAccessGranted(Member member, Integer childId, Diet diet) {
+        Child child = diet.getChild();
+
+        if(!child.getId().equals(childId) || !child.getMember().equals(member)) {
+            throw new ChildAccessDeniedException("해당 식단의 일기를 작성할 권한이 없습니다.");
+        }
+    }
+
+    private List<DiaryMenuResponse> getDiaryMenuListFromFastAPI(List<DietMenu> dietMenuList) {
+        List<String> menuIdList = dietMenuList.stream().map(DietMenu::getMenuId).toList();
+
+        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
+                = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
+
+        return diaryMenuResponses.stream()
+                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse()))
+                .toList();
+    }
 
     private void saveMenuScore(List<DietMenu> dietMenuList, List<MenuRateRequest> menuRateRequests) {
         Map<String, List<MenuRateRequest>> menuRateMap =

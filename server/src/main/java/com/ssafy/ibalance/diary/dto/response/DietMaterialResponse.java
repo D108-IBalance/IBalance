@@ -3,6 +3,8 @@ package com.ssafy.ibalance.diary.dto.response;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,5 +21,9 @@ public class DietMaterialResponse {
                 .material(input.getMaterial())
                 .picky(input.isPicky())
                 .build();
+    }
+
+    public static List<DietMaterialResponse> convertToResponse(List<DietMaterial> input) {
+        return input.stream().map(DietMaterialResponse::convertToResponse).toList();
     }
 }
