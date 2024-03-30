@@ -1,11 +1,12 @@
 package com.ssafy.ibalance.child.repository;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.entity.Growth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
@@ -24,8 +25,15 @@ public class GrowthCustomRepositoryImpl implements GrowthCustomRepository {
                 .groupBy(growth.createdTime.week(), growth)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(growth.id.desc())
                 .fetch();
 
-        return new PageImpl<>(content, pageable, content.size());
+        JPAQuery<Growth> count = jpaQueryFactory.select(growth)
+                .from(growth)
+                .where(growth.child.id.eq(childId))
+                .groupBy(growth.createdTime.week(), growth)
+                .orderBy(growth.id.desc());
+
+        return PageableExecutionUtils.getPage(content, pageable, count::fetchCount);
     }
 }
