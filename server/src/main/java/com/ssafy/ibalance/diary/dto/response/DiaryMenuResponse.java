@@ -12,6 +12,6 @@ import java.util.List;
 public class DiaryMenuResponse {
     private String menuId;
     private String menuName;
-    private List<String> menuMaterial;
+    private List<String> materials;
     private String menuImgUrl;
 }
