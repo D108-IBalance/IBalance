@@ -37,4 +37,4 @@ CMD ["sh", "-c", "PYTHONUNBUFFERED=1 \
     MYSQL_PASSWORD=${MYSQL_PASSWORD} \
     MYSQL_DATABASE=${MYSQL_DATABASE} \
     MYSQL_PORT=${MYSQL_PORT} \
-    uvicorn main:app --host 0.0.0.0 --port 5050"]
+    uvicorn controller:app --host 0.0.0.0 --port 5050"]
