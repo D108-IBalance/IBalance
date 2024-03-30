@@ -68,8 +68,8 @@ public class DietTestUtil extends TestBase {
                 .build()).toList();
 
 
-        dietList.getFirst().setReviewed(true);
-        dietList.getFirst().setDiary("잘 먹었음");
+        dietList.getLast().setReviewed(true);
+        dietList.getLast().setDiary("잘 먹었음");
 
         return dietRepository.saveAll(dietList);
     }
