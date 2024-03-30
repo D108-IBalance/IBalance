@@ -6,6 +6,7 @@ import com.ssafy.ibalance.diary.dto.request.DiarySaveRequest;
 import com.ssafy.ibalance.diary.dto.response.CalendarResponse;
 import com.ssafy.ibalance.diary.dto.response.DiaryInfoResponse;
 import com.ssafy.ibalance.diary.dto.response.DiarySaveResponse;
+import com.ssafy.ibalance.diary.dto.response.WrittenDiaryResponse;
 import com.ssafy.ibalance.diary.service.DiaryService;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.member.entity.Member;
@@ -21,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * @author 김주이
+ * @author 김주이, 남동우
  */
 @RestController
 @RequiredArgsConstructor
@@ -92,5 +93,22 @@ public class DiaryController {
                                        @Valid @RequestBody DiarySaveRequest request) {
 
         return diaryService.saveDiaryInfo(member, childId, request);
+    }
+
+    /**
+     * 선택한 식단의 일기 조회
+     *
+     * @param childId 작성하는 아이의 아이디
+     * @param member  로그인 한 멤버
+     * @param dietId  일기가 작성된 식단 아이디
+     * @return 식단 일기 조회 결과
+     */
+
+    @GetMapping("{childId}/detail/{dietId}")
+    public WrittenDiaryResponse getDiaryDetail(@AuthenticationPrincipal Member member,
+                                               @PathVariable @Min(value = 1, message = "아이 아이디는 1 이상이어야 합니다.") Integer childId,
+                                               @PathVariable @Min(value = 1, message = "식단 아이디는 1 이상이어야 합니다.") Long dietId) {
+
+        return diaryService.getDiaryDetail(member, childId, dietId);
     }
 }

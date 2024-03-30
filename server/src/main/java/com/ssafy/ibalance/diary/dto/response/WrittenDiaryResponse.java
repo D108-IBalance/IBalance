@@ -7,13 +7,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Builder
-public record DiarySaveResponse(
-
-        Long dietId,
+public record WrittenDiaryResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate date,
         String content,
         String mealTime,
+
+        List<DiaryMenuResponse> diaryMenuList,
+
         List<DietMaterialResponse> materials
 ) {
 }

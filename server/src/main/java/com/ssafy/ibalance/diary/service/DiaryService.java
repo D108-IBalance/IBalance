@@ -7,7 +7,7 @@ import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diary.dto.request.DiarySaveRequest;
 import com.ssafy.ibalance.diary.dto.request.MenuRateRequest;
 import com.ssafy.ibalance.diary.dto.response.*;
-import com.ssafy.ibalance.diet.dto.DietDetailDto;
+import com.ssafy.ibalance.diary.exception.DiaryNotWrittenException;
 import com.ssafy.ibalance.diet.dto.DietTotalInfoDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
@@ -15,7 +15,7 @@ import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.exception.MenuInfoNotMatchException;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
-import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
+import com.ssafy.ibalance.diet.type.MealTime;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 public class DiaryService {
 
     private final DietRepository dietRepository;
-    private final DietMenuRepository dietMenuRepository;
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
     private final DtoConverter dtoConverter;
 
@@ -43,23 +42,17 @@ public class DiaryService {
     }
 
     public DiaryInfoResponse getDiaryWriteInfo(Member member, Long dietId) {
+        DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(dietId);
 
-        DietDetailDto dietDetail = dietMenuRepository.getDietAndMenu(member, dietId);
+        Diet diet = dietTotalInfo.getDiet();
+        checkAccessGranted(member, diet.getChild().getId(), diet);
 
-        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
-                = fastAPIConnectionUtil.postApiConnectionResult("/info", dietDetail.getMenuIdList(), new ArrayList<>());
-
-        List<DiaryMenuResponse> diaryMenuList = diaryMenuResponses.stream()
-                .map(r -> dtoConverter.convertFromMap(r, new DiaryMenuResponse()))
-                .toList();
-
-        List<DietMaterialResponse> dietMaterialList = dietDetail.getDietMaterialList()
-                .stream()
-                .map(DietMaterialResponse::convertToResponse)
-                .toList();
+        List<DiaryMenuResponse> diaryMenuList = getDiaryMenuListFromFastAPI(dietTotalInfo.getDietMenuList());
+        List<DietMaterialResponse> dietMaterialList
+                = DietMaterialResponse.convertToResponse(dietTotalInfo.getDietMaterialList());
 
         return DiaryInfoResponse.builder()
-                .date(dietDetail.getDiet().getDietDate())
+                .date(diet.getDietDate())
                 .menu(diaryMenuList)
                 .materials(dietMaterialList)
                 .build();
@@ -70,20 +63,63 @@ public class DiaryService {
         DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(request.getDietId());
 
         Diet diet = dietTotalInfo.getDiet();
-        Child child = diet.getChild();
+        checkAccessGranted(member, childId, diet);
 
-        if(!child.getId().equals(childId) || !child.getMember().equals(member)) {
-            throw new ChildAccessDeniedException("해당 식단의 일기를 작성할 권한이 없습니다.");
+        if(request.getMealTime() == null) {
+            request.setMealTime("NONE");
         }
 
         diet.setDiary(request.getContent());
         diet.setReviewed(true);
+        diet.setMealTime(MealTime.valueOf(request.getMealTime()));
+
+
         saveMenuScore(dietTotalInfo.getDietMenuList(), request.getMenuRate());
         savePickyResult(dietTotalInfo.getDietMaterialList(), request.getPickyIdList());
 
         return getDiarySaveResponse(dietTotalInfo, diet);
     }
 
+    public WrittenDiaryResponse getDiaryDetail(Member member, Integer childId, Long dietId) {
+        DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(dietId);
+        Diet diet = dietTotalInfo.getDiet();
+        checkAccessGranted(member, childId, diet);
+
+        if(!diet.isReviewed()) {
+            throw new DiaryNotWrittenException("아직 식단이 작성되지 않았습니다.");
+        }
+
+        List<DiaryMenuResponse> diaryMenuList = getDiaryMenuListFromFastAPI(dietTotalInfo.getDietMenuList());
+        List<DietMaterialResponse> dietMaterialResponses
+                = DietMaterialResponse.convertToResponse(dietTotalInfo.getDietMaterialList());
+
+        return WrittenDiaryResponse.builder()
+                .date(diet.getDietDate())
+                .content(diet.getDiary())
+                .mealTime(diet.getMealTime().toString())
+                .diaryMenuList(diaryMenuList)
+                .materials(dietMaterialResponses)
+                .build();
+    }
+
+    private void checkAccessGranted(Member member, Integer childId, Diet diet) {
+        Child child = diet.getChild();
+
+        if(!child.getId().equals(childId) || !child.getMember().equals(member)) {
+            throw new ChildAccessDeniedException("해당 식단의 일기를 작성할 권한이 없습니다.");
+        }
+    }
+
+    private List<DiaryMenuResponse> getDiaryMenuListFromFastAPI(List<DietMenu> dietMenuList) {
+        List<String> menuIdList = dietMenuList.stream().map(DietMenu::getMenuId).toList();
+
+        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
+                = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
+
+        return diaryMenuResponses.stream()
+                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse()))
+                .toList();
+    }
 
     private void saveMenuScore(List<DietMenu> dietMenuList, List<MenuRateRequest> menuRateRequests) {
         Map<String, List<MenuRateRequest>> menuRateMap =
@@ -117,6 +153,7 @@ public class DiaryService {
                 .dietId(diet.getId())
                 .date(diet.getDietDate())
                 .content(diet.getDiary())
+                .mealTime(diet.getMealTime().toString())
                 .materials(dietMaterialList)
                 .build();
     }
