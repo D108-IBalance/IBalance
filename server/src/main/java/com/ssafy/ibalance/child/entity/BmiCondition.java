@@ -1,6 +1,6 @@
 package com.ssafy.ibalance.child.entity;
 
-import com.ssafy.ibalance.child.type.Condition;
+import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.child.type.Gender;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Builder
-public class BMICondition {
+public class BmiCondition {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,7 +23,7 @@ public class BMICondition {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 11, nullable = false)
-    private Condition condition;
+    private WeightCondition weightCondition;
 
     @Column(nullable = false)
     private double standard;
