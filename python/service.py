@@ -18,7 +18,7 @@ def menu_info(menu_id: str) -> dict:
     mongo_result = find_by_object_id(MENU_COLLECTION_NAME, menu_id)
     if len(mongo_result) == 0:
         raise NotFoundException(f'menu_id에 해당하는 데이터가 없습니다, req: menu_id={menu_id}')
-    return mongo_result[0]
+    return menu_info_converter(mongo_result[0])
 
 
 def one_diet_recommend(request: ChildInfo) -> list[dict]:
