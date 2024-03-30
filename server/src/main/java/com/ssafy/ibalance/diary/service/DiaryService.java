@@ -7,7 +7,7 @@ import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diary.dto.request.DiarySaveRequest;
 import com.ssafy.ibalance.diary.dto.request.MenuRateRequest;
 import com.ssafy.ibalance.diary.dto.response.*;
-import com.ssafy.ibalance.diet.dto.DietDetailDto;
+import com.ssafy.ibalance.diary.exception.DiaryNotWrittenException;
 import com.ssafy.ibalance.diet.dto.DietTotalInfoDto;
 import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
 import com.ssafy.ibalance.diet.entity.Diet;
@@ -15,7 +15,6 @@ import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
 import com.ssafy.ibalance.diet.exception.MenuInfoNotMatchException;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
-import com.ssafy.ibalance.diet.repository.dietmenu.DietMenuRepository;
 import com.ssafy.ibalance.diet.type.MealTime;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.transaction.Transactional;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 public class DiaryService {
 
     private final DietRepository dietRepository;
-    private final DietMenuRepository dietMenuRepository;
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
     private final DtoConverter dtoConverter;
 
@@ -44,23 +42,17 @@ public class DiaryService {
     }
 
     public DiaryInfoResponse getDiaryWriteInfo(Member member, Long dietId) {
+        DietTotalInfoDto dietTotalInfo = dietRepository.getDietTotalInfo(dietId);
 
-        DietDetailDto dietDetail = dietMenuRepository.getDietAndMenu(member, dietId);
+        Diet diet = dietTotalInfo.getDiet();
+        checkAccessGranted(member, diet.getChild().getId(), diet);
 
-        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
-                = fastAPIConnectionUtil.postApiConnectionResult("/info", dietDetail.getMenuIdList(), new ArrayList<>());
-
-        List<DiaryMenuResponse> diaryMenuList = diaryMenuResponses.stream()
-                .map(r -> dtoConverter.convertFromMap(r, new DiaryMenuResponse()))
-                .toList();
-
-        List<DietMaterialResponse> dietMaterialList = dietDetail.getDietMaterialList()
-                .stream()
-                .map(DietMaterialResponse::convertToResponse)
-                .toList();
+        List<DiaryMenuResponse> diaryMenuList = getDiaryMenuListFromFastAPI(dietTotalInfo.getDietMenuList());
+        List<DietMaterialResponse> dietMaterialList
+                = DietMaterialResponse.convertToResponse(dietTotalInfo.getDietMaterialList());
 
         return DiaryInfoResponse.builder()
-                .date(dietDetail.getDiet().getDietDate())
+                .date(diet.getDietDate())
                 .menu(diaryMenuList)
                 .materials(dietMaterialList)
                 .build();
