@@ -1,5 +1,5 @@
 from recommend import init_recommendations, one_recommend, menu_recommend
-from request.request_dto import ChildInfo, DietOfMenuId
+from request.request_dto import ChildInfo, DietOfMenuId, PickyWithAllergy
 from dbUtil.mongodb_api import find_by_object_id, find_data_by_attr_condition, find_picky_recipes
 from static.mongo_statics import MENU_COLLECTION_NAME, ALLERGY_COLLECTION_NAME
 from pre.data_preprocess import menu_info_converter
@@ -154,3 +154,30 @@ def picky_recipe(matrl_name: str, recipe_id: str) -> dict:
     if len(result) == 0:
         raise NotFoundException(f'{recipe_id} 에 해당하는 레시피가 없습니다. path: recipe_id={recipe_id}, matrl_name={matrl_name}')
     return result[0]
+
+
+"""
+편식 식재료 명 리스트와 알러지 정보 리스트를 가진 객체를 가지고 식재료 명에 따른 5개의 레시피 정보를 제공하는 함수
+:param: request PickyWithAllergy, 편식 식재료 명 리스트와 알러지 정보 리스트가 포함된 객체
+:return: dict, 각 편식 식재료에 대응되는 5개의 레시피 정보가 포함된 dict를 리턴
+"""
+
+
+def picky_main(request: PickyWithAllergy) -> dict:
+    hazard = None
+    offset = 5
+    if not len(request.allergyNameList) == 0:
+        hazard = list()
+        hazard_exclude_attr = ["_id"]
+        allergy_obj_list = find_data_by_attr_condition(request.allergyNameList, "allergy_name", is_or=True,
+                                                       collection_name="allergy", need_attr=None,
+                                                       exclude_attr=hazard_exclude_attr)
+        for allergy_obj in allergy_obj_list:
+            for hazard_menu in allergy_obj["allergy_hazard"]:
+                hazard.append(hazard_menu)
+    result = dict()
+    exclude_attr = ["recipe_material_list", "recipe_steps"]
+    for picky_name in request.pickyMatrlList:
+        recipes = find_picky_recipes(picky_name, offset, last_id=None, exclude_materials=hazard, exclude_attr=exclude_attr)
+        result[picky_name] = recipes
+    return result

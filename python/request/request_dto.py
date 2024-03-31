@@ -34,3 +34,13 @@ diet에 대한 정보를 리턴하는 controller에 사용되는 request dto
 class DietOfMenuId(BaseModel):
     dietId: str  # 식단 고유 id
     menuIdList: list[str]  # 해당 식단 내 포함된 menu 고유번호 리스트
+
+
+"""
+편식 레시피 메인 페이지에 사용될 request dto
+"""
+
+
+class PickyWithAllergy(BaseModel):
+    allergyNameList: list[str]  # 알러지 이름들이 문자열로 포함된 리스트
+    pickyMatrlList: list[str]   # 편식 식재료 명이 문자열로 포함된 리스트
