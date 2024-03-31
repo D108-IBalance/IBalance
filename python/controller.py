@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Query, Body
+from fastapi import FastAPI, Query, Body, Path
 from custom_exception.exception.custom_http_exception import NotFoundException, BodyValidationException
 from custom_exception.handler.custom_exception_handler import not_found_exception_handler, body_validation_exception_handler
 from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect
 from dbUtil.mysql_api import mysql_connect
 from request.request_dto import ChildInfo, DietOfMenuId
-from service import diet_init, menu_info, one_diet_recommend, new_menu_recommend, get_menu_names_by_ids, menu_infos, picky_recipes
-from request.validation_check import child_info_request_validation_checker, object_id_validation_checker, diet_of_menu_id_validation_checker, menu_id_list_validation_checker
+from service import diet_init, menu_info, one_diet_recommend, new_menu_recommend, get_menu_names_by_ids, menu_infos, picky_recipes, picky_recipe
+from request.validation_check import child_info_request_validation_checker, object_id_validation_checker, diet_of_menu_id_validation_checker, menu_id_list_validation_checker, picky_detail_validation_checker
 from bson.objectid import ObjectId, InvalidId
 import warnings
 
@@ -62,7 +62,7 @@ def init_recommend(request: ChildInfo) -> list[list[dict]]:
 
 
 @app.get("/recomm/info/{menu_id}")
-def get_menu_info(menu_id: str) -> dict:
+def get_menu_info(menu_id: str = Path(description="메뉴 고유 id")) -> dict:
     wrap = dict()
     wrap["msgList"] = list()
     object_id_validation_checker(menu_id, "menu_id", msg_dict=wrap)
@@ -129,5 +129,21 @@ def get_picky_recipes(
     wrap["msgList"] = list()
     if lastid is not None and not lastid == "":
         object_id_validation_checker(lastid, "lastid",msg_dict=wrap)
-    print(f'lastid: {lastid}, allergy_list: {request}, offset: {offset}, matrl: {matrl}')
     return picky_recipes(lastid, offset, request, matrl)
+
+
+"""
+편식 식재료 명, 레시피 고유 id를 받아서 해당 레시피의 정보 제공
+"""
+
+
+@app.get("/recomm/picky/{matrl_name}/{recipe_id}")
+def get_picky_recipe_detail(
+        matrl_name: str = Path(description="편식 식재료 명"),
+        recipe_id: str = Path(description="편식 레시피 고유 id")
+) -> dict:
+    picky_detail_validation_checker(matrl_name, recipe_id)
+    return picky_recipe(matrl_name, recipe_id)
+
+
+

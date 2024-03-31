@@ -250,3 +250,22 @@ def diet_of_menu_id_validation_checker(request: list[DietOfMenuId]):
 
     if len(response["msgList"]) > 0:
         raise BodyValidationException(response["msgList"])
+
+
+"""
+편식 해결 레시피 디테일 페이지용 validation check하는 함수
+:param: recipe_id str, 해당 편식 식재료 내 object_id
+:param: matrl_name str, 해당 편식 식재료 명
+"""
+
+
+def picky_detail_validation_checker(matrl_name: str, recipe_id: str):
+    response = dict()
+    response["msgList"] = list()
+    response = object_id_validation_checker(recipe_id, "recipe_id", msg_dict=response)
+    result = _str_checker(matrl_name, "matrl_name")
+    if not result == "":
+        response["msgList"].append(result)
+
+    if len(response["msgList"]) > 0:
+        raise BodyValidationException(response["msgList"])
