@@ -1,5 +1,6 @@
 package com.ssafy.ibalance.common.hadler;
 
+import com.ssafy.ibalance.common.exception.NotValidInfoOnFastAPIException;
 import com.ssafy.ibalance.common.type.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.List;
+
+import static com.ssafy.ibalance.common.hadler.ExceptionHandlerTool.makeErrorResponse;
 
 @RestControllerAdvice
 public class ValidationExceptionHandler {
@@ -51,5 +54,10 @@ public class ValidationExceptionHandler {
                 .fieldName(e.getRequestPartName())
                 .status(HttpStatus.BAD_REQUEST)
                 .build());
+    }
+
+    @ExceptionHandler(NotValidInfoOnFastAPIException.class)
+    public List<ErrorResponse> notValidInfoOnFastAPIException(NotValidInfoOnFastAPIException e) {
+        return makeErrorResponse(e, "");
     }
 }

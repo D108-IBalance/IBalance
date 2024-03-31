@@ -1,8 +1,11 @@
 package com.ssafy.ibalance.common.util;
 
+import com.ssafy.ibalance.common.exception.NotValidInfoOnFastAPIException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
@@ -34,7 +37,16 @@ public class FastAPIConnectionUtil {
 
         return initMethod.retrieve()
                 .bodyToMono((Class<T>) resultType.getClass())
-                .onErrorMap(e -> new IllegalArgumentException("FastAPIConnection Error"))
+                .onErrorResume(WebClientResponseException.class,
+                        e -> (Mono<? extends T>) checkNegativeCodeOnWebClient(e))
                 .block();
+    }
+
+    private Mono<?> checkNegativeCodeOnWebClient(WebClientResponseException e) {
+        if(e.getStatusCode().is4xxClientError()) {
+            throw new NotValidInfoOnFastAPIException("WebClient 에 잘못된 값이 입력되었습니다.");
+        }
+
+        throw new IllegalArgumentException(e.getMessage());
     }
 }
