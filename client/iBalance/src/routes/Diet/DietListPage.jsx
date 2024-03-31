@@ -10,8 +10,15 @@ import DayDiet from "./DayDiet";
 import SaveModalPage from "./SaveModalPage";
 
 const DietListPage = (props) => {
-  const { userDiet, setUserDiet, setSummaryInfo, weekListKo, setSelectDate } =
-    props;
+  const {
+    userDiet,
+    setUserDiet,
+    setSummaryInfo,
+    weekListKo,
+    setSelectDate,
+    isSave,
+    setIsSave,
+  } = props;
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
 
   const weekList = useMemo(() => {
@@ -41,13 +48,12 @@ const DietListPage = (props) => {
 
   const [dietData, setDietData] = useState([]);
   useEffect(() => {
-    if (userDiet[0].length > 0) {
-      setDietData(userDiet[0]);
+    if (userDiet.length > 0) {
+      setDietData(userDiet);
     }
   }, [userDiet]); // userDiet이 변경될 때마다 실행됩니다.
 
   //식단 저장 상태 관리
-  const [saveDiet, setSaveDiet] = useState(false);
   const [saveModal, setSaveModal] = useState(false);
 
   return (
@@ -74,27 +80,26 @@ const DietListPage = (props) => {
                           setUserDiet={setUserDiet}
                           dayIdx={idx}
                           setSummaryInfo={setSummaryInfo}
-                          // saveDiet={saveDiet}
-                        ></DayDiet>
+                          isSave={isSave}></DayDiet>
                       </div>
                     ) : null;
                   })
                 : null}
             </div>
-            {saveDiet === false ? (
+            {isSave === false ? (
               <div
                 className={classes.saveBtn}
                 onClick={() => {
+                  // setUserDiet(dietData);
                   setSaveModal(true);
-                  setUserDiet([dietData, true]);
                 }}>
                 식단 저장
               </div>
             ) : null}
-            {saveModal === true && saveDiet === false ? (
+            {saveModal === true && isSave === false ? (
               <SaveModalPage
                 setSaveModal={setSaveModal}
-                setSaveDiet={setSaveDiet}></SaveModalPage>
+                setIsSave={setIsSave}></SaveModalPage>
             ) : null}
           </div>
         ) : null}

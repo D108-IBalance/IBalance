@@ -218,7 +218,7 @@ const add = {
     },
   ],
 };
-const dietDetail = {
+const dummyDetail = {
   status: 200,
   data: [
     {
@@ -318,4 +318,34 @@ const dietDetail = {
     },
   ],
 };
-export { init, add, dietDetail };
+const dummyRefresh = {
+  status: 200,
+  data: {
+    menuId: "65fa83f63eb83d319efa85de",
+    menuName: "쇠고기죽",
+    menuImgUrl:
+      "https://lh3.googleusercontent.com/proxy/xbFupek3WsR-4o2kz-XusgwvZ_9C5A8GPL8VQI2oBvGTWdLLNV_624Gky3LgHr_77dGQVRlhgL7rP39sNhSY7n-Huv1bXA",
+    menuType: "RICE",
+    calorie: 69,
+    carbohydrate: 11.8,
+    protein: 2.5,
+    fat: 1.2,
+    materials: [
+      "대파",
+      "돼지고기",
+      "논벼",
+      "소고기",
+      "마늘",
+      "참기름",
+      "쌀",
+      "멥쌀",
+      "재래간장",
+    ],
+    recipe: [
+      "① 쌀을 불린 후, 쇠고기를 볶아 쌀과 함께 넣어 약한불로 장시간 끓인다.",
+      "② 국간장, 소금, 마늘, 파, 참기름으로 간을 한다.",
+    ],
+    need: "쌀, 멥쌀, 논벼, 백미 국내산, 일반형, 일품 15g, 쇠고기, 수입우, 등심 7.5g, 간장, 재래간장 2g, 소금, 식염 0.2g, 파, 대파 1g, 마늘, 구근, 생것 0.5g, 참기름 0.2g, ",
+  },
+};
+export { init, add, dummyDetail, dummyRefresh };

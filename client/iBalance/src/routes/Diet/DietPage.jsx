@@ -9,13 +9,16 @@ import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
 import DietSummary from "../DietDetail/DietSummary";
-import { getInitDiet, getRecommendedDiet } from "./ServerConnect";
+import { getRecommendedDiet } from "./ServerConnect";
 
 const DietPage = () => {
   const childId = useSelector((state) => state.childId);
   const [userDiet, setUserDiet] = useState([]);
   const [summaryInfo, setSummaryInfo] = useState({});
   const [selectDate, setSelectDate] = useState("");
+  const [isSave, setIsSave] = useState(false);
+  // false : 초기 식단 조회 상태 ( 식단 저장 버튼 O )
+  // true : 최종 식단 조회 상태 ( 식단 저장 버튼 X )
 
   const weekListKo = useMemo(() => {
     const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
@@ -31,13 +34,12 @@ const DietPage = () => {
 
   useEffect(() => {
     const getDietData = async () => {
-      const res = await Promise.all([
-        getInitDiet(childId),
-        getRecommendedDiet(childId),
-      ]);
-      setUserDiet(res[1].data.data);
+      const res = await getRecommendedDiet(childId);
+      const checkSave = res.data.data.length === 0 ? false : true;
+      setIsSave(checkSave);
+      setUserDiet(res.data.data);
     };
-    // getDietData();
+    getDietData();
   }, [childId]);
 
   return (
@@ -55,7 +57,9 @@ const DietPage = () => {
                 setSelectDate={setSelectDate}
                 userDiet={userDiet}
                 setUserDiet={setUserDiet}
-                setSummaryInfo={setSummaryInfo}></DietListPage>
+                setSummaryInfo={setSummaryInfo}
+                isSave={isSave}
+                setIsSave={setIsSave}></DietListPage>
             )
           ) : (
             <DietSummary
@@ -64,6 +68,8 @@ const DietPage = () => {
               setSelectDate={setSelectDate}
               setSummaryInfo={setSummaryInfo}
               summaryInfo={summaryInfo}
+              isSave={isSave}
+              setUserDiet={setUserDiet}
             />
           )}
         </div>

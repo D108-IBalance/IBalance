@@ -20,7 +20,7 @@ const EmptyModal = (props) => {
   const dietHandler = async () => {
     // const res = await getInitDiet(childId);
     const res = init;
-    setUserDiet([res.data, false]);
+    setUserDiet(res.data);
   };
   return (
     <div
