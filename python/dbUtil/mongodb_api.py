@@ -38,11 +38,11 @@ def mongodb_connect(uri):
 """
 현재 클라이언트가 살아있는지, 데이터베이스 내에 없는 컬렉션에 접근하려는건 아닌지 등을 검사하는 함수
 만약 클라이언트 접속정보가 죽었다면, 재접속 시도
-:param: collection_name str, 검사할 컬렉션 이름
+:param: collection_name str | None, 검사할 컬렉션 이름
 """
 
 
-def validation_check(collection_name: None):
+def validation_check(collection_name:str | None):
     global client
     global collection_name_list
     global last_uri
@@ -101,6 +101,7 @@ def _execute(collection_name, query: dict, project: dict, id_alias: str, is_mult
 mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 함수
 :param: collection_name str, mongodb내 쿼리를 실행시킬 collection 이름
 :param: _id str, objectId 로 변환 시킬 고유 값
+:param: id_alias, mongodb에서 꺼내온 데이터 중 _id가 있는 경우 변환시켜줄 때 사용할 새로운 id명
 :return: dictionary, 쿼리를 실행시킨 결과 리턴
 """
 
@@ -115,6 +116,7 @@ def find_by_object_id(collection_name: str, _id: str, id_alias: str = "menu") ->
 """
 mongodb 내 모든 데이터 조회하는 함수
 :param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
+:param: id_alias, mongodb에서 꺼내온 데이터 중 _id가 있는 경우 변환시켜줄 때 사용할 새로운 id명
 :return: dictionary, 쿼리를 실행시킨 결과 리턴
 """
 
@@ -130,6 +132,7 @@ def find_all_data(collection_name, id_alias: str = "menu") -> list[dict]:
 mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
 :param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
 :param: attr_name str, 데이터들 내 공통 속성 명
+:param: id_alias, mongodb에서 꺼내온 데이터 중 _id가 있는 경우 변환시켜줄 때 사용할 새로운 id명
 :return: list[dict], 해당 컬렉션의 모든 데이터에 대하여 attr_name에 해당하는 어트리뷰트들을 리턴
 """
 
@@ -148,6 +151,7 @@ mongodb 내 object_id가 id인 데이터에 대하여 특정 속성만 조회하
 :param: collection_name str, mongodb에서 쿼리를 실행시킬 collection 이름
 :param: attr_name str, 데이터들 내 공통 속성 명
 :param: id str, mongodb내 object_id로서 변환되어 사용될 값
+:param: id_alias, mongodb에서 꺼내온 데이터 중 _id가 있는 경우 변환시켜줄 때 사용할 새로운 id명
 :return: list[dict], object_id인 데이터에 대하여 attr_name 속성값을 리턴
 """
 
@@ -169,6 +173,7 @@ mongodb 내에서 하나의 attribute에 대하여 여러 조건들을 각 논�
 :param: attr_name str, 조건에 대상이 되는 attribute 명
 :param: is_or bool, or 인지 and인지 구분짓는 값
 :param: collection_name str, 사용하는 컬렉션 명 
+:param: id_alias, mongodb에서 꺼내온 데이터 중 _id가 있는 경우 변환시켜줄 때 사용할 새로운 id명
 :param: need_attr list[str] | None, 검색 조건에 이어 필요한 attribute가 있는 경우
 :param: exclude_attr list[str] | None, 검색 조건에 이어 필요없는 attribute가 있는 경우
 :return: list[dict], 알러지 이름 및 위험한 식품 정보가 담겨있는 객체 리스트를 리턴
