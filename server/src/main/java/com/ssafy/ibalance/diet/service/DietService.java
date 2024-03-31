@@ -369,14 +369,18 @@ public class DietService {
 
     private List<Integer> convertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
-        String[] cookieSplit = cookie.split("\\|");
-        try {
-            Arrays.stream(cookieSplit)
-                    .forEach(id -> result.add(Integer.parseInt(id)));
-        } catch (NumberFormatException e) {
-            throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");
+        if(!cookie.isEmpty()) {
+            String[] cookieSplit = cookie.split("\\|");
+            try {
+                Arrays.stream(cookieSplit)
+                        .forEach(id -> result.add(Integer.parseInt(id)));
+            } catch (NumberFormatException e) {
+                throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");
+            }
         }
+
         return result;
+
     }
 
     private List<String> convertCookieStringToStringList(String cookie) {
