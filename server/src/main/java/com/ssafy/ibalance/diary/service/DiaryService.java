@@ -113,7 +113,7 @@ public class DiaryService {
     private List<DiaryMenuResponse> getDiaryMenuListFromFastAPI(List<DietMenu> dietMenuList) {
         List<String> menuIdList = dietMenuList.stream().map(DietMenu::getMenuId).toList();
 
-        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
+        ArrayList<LinkedHashMap<String, Object>> diaryMenuResponses
                 = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
 
         return diaryMenuResponses.stream()
