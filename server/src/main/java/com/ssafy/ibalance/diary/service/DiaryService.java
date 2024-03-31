@@ -117,7 +117,7 @@ public class DiaryService {
                 = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
 
         return diaryMenuResponses.stream()
-                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse()))
+                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse(), false))
                 .toList();
     }
 
