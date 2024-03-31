@@ -9,34 +9,44 @@ import classes from "./HomePage.module.css";
 import ProfileView from "./ProfileView";
 import TodayDiet from "./TodayDiet";
 import GrowthCard from "./GrowthCard";
-import { getUserChart, getUserInfo } from "./ServerConnect";
+import Load from "../../modules/Load/Load";
+import { getUserInfo, getWeightChart, getHeightChart } from "./ServerConnect";
 
 const HomePage = () => {
   const [userProfile, setUserProfile] = useState({});
-  const [chartInfo, setChartInfo] = useState({});
+  const [weightChartInfo, setWeightChartInfo] = useState({});
+  const [heightChartInfo, setHeightChartInfo] = useState({});
   const [userDiet, setUserDiet] = useState({});
+  const [loadStep, setLoadStep] = useState(2);
   const childId = useSelector((state) => state.childId);
   useEffect(() => {
     const getHomeData = async () => {
       const res = await Promise.all([
-        getUserChart(0, childId),
+        getHeightChart(0, childId),
+        getWeightChart(0, childId),
         getUserInfo(childId),
       ]);
-      setChartInfo(res[0].data.data);
-      setUserProfile(res[1].data.data.childMainResponse);
-      setUserDiet(res[1].data.data.dietList);
+      setHeightChartInfo(res[0].data.data);
+      setWeightChartInfo(res[1].data.data);
+      setUserProfile(res[2].data.data.childMainResponse);
+      setUserDiet(res[2].data.data.dietList);
+      setLoadStep(1);
     };
     getHomeData();
-  }, []);
+  }, [childId]);
   return (
     <>
       <div className={classes.gridSet}>
         <NavbarModule isClick={0}></NavbarModule>
         <div className={classes.container} style={{ width: "100%" }}>
+          <Load step={loadStep} />
           <ProfileView userProfile={userProfile} />
           <div className={classes.homeContentBack}>
             <TodayDiet userDiet={userDiet}></TodayDiet>
-            <GrowthCard chartInfo={chartInfo} />
+            <GrowthCard
+              heightChartInfo={heightChartInfo}
+              weightChartInfo={weightChartInfo}
+            />
           </div>
         </div>
       </div>
