@@ -105,10 +105,10 @@ mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 �
 """
 
 
-def find_by_object_id(collection_name: str, _id: str) -> list[dict]:
+def find_by_object_id(collection_name: str, _id: str, id_alias: str = "menu") -> list[dict]:
     query = {"_id": ObjectId(_id)}
     project = None
-    result = _execute(collection_name, query, project,id_alias="menu", is_multiple=False)
+    result = _execute(collection_name, query, project,id_alias=id_alias, is_multiple=False)
     return result
 
 
@@ -119,10 +119,10 @@ mongodb 내 모든 데이터 조회하는 함수
 """
 
 
-def find_all_data(collection_name) -> list[dict]:
+def find_all_data(collection_name, id_alias: str = "menu") -> list[dict]:
     query = {}
     project = None
-    result = _execute(collection_name, query, project,id_alias=collection_name, is_multiple=True)
+    result = _execute(collection_name, query, project,id_alias=id_alias, is_multiple=True)
     return result
 
 
@@ -134,13 +134,13 @@ mongodb 내 모든 데이터에 대하여 특정 속성만 조회하는 함수
 """
 
 
-def find_all_attr(collection_name: str, attr_name: str) -> list[dict]:
+def find_all_attr(collection_name: str, attr_name: str, id_alias: str = "menu") -> list[dict]:
     result = list()
     query = {}
     project = {
         attr_name: 1
     }
-    return _execute(collection_name, query, project,id_alias=collection_name, is_multiple=True)
+    return _execute(collection_name, query, project,id_alias=id_alias, is_multiple=True)
 
 
 """
@@ -152,14 +152,14 @@ mongodb 내 object_id가 id인 데이터에 대하여 특정 속성만 조회하
 """
 
 
-def find_attr_by_id(collection_name: str, attr_name: str, id: str) -> list[dict]:
+def find_attr_by_id(collection_name: str, attr_name: str, id: str, id_alias: str = "menu") -> list[dict]:
     query = {
         "_id": ObjectId(id)
     }
     project = {
         attr_name: 1
     }
-    result = _execute(collection_name, query, project, id_alias=collection_name, is_multiple=False)
+    result = _execute(collection_name, query, project, id_alias=id_alias, is_multiple=False)
     return result
 
 
@@ -175,7 +175,9 @@ mongodb 내에서 하나의 attribute에 대하여 여러 조건들을 각 논�
 """
 
 
-def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str, need_attr: list[str] = None,
+def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str,
+                                id_alias: str = "menu",
+                                need_attr: list[str] = None,
                                 exclude_attr:list[str] = None) -> list[dict]:
     operator = "$or"
     if not is_or:
@@ -201,7 +203,7 @@ def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: boo
     if len(query[operator]) == 1:
         is_multiple = False
 
-    return _execute(collection_name, query, project, id_alias=collection_name, is_multiple=is_multiple)
+    return _execute(collection_name, query, project, id_alias=id_alias, is_multiple=is_multiple)
 
 
 """
