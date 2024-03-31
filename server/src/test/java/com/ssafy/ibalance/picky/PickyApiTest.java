@@ -96,6 +96,7 @@ public class PickyApiTest extends ApiTest {
                                 "<br>정상적으로 매개변수를 넣었을 때, 200 OK 와 함께 원하는 갯수만큼 레시피 정보가 반환됩니다." +
                                 "<br>material, offset 은 필수값입니다. 둘 중 하나를 넣지 않았거나, offset 이 1 이상의 정수가 아니라면" +
                                 "<br>400 Bad Request 가 body 에 담겨 반환됩니다." +
+                                "<br>lastId 는 선택값입니다. 넣지 않았을 경우, 가장 상위에 랭크된 편식 레시피부터 반환됩니다." +
                                 "<br>로그인 토큰 값을 입력하지 않았을 경우, 401 Unauthorized 가 HTTP Status Code 에 담겨 반환됩니다." +
                                 "<br>아이의 정보에 접근할 권한이 없을 경우, 403 Forbidden 이 body 에 담겨 반환됩니다." +
                                 "<br>아이를 찾지 못하는 경우, 404 Not Found 가 body 에 담겨 반환됩니다." +
