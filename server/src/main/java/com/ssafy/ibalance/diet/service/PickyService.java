@@ -64,7 +64,7 @@ public class PickyService {
                 fastAPIConnectionUtil.postApiConnectionResult(targetUrl, allergyList, new ArrayList<>());
 
         return pickyResult.stream().
-                map(result -> dtoConverter.convertFromMap(result, new PickyRecipe()))
+                map(result -> dtoConverter.convertFromMap(result, new PickyRecipe(), true))
                 .toList();
     }
 }

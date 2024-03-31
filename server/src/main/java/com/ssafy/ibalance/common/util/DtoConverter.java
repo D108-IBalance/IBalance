@@ -15,34 +15,38 @@ public class DtoConverter {
 
     private static final StringBuilder builder = new StringBuilder();
 
-    public <T> T convertFromMap(LinkedHashMap<String, Object> resultMap, T convertObject) {
+    public <T> T convertFromMap(LinkedHashMap<String, Object> resultMap, T convertObject, boolean writtenInSnakeCase) {
         try {
             Field[] declaredFields = convertObject.getClass().getDeclaredFields();
 
             for (Field field : declaredFields) {
                 String fieldName = field.getName();
-                String callerName = camelCaseToSnakeCase(fieldName);
+                String callerName = fieldName;
+                if(writtenInSnakeCase) {
+                    callerName = camelCaseToSnakeCase(fieldName);
+                }
 
                 if(resultMap.containsKey(callerName)) {
 
                     Method setter = convertObject.getClass().
                             getMethod("set" + camelCaseToPascalCase(fieldName), field.getType());
 
-                    if(field.getGenericType() instanceof ParameterizedType
+                    if(isSufficientToSimpleConvert(resultMap, callerName)) {
+                        setter.invoke(convertObject, resultMap.get(callerName));
+                    } else if(field.getGenericType() instanceof ParameterizedType
                             && resultMap.get(callerName) instanceof List<?>) {
                         ParameterizedType parameterizedType = (ParameterizedType) (field.getGenericType());
                         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
                         List<LinkedHashMap<String, Object>> fieldList = (List<LinkedHashMap<String, Object>>) resultMap.get(callerName);
                         List<Object> convertedList = fieldList.stream()
-                                .map(map -> convertFromMap(map, getConstructor(actualTypeArguments[0]))).toList();
+                                .map(map -> convertFromMap(map, getConstructor(actualTypeArguments[0]), writtenInSnakeCase)).toList();
 
                         setter.invoke(convertObject, convertedList);
-                    } else if(resultMap.get(callerName) instanceof Serializable) {
-                        setter.invoke(convertObject, resultMap.get(callerName));
                     } else {
                         LinkedHashMap<String, Object> convertedField = (LinkedHashMap<String, Object>) resultMap.get(callerName);
-                        setter.invoke(convertObject, convertFromMap(convertedField, field.getType().getDeclaredConstructor().newInstance()));
+                        setter.invoke(convertObject,
+                                convertFromMap(convertedField, field.getType().getDeclaredConstructor().newInstance(), writtenInSnakeCase));
                     }
                 }
             }
@@ -92,5 +96,13 @@ public class DtoConverter {
         }
 
         return null;
+    }
+
+    private boolean isSufficientToSimpleConvert(LinkedHashMap<String, Object> resultMap, String callerName) {
+        Object o = resultMap.get(callerName);
+        if(o instanceof List<?> list) {
+            return !(list.getFirst() instanceof LinkedHashMap<?, ?>);
+        }
+        return resultMap.get(callerName) instanceof Serializable;
     }
 }
