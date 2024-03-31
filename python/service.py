@@ -136,5 +136,21 @@ def picky_recipes(last_id: str | None, offset: int, allergy_name_list: list[str]
                 hazard.append(hazard_menu)
     result = find_picky_recipes(picky, offset, last_id=last_id, exclude_materials=hazard)
     if len(result) == 0:
-        raise NotFoundException(f'해당하는 데이터가 없습니다, query : lastid={last_id}, offset={offset}, matrl={picky}, req: {allergy_name_list}')
+        raise NotFoundException(
+            f'해당하는 데이터가 없습니다, query : lastid={last_id}, offset={offset}, matrl={picky}, req: {allergy_name_list}')
     return result
+
+
+"""
+편식 식재료 명과 해당 고유 레시피 id를 갖고서 id에 대응되는 레시피 정보를 제공하는 함수
+:param: matrl_name str, 편식 식재료 명
+:param: recipe_id str, 레시피 id
+:return: dict, 해당 레시피의 정보를 리턴
+"""
+
+
+def picky_recipe(matrl_name: str, recipe_id: str) -> dict:
+    result = find_by_object_id(matrl_name, recipe_id, "recipe")
+    if len(result) == 0:
+        raise NotFoundException(f'{recipe_id} 에 해당하는 레시피가 없습니다. path: recipe_id={recipe_id}, matrl_name={matrl_name}')
+    return result[0]
