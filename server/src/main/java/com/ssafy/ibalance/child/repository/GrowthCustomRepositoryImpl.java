@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.dto.HeightGrowthDto;
 import com.ssafy.ibalance.child.dto.WeightGrowthDto;
-import com.ssafy.ibalance.child.entity.Growth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +39,19 @@ public class GrowthCustomRepositoryImpl implements GrowthCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Growth> count = jpaQueryFactory.select(growth)
+        JPAQuery<HeightGrowthDto> count = jpaQueryFactory.select(
+                        Projections.fields(HeightGrowthDto.class,
+                                growth.createdTime.week().as("weekCreatedTime"),
+                                growth.createdTime.max().as("createdTime"),
+                                growth.height,
+                                child
+                        )
+                )
                 .from(growth)
+                .join(child).on(growth.child.id.eq(child.id))
                 .where(growth.child.id.eq(childId))
-                .groupBy(growth.createdTime.week(), growth)
-                .orderBy(growth.id.desc());
+                .groupBy(growth.createdTime.week(), growth.height)
+                .orderBy(growth.createdTime.max().desc());
 
         return PageableExecutionUtils.getPage(content, pageable, count::fetchCount);
     }
@@ -68,11 +75,19 @@ public class GrowthCustomRepositoryImpl implements GrowthCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Growth> count = jpaQueryFactory.select(growth)
+        JPAQuery<WeightGrowthDto> count = jpaQueryFactory.select(
+                        Projections.fields(WeightGrowthDto.class,
+                                growth.createdTime.week().as("weekCreatedTime"),
+                                growth.createdTime.max().as("createdTime"),
+                                growth.weight,
+                                child
+                        )
+                )
                 .from(growth)
+                .join(child).on(growth.child.id.eq(child.id))
                 .where(growth.child.id.eq(childId))
-                .groupBy(growth.createdTime.week(), growth)
-                .orderBy(growth.id.desc());
+                .groupBy(growth.createdTime.week(), growth.weight)
+                .orderBy(growth.createdTime.max().desc());
 
         return PageableExecutionUtils.getPage(content, pageable, count::fetchCount);
     }
