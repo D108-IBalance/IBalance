@@ -70,7 +70,27 @@
 .profileIcon:hover {
   animation: goPage 0.1s ease forwards;
 }
-
+.profileDeleteIcon {
+  height: 77px;
+  width: 77px;
+  border: 2px solid #fe724c;
+  background: url("../../assets//profile/Img/Plus.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  animation: rotateIt 0.3s linear forwards infinite;
+}
+@keyframes rotateIt {
+  0% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(-2deg);
+  }
+}
 .setting {
   width: 20px;
   height: 20px;
@@ -96,7 +116,8 @@
   width: 10px;
   height: 2px;
   border-radius: 5px;
-  background-color: #fff;
+  background-color: white;
+  z-index: 3;
 }
 .modal {
   position: fixed;

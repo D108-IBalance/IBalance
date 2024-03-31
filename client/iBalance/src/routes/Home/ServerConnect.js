@@ -16,4 +16,14 @@ const getUserInfo = async (idx) => {
   return customAxios.get(`child/main/${idx}?date=${form}`);
 };
 
-export { getUserChart, getUserInfo };
+const getWeightChart = async (page, CHILDID) => {
+  const SIZE = 4;
+  return customAxios.get(`child/weight/${CHILDID}?page=${page}&size=${SIZE}`);
+};
+
+const getHeightChart = async (page, CHILDID) => {
+  const SIZE = 4;
+  return customAxios.get(`child/height/${CHILDID}?page=${page}&size=${SIZE}`);
+};
+
+export { getUserChart, getUserInfo, getWeightChart, getHeightChart };

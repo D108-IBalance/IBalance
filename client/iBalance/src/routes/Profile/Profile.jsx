@@ -76,12 +76,17 @@ const Profile = () => {
                     <div className={classes.deleteIcon} />
                   </div>
                 ) : null}
-                <img src={profile.imageUrl} className={classes.profileIcon} />
+                <img
+                  src={profile.imageUrl}
+                  className={
+                    !isSetting ? classes.profileIcon : classes.profileDeleteIcon
+                  }
+                />
                 <p className={classes.profileName}>{profile.name}</p>
               </div>
             );
           })}
-          {profileList.length < 6 && (
+          {profileList.length < 6 && !isSetting && (
             <div
               className={classes.profile}
               onClick={() => navigate("/profile/add")}>

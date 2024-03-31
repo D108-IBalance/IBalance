@@ -8,7 +8,7 @@ const Chart = (props) => {
   const Y_START = 30;
   const MAX_HEIGHT = 150;
   const DIVIDE_MAX = MAX_HEIGHT / 2;
-  const { chart, isHeight } = props;
+  const { chart, isHeight, svgAni } = props;
   const [growthChart, setGrowthChart] = useState([]);
   const [clickStep, setClickStep] = useState(-1);
   const [avrChart, setAvrChart] = useState([
@@ -93,7 +93,7 @@ const Chart = (props) => {
             strokeWidth={0.5}
           />
           <path
-            className={classes.svgAni}
+            className={classes[svgAni]}
             d={`M0 ${growthChart[0][isHeight] + Y_START} ${growthChart.map(
               (data, idx) => {
                 return `${X_STEP * (idx + 0.5)} ${data[isHeight] + Y_START} `;
@@ -115,7 +115,7 @@ const Chart = (props) => {
           <line
             x1={0}
             y1={Y_START}
-            x2={MAX_HEIGHT}
+            x2={MAX_HEIGHT + Y_START}
             y2={Y_START}
             stroke="gray"
             opacity={0.5}
