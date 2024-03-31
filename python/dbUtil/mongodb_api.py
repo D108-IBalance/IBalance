@@ -221,7 +221,7 @@ mongodb 내 편식 식재료 컬렉션에서 마지막 id값 보다 크면서 of
 """
 
 
-def find_picky_recipes(collection_name: str, offset: int, last_id: str | None, exclude_materials: list[str] = None) -> list[dict]:
+def find_picky_recipes(collection_name: str, offset: int, last_id: str | None, exclude_materials: list[str] = None, exclude_attr: list[str] = None) -> list[dict]:
     query = {}
     if last_id is not None and not last_id == "":
         if "$and" not in query :
@@ -241,6 +241,8 @@ def find_picky_recipes(collection_name: str, offset: int, last_id: str | None, e
         regex_str = "|".join(exclude_materials)
         sub_query["recipe_material_list.material_name"]["$not"]["$regex"] = regex_str
         query["$and"].append(sub_query)
-    print(query)
     project = {}
+    if exclude_attr is not None:
+        for attr_name in exclude_attr:
+            project[attr_name] = 0
     return _execute(collection_name, query, project, id_alias="recipe", is_multiple=True, limit=offset)

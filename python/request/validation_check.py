@@ -1,4 +1,4 @@
-from request.request_dto import ChildInfo, Need, DietOfMenuId
+from request.request_dto import ChildInfo, Need, DietOfMenuId, PickyWithAllergy
 from bson.objectid import ObjectId, InvalidId
 from custom_exception.exception.custom_http_exception import BodyValidationException
 
@@ -268,4 +268,34 @@ def picky_detail_validation_checker(matrl_name: str, recipe_id: str):
         response["msgList"].append(result)
 
     if len(response["msgList"]) > 0:
+        raise BodyValidationException(response["msgList"])
+
+
+"""
+PickyWithAllergy 객체 validation check하는 함수
+:param: request PickyWithAllergy, 아이의 편식 식재료명 리스트와 알러지 이름 리스트가 포함된 객체
+"""
+
+
+def picky_with_allergy_validation_check(request: PickyWithAllergy):
+    response = dict()
+    response["msgList"] = list()
+    if not type(request) == PickyWithAllergy:
+        response["msgList"].append(f'잘못된 형식, request body 속 데이터가 형식이 맞지 않습니다.')
+        raise BodyValidationException(response["msgList"])
+    if not len(request.allergyNameList) == 0:
+        for allergy_name in request.allergyNameList:
+            result = _allergy_name_validation_checker(allergy_name)
+            if not result == "":
+                response["msgList"].append(result)
+                break
+    if len(request.pickyMatrlList) == 0:
+        response["msgList"].append(f'잘못된 형식, 편식 식재료 리스트가 비었습니다.')
+    else:
+        for picky_matrl in request.pickyMatrlList:
+            result = _str_checker(picky_matrl, "picky_matrl_name", "pickyMatrlList")
+            if not result == "":
+                response["msgList"].append(result)
+                break
+    if not len(response["msgList"]) == 0:
         raise BodyValidationException(response["msgList"])
