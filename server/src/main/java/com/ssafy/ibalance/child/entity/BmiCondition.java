@@ -3,12 +3,16 @@ package com.ssafy.ibalance.child.entity;
 import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.child.type.Gender;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BmiCondition {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
