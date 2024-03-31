@@ -9,6 +9,7 @@ import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
+import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.child.type.Gender;
 import com.ssafy.ibalance.common.util.S3Util;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
@@ -58,6 +59,7 @@ public class ChildService {
         List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
         redisChildAllergyRepository.save(RedisChildAllergy.builder()
                 .childId(child.getId())
+                .memberId(member.getId())
                 .childAllergyId(childAllergyList)
                 .build());
         return RegistChildResponse.convertEntityToDto(child);
@@ -173,7 +175,7 @@ public class ChildService {
 
     private RedisChildAllergy getRedisAllergy(Integer childId) {
         return redisChildAllergyRepository.findById(childId)
-                .orElseThrow(()-> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
     }
 
     public ChildDetailResponse modifyChild(Integer childId, ModifyChildRequest modifyChildRequest, Member member) {
