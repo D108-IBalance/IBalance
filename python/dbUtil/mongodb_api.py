@@ -3,14 +3,22 @@ from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from pre.data_preprocess import object_id_converter
 from static.mongo_statics import DATABASE_NAME
+from pydantic_settings import BaseSettings
 
 """
 @Author: 김회창
 """
 
+
+class Settings(BaseSettings):
+    MONGO_HOST: str  # 몽고DB 호스트 주소
+
+
 client = None  # pymongo 클라이언트 접속 객체
+
+settings = Settings()
 collection_name_list = []  # 현재 mongodb 내 컬렌션 이름들
-last_uri = None  # 마지막 접속 uri를 캐싱해놓는 전역변수
+# last_uri = None  # 마지막 접속 uri를 캐싱해놓는 전역변수
 
 """
 mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기 위해 사용
@@ -18,13 +26,12 @@ mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기
 """
 
 
-def mongodb_connect(uri):
+def mongodb_connect():
     global client
+    global settings
     global collection_name_list
-    global last_uri
-    last_uri = uri
     if client is None:
-        client = MongoClient(last_uri, server_api=ServerApi('1'))
+        client = MongoClient(settings.MONGO_HOST, server_api=ServerApi('1'))
         collection_name_list = client[DATABASE_NAME].list_collection_names()
     else:
         print("already connected")
@@ -42,19 +49,15 @@ def mongodb_connect(uri):
 """
 
 
-def validation_check(collection_name:str | None):
+def validation_check(collection_name: str | None):
     global client
     global collection_name_list
-    global last_uri
     if collection_name is None:
         print("collection_name is empty")
         return False
-    if last_uri is None:
-        print("cache Error: last_uri is empty")
-        return False
     if client is None:
         print("mongodb_client is empty, reconnect mongodb...")
-        mongodb_connect(last_uri)
+        mongodb_connect()
     if collection_name not in collection_name_list:
         print(f'no collection Error: parameter = {collection_name}')
         return False
@@ -73,12 +76,13 @@ private 함수로서 현재 파일내에서만 사용한다.
 """
 
 
-def _execute(collection_name, query: dict, project: dict, id_alias: str, is_multiple: bool, limit: int = None) -> list[dict]:
+def _execute(collection_name, query: dict, project: dict, id_alias: str, is_multiple: bool, limit: int = None) -> list[
+    dict]:
     result = list()
     global client
     if not validation_check(collection_name):
         return result
-    print(f'collection_name: {collection_name}, query: {query}')
+    print(f'preparing mongo: collection_name: {collection_name}, query: {query}, project: {project}')
     collection = client[DATABASE_NAME][collection_name]
     if project is None:
         if limit is not None:
@@ -109,7 +113,7 @@ mongodb의 고유 id값을 사용해서 해당하는 데이터를 반환하는 �
 def find_by_object_id(collection_name: str, _id: str, id_alias: str = "menu") -> list[dict]:
     query = {"_id": ObjectId(_id)}
     project = None
-    result = _execute(collection_name, query, project,id_alias=id_alias, is_multiple=False)
+    result = _execute(collection_name, query, project, id_alias=id_alias, is_multiple=False)
     return result
 
 
@@ -124,7 +128,7 @@ mongodb 내 모든 데이터 조회하는 함수
 def find_all_data(collection_name, id_alias: str = "menu") -> list[dict]:
     query = {}
     project = None
-    result = _execute(collection_name, query, project,id_alias=id_alias, is_multiple=True)
+    result = _execute(collection_name, query, project, id_alias=id_alias, is_multiple=True)
     return result
 
 
@@ -143,7 +147,7 @@ def find_all_attr(collection_name: str, attr_name: str, id_alias: str = "menu") 
     project = {
         attr_name: 1
     }
-    return _execute(collection_name, query, project,id_alias=id_alias, is_multiple=True)
+    return _execute(collection_name, query, project, id_alias=id_alias, is_multiple=True)
 
 
 """
@@ -183,7 +187,7 @@ mongodb 내에서 하나의 attribute에 대하여 여러 조건들을 각 논�
 def find_data_by_attr_condition(condition_list: list, attr_name: str, is_or: bool, collection_name: str,
                                 id_alias: str = "menu",
                                 need_attr: list[str] = None,
-                                exclude_attr:list[str] = None) -> list[dict]:
+                                exclude_attr: list[str] = None) -> list[dict]:
     operator = "$or"
     if not is_or:
         operator = "$and"
@@ -221,15 +225,16 @@ mongodb 내 편식 식재료 컬렉션에서 마지막 id값 보다 크면서 of
 """
 
 
-def find_picky_recipes(collection_name: str, offset: int, last_id: str | None, exclude_materials: list[str] = None, exclude_attr: list[str] = None) -> list[dict]:
+def find_picky_recipes(collection_name: str, offset: int, last_id: str | None, exclude_materials: list[str] = None,
+                       exclude_attr: list[str] = None) -> list[dict]:
     query = {}
     if last_id is not None and not last_id == "":
-        if "$and" not in query :
+        if "$and" not in query:
             query["$and"] = list()
         query["$and"].append({"_id": {"$gt": ObjectId(last_id)}})
 
     if exclude_materials is not None:
-        if "$and" not in query :
+        if "$and" not in query:
             query["$and"] = list()
         sub_query = {
             "recipe_material_list.material_name": {
