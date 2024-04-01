@@ -9,13 +9,33 @@ import { useNavigate } from "react-router-dom";
 const OffcanvasPage = ({ ...props }) => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
-
+  const [fcmAni, setFcmAni] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const fcmDown = () => {
+    setFcmAni("fcmDown");
+  };
+  const fcmUp = () => {
+    setFcmAni("fcmUp");
+  };
 
   return (
     <>
-      <div onClick={handleShow} className={classes.toggleBtn}></div>
+      <div
+        onClick={() => {
+          handleShow();
+          fcmDown();
+        }}
+        className={classes.toggleBtn}></div>
+      <div className={`${classes.fcmContainer} ${classes[fcmAni]}`}>
+        <div className={classes.fcmMsg}>
+          <div className={classes.fcmIcon} />
+          <p className={classes.fcmContent}>
+            <span style={{ fontWeight: "bold" }}>부수환</span> 님에 대한 식단
+            업데이트가 필요합니다.
+          </p>
+        </div>
+      </div>
       <Offcanvas
         show={show}
         onHide={handleClose}
