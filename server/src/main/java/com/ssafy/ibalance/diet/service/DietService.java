@@ -57,7 +57,7 @@ public class DietService {
 
     public List<MenuDetailResponse> getDietDetail(Long dietId) {
         List<String> menuIdList = dietRepository.getMenuIdByDietId(dietId);
-        return getMenuDetailByMenuId(menuIdList);
+        return convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>()));
     }
 
     public List<Integer> getAllergy(Integer childId) {
@@ -185,16 +185,20 @@ public class DietService {
     @Transactional
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
-        List<String> menuIdList = new ArrayList<>();
+        List<List<String>> menuIdList = new ArrayList<>();
 
         for (int day = 0; day < 7; day++) {
+            List<String> menuInDiet = new ArrayList<>();
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
-            diet.getDietList().forEach(menus -> menuIdList.addAll(menus.getMenuList()));
+            diet.getDietList().forEach(menus -> menuInDiet.addAll(menus.getMenuList()));
+            menuIdList.add(menuInDiet);
             redisInitDietRepository.delete(diet);
         }
 
-        List<MenuDetailResponse> menuDetailResponseList = getMenuDetailByMenuId(menuIdList);
+        List<MenuDetailResponse> menuDetailResponseList  = new ArrayList<>();
+
+        menuIdList.forEach(list -> menuDetailResponseList.addAll(convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", list, new ArrayList<>()))));
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 자녀를 찾을 수 없습니다."));
 
         List<Diet> dietList = new ArrayList<>();
@@ -245,12 +249,6 @@ public class DietService {
         List<Long> dietIds = new ArrayList<>();
         diets.forEach(diet -> dietIds.add(diet.getId()));
         return dietIds;
-    }
-
-    private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
-        return menuIdList.stream().map(menuId ->
-                        fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
-                .toList();
     }
 
     private List<InitDietResponse> getInitRecommend(Child child, List<Integer> allergyList, List<String> pastMenu) {
