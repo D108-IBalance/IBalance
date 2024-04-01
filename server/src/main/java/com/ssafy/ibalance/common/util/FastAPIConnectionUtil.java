@@ -25,8 +25,8 @@ public class FastAPIConnectionUtil {
         return apiConnectionResult(WebClient::post, apiUrl + uri, bodyValue, resultType);
     }
 
-    public <T> T apiConnectionResult(Function<WebClient, WebClient.RequestHeadersUriSpec<?>> init, String uri,
-                                     Object bodyValue, T resultType) {
+    private <T> T apiConnectionResult(Function<WebClient, WebClient.RequestHeadersUriSpec<?>> init, String uri,
+                                      Object bodyValue, T resultType) {
 
         WebClient.RequestHeadersSpec<?> initMethod = init.apply(webClient)
                 .uri(uri);

@@ -37,4 +37,9 @@ public class PickyController {
                                                    @RequestParam(required = false) String lastId) {
         return pickyService.getSolutionRecipeList(member, childId, material, offset, lastId);
     }
+
+    @GetMapping("/detail/{material}/{recipeId}")
+    public PickyRecipe getOneDetailRecipe(@PathVariable String material, @PathVariable String recipeId) {
+        return pickyService.getOneDetailRecipe(material, recipeId);
+    }
 }

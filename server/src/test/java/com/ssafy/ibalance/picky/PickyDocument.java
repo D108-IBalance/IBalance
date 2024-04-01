@@ -7,8 +7,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class PickyDocument {
 
@@ -18,7 +17,24 @@ public class PickyDocument {
             parameterWithName("lastId").description("마지막에 받았던 recipe id").optional()
     );
 
+
+    public static final Snippet onePickyRecipePathParam = pathParameters(
+            parameterWithName("material").attributes(required()).description("조회하고자 하는 재료 이름"),
+            parameterWithName("recipeId").attributes(required()).description("조회하고자 하는 레시피 아이디")
+    );
+
     public static final Snippet pickyRecipeResponseField = responseFields(
+            fieldWithPath("status").type(NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.recipeTitle").type(STRING).description("레시피 이름"),
+            fieldWithPath("data.recipeImgUrl").type(STRING).description("레시피 이미지 URL"),
+            fieldWithPath("data.recipeMaterialList[].materialName").type(STRING).description("식재료 이름"),
+            fieldWithPath("data.recipeMaterialList[].materialOpecity").type(STRING).description("식재료 양"),
+            fieldWithPath("data.recipeSteps[].recipeStepContent").type(STRING).description("레시피 단계 내용"),
+            fieldWithPath("data.recipeSteps[].recipeStepImg").type(STRING).description("레시피 단계 이미지"),
+            fieldWithPath("data.recipeId").type(STRING).description("레시피 고유 아이디")
+    );
+
+    public static final Snippet pickyRecipeListResponseField = responseFields(
             fieldWithPath("status").type(NUMBER).description("HTTP 상태 코드"),
             fieldWithPath("data[].recipeTitle").type(STRING).description("레시피 이름"),
             fieldWithPath("data[].recipeImgUrl").type(STRING).description("레시피 이미지 URL"),
