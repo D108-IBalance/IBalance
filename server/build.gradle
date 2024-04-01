@@ -1,7 +1,23 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+		restdocsApiSpecVersion = '0.18.2'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
+	// 새로운 추가
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+
+	// 3. openAPI 플러그인 추가 -> Spring Rest Docs 의 결과물을 openAPI3 스펙으로 변환하는 플러그인
+	id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+	// 4. swaggerUI 플러그인 추가 -> openAPI3 스펙 기반으로 SwaggerUI 생성
+	id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com.ssafy'
@@ -15,6 +31,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
 }
 
 repositories {
@@ -22,25 +39,155 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// web & security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// MySQL
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// devtools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// mongodb & reactor-test
+//	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	testImplementation 'io.projectreactor:reactor-test'
 
 	// jasypt-spring-boot-starter
 	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.5'
+
+	// JWT
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+	// querydsl
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	// restdocs + swagger
+	testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'com.squareup.okhttp3:mockwebserver'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+
+	// H2 & JDBC(for H2)
+	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	// google case format
+	implementation 'com.google.guava:guava:31.1-jre'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.2'
+
+	// https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http
+	implementation group: 'com.google.auth', name: 'google-auth-library-oauth2-http', version: '1.23.0'
+
+	// https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+	implementation group: 'com.google.api-client', name: 'google-api-client', version: '2.2.0'
+
+
+	// Spring Embedded Redis for Test
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+
 }
 
+
+openapi3 {
+	servers = [
+			{url = "https://j10d108.p.ssafy.io/api"},
+			{url = "http://localhost:8080"}
+	]
+	title = "SSAFY D108 IBalance API"
+	description = "SSAFY 특화프로젝트 IBalance 에서 사용할 API 문서입니다."
+	version = "0.0.1"
+	outputFileNamePrefix = 'open-api-3.0.1'
+	format = "json"
+
+	outputDirectory = 'build/resources/main/static/docs'
+}
+
+def querydslDir = 'src/main/generated'
+
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+tasks.withType(GenerateSwaggerUI).configureEach {
+	dependsOn 'openapi3'
+
+	delete file('src/main/resources/static/docs/')
+	copy {
+		from "build/resources/main/static/docs"
+		into "src/main/resources/static/docs/"
+
+	}
+}
+
+// 테스트를 통해 생성된 snippets 출력 위치 정의
+tasks.register("ext") {
+	snippetsDir = file('build/generated-snippets')
+}
+
+
 tasks.named('test') {
+	systemProperty "JASYPT_KEY", System.getProperty("JASYPT_KEY")
 	useJUnitPlatform()
+
+	outputs.dir 'snippetsDir'
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+// asciidoctor 작업을 구성
+tasks.named("asciidoctor") {
+	inputs.dir 'snippetsDir'
+	configurations 'asciidoctorExt'
+	dependsOn test
+}
+
+tasks.named("bootJar") {
+	dependsOn asciidoctor
+	from("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+	dependsOn(':openapi3')
+}
+
+tasks.register('copyDocument', Copy) {
+	dependsOn asciidoctor
+	from file("$buildDir/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+tasks.named("build") {
+	dependsOn copyDocument
+}
+
+sourceSets {
+	main.java.srcDirs += [ querydslDir ]
+}
+
+clean {
+	delete file(querydslDir)
 }

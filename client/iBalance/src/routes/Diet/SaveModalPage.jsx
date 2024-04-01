@@ -13,8 +13,8 @@ const SaveModalPage = (props) => {
     setSaveModal(false);
   };
 
-  const confirmAndCloseModal = () => {
-    // await insertTempDiet(childId);
+  const confirmAndCloseModal = async () => {
+    await insertTempDiet(childId);
     setIsSave(true);
     setSaveModal(false);
   };
