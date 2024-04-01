@@ -152,7 +152,7 @@ def picky_recipes(last_id: str | None, offset: int, allergy_name_list: list[str]
 def picky_recipe(matrl_name: str, recipe_id: str) -> dict:
     result = find_by_object_id(matrl_name, recipe_id, "recipe")
     if len(result) == 0:
-        raise NotFoundException(f'{recipe_id} 에 해당하는 레시피가 없습니다. path: recipe_id={recipe_id}, matrl_name={matrl_name}')
+        raise NotFoundException(detail=f'{recipe_id} 에 해당하는 레시피가 없습니다. path: recipe_id={recipe_id}, matrl_name={matrl_name}')
     return result[0]
 
 
