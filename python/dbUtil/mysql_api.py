@@ -48,9 +48,9 @@ mysql 접속 클라이언트가 유효한지 검사하는 함수
 """
 
 
-def mysql_validation_check():
+def mysql_validation_check() -> mysql.connector:
     global mysql_client
-    if mysql_client is None or mysql_client.is_connected():
+    if mysql_client is None:
         print("mysql_client is None or disconnect, mysql reconnect...")
         mysql_connect()
     return mysql_client.cursor()
@@ -95,7 +95,7 @@ private 함수로 _execute 로 부터 넘겨 받은 쿼리와 커서객체를 �
 """
 
 
-def _execute_and_fetchall(query: str, cursor: mysql.connector):
+def _execute_and_fetchall(query: str, cursor: mysql.connector) -> list[tuple]:
     global mysql_client
     cursor.execute(query)
     result = cursor.fetchall()
@@ -110,10 +110,23 @@ def _execute_and_fetchall(query: str, cursor: mysql.connector):
 """
 
 
-def find_all_rating(exclude_id_list=[]):
-    sql = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet-menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id INNER JOIN child AS c ON d.child_id = c.id WHERE 1=1 AND is_reviewed = 1 '''
+def find_all_rating(child_id: int, exclude_id_list: list[str] = []) -> list[tuple]:
+    sql_head = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet-menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id '''
+    sql_middle_option = '''INNER JOIN child AS c ON d.child_id = c.id WHERE 1=1 AND is_reviewed = 1 '''
+    sql_for_all_additional_join_condition = 'AND {} '.format("d.diet_date BETWEEN DATE_ADD(NOW(), INTERVAL -2 WEEK) AND NOW()")
+    sql_for_not_me = '''AND c.id != '{}' '''.format(child_id)
+    sql_for_me = '''AND c.id = '{}' '''.format(child_id)
+    aditional_sql = ''
+    group_by = '''group by c.id, menu_id '''
     if exclude_id_list is not None and len(exclude_id_list) > 0:
-        sql += '''AND m.menu_id NOT IN ('{}') '''.format("', '".join(map(str, exclude_id_list)))
-    sql += '''group by c.id, menu_id '''
-    result = _execute(sql)
-    return result
+        aditional_sql += '''AND m.menu_id NOT IN ('{}') '''.format("', '".join(map(str, exclude_id_list)))
+    prepared_sql = sql_head + sql_middle_option + sql_for_not_me + aditional_sql + group_by
+    result_all = _execute(prepared_sql)
+    prepared_sql = sql_head + sql_for_all_additional_join_condition + sql_middle_option + sql_for_me + aditional_sql + group_by
+    result_me = _execute(prepared_sql)
+    result = result_all + result_me
+    for (user_id, menu_id, rating) in result:
+        if user_id == 1:
+            print("레이팅 데이타에 user_id 가 1인게 있어요!")
+            break
+    return result_all + result_me
