@@ -5,15 +5,18 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ibalance.child.dto.HeightGrowthDto;
 import com.ssafy.ibalance.child.dto.WeightGrowthDto;
+import com.ssafy.ibalance.notification.dto.NotifyTargetDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.ssafy.ibalance.child.entity.QChild.child;
 import static com.ssafy.ibalance.child.entity.QGrowth.growth;
+import static com.ssafy.ibalance.member.entity.QMember.member;
 
 @RequiredArgsConstructor
 public class GrowthCustomRepositoryImpl implements GrowthCustomRepository {
@@ -90,5 +93,19 @@ public class GrowthCustomRepositoryImpl implements GrowthCustomRepository {
                 .orderBy(growth.createdTime.max().desc());
 
         return PageableExecutionUtils.getPage(content, pageable, count::fetchCount);
+    }
+
+    @Override
+    public List<NotifyTargetDto> getNotifyTargetList() {
+        return jpaQueryFactory.select(
+                Projections.fields(NotifyTargetDto.class,
+                        member.id,
+                        growth.createdTime.max().as("lastUpdate")))
+                .from(child)
+                .join(growth).on(child.id.eq(growth.child.id))
+                .join(member).on(child.member.id.eq(member.id))
+                .groupBy(child.id)
+                .having(growth.createdTime.max().lt(LocalDateTime.now().minusDays(6)))
+                .fetch();
     }
 }
