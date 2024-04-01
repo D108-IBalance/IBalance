@@ -80,7 +80,6 @@ const Carousel = (props) => {
             <div className={classes.recipeImgBox}>
               <img src={sample1} alt="" className={classes.recipeImg} />
               <div className={classes.imgTextBox}>
-                <div className={classes.recipeKcal}>Total : 192Kcal</div>
                 <div className={classes.recipeName}>당근전</div>
               </div>
             </div>

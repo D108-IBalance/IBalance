@@ -66,10 +66,41 @@
     font-weight: 700;
     color: #fe724c;
   }
-  .card {
-    border: 1px red solid;
-    width: 50%;
-    height: 200px;
+  .recipeImgBox {
+    width: 165px;
+    height: 165px;
+    position: relative;
+    margin: 10px;
+  }
+  .recipeImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 15%);
+  }
+  .imgTextBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 165px;
+    height: auto;
+    background: linear-gradient(to top, rgba(0, 0, 0, 60%), rgba(0, 0, 0, 0%));
+    padding: 5px 10px 10px 10px;
+    border-radius: 0px 0px 15px 15px;
+  }
+  .recipeKcal {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .recipeName {
+    display: inline;
+    background: white;
+    border-radius: 30px;
+    width: 100%;
+    padding: 3px 15px;
+    font-size: 0.8rem;
+    margin: 20px 0px;
   }
 }
 @media (min-width: 576px) and (max-width: 1200px) {
@@ -132,7 +163,7 @@
   .cardBox {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     border: 1px gre solid;
     height: auto;
     width: 100%;
@@ -141,10 +172,41 @@
     font-weight: 700;
     color: #fe724c;
   }
-  .card {
-    border: 1px red solid;
-    width: 250px;
-    height: 250px;
+  .recipeImgBox {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    margin: 20px;
+  }
+  .recipeImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 15%);
+  }
+  .imgTextBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: auto;
+    background: linear-gradient(to top, rgba(0, 0, 0, 60%), rgba(0, 0, 0, 0%));
+    padding: 5px 10px 10px 10px;
+    border-radius: 0px 0px 15px 15px;
+  }
+  .recipeKcal {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .recipeName {
+    display: inline;
+    background: white;
+    border-radius: 30px;
+    width: 100%;
+    padding: 3px 15px;
+    font-size: 0.8rem;
+    margin: 20px 0px;
   }
 }
 @media screen and (min-width: 1200px) {
@@ -207,7 +269,7 @@
   .cardBox {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     border: 1px gre solid;
     height: auto;
     width: 100%;
@@ -216,9 +278,40 @@
     font-weight: 700;
     color: #fe724c;
   }
-  .card {
-    border: 1px red solid;
-    width: 30%;
-    height: 280px;
+  .recipeImgBox {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    margin: 20px;
+  }
+  .recipeImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 15%);
+  }
+  .imgTextBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: auto;
+    background: linear-gradient(to top, rgba(0, 0, 0, 60%), rgba(0, 0, 0, 0%));
+    padding: 5px 10px 10px 10px;
+    border-radius: 0px 0px 15px 15px;
+  }
+  .recipeKcal {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .recipeName {
+    display: inline;
+    background: white;
+    border-radius: 30px;
+    width: 100%;
+    padding: 3px 15px;
+    font-size: 0.8rem;
+    margin: 20px 0px;
   }
 }
