@@ -5,6 +5,8 @@ import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { initializeApp } from "firebase/app"
+import { getMessaging, getToken, onMessage } from "firebase/messaging"
 
 // 내부 모듈
 import classes from "./Profile.module.css";
@@ -12,6 +14,7 @@ import { getProfile, deleteProfile } from "./ServerConnect.js";
 import settingImg from "../../assets/profile/Img/setting.svg";
 import warningImg from "../../assets/profile/Img/warning.svg";
 import { setChildId } from "../../store.js";
+import customAxios from "../../axiosController";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -20,6 +23,45 @@ const Profile = () => {
   const [profileList, setProfileList] = useState([]);
   const [isSetting, setIsSetting] = useState(false);
   const [deleteIdx, setDeleteIdx] = useState(-1);
+
+  const app = initializeApp({
+    apiKey: import.meta.env.VITE_APP_FCM_API_KEY,
+    authDomain: import.meta.env.VITE_APP_FCM_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_APP_FCM_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_APP_FCM_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_APP_FCM_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_FCM_APP_ID,
+    measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID
+  });
+
+  const messaging = getMessaging();
+
+  function requestPermission() {
+    console.log('Requesting permission...');
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        getToken(messaging, { vapidKey: import.meta.env.VITE_APP_FCM_VAPID_KEY })
+        .then((currentToken) => {
+          if (currentToken) {
+            customAxios.post('fcm',{token : currentToken})
+            .then(res => {})
+            .catch(err => console.log(err));
+          } else {
+            console.log('No registration token available. Request permission to generate one.');
+          }
+        }).catch((err) => {
+          console.log('An error occurred while retrieving token. ', err);
+        });
+        onMessage(messaging, (payload) => {
+          console.log('Message received. ', payload);
+        });
+      }
+      else {
+        console.log('Notification permission not granted.');
+      }
+    })
+  }
 
   const goToHome = (idx) => {
     dispatch(setChildId(profileList[idx].childId));
@@ -41,6 +83,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    requestPermission();
     const getProfileList = async () => {
       let value = await getProfile();
       setProfileList(value.data.data);
