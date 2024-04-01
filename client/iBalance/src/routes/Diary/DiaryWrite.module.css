@@ -43,7 +43,7 @@
   .checkTitle {
     margin-right: 3px;
   }
-  .morning {
+  .BREAKFAST {
     width: 20px;
     height: 20px;
     border-radius: 15px;
@@ -51,11 +51,11 @@
     position: relative;
     margin-right: 10px;
   }
-  .morningInput {
+  .BREAKFASTInput {
     display: none;
   }
 
-  .morningInput:checked + .morning::after {
+  .BREAKFASTInput:checked + .BREAKFAST::after {
     content: "";
     width: 10px;
     height: 10px;
@@ -138,7 +138,6 @@
     margin-bottom: 15px;
     width: 45px;
     height: 45px;
-    border: 1px solid black;
     border-radius: 5px;
   }
   .menuInfo {
@@ -248,7 +247,7 @@
   label {
     cursor: pointer;
   }
-  .morning {
+  .BREAKFAST {
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -256,11 +255,11 @@
     position: relative;
     margin-right: 15px;
   }
-  .morningInput {
+  .BREAKFASTInput {
     display: none;
   }
 
-  .morningInput:checked + .morning::after {
+  .BREAKFASTInput:checked + .BREAKFAST::after {
     content: "";
     width: 7px;
     height: 7px;
@@ -343,7 +342,6 @@
     margin-bottom: 15px;
     width: 45px;
     height: 45px;
-    border: 1px solid black;
     border-radius: 5px;
   }
   .menuInfo {
