@@ -51,7 +51,7 @@ def read_menu():
 """
 
 
-def read_ratings(exclude_id_list: list):
+def read_ratings(child_id: int, exclude_id_list: list):
     global menu_objs
     global rice_ratings
     global side_ratings
@@ -60,7 +60,7 @@ def read_ratings(exclude_id_list: list):
     rice_ratings = []
     side_ratings = []
     soup_ratings = []
-    mysql_result = find_all_rating(exclude_id_list)
+    mysql_result = find_all_rating(child_id, exclude_id_list)
     for rating in mysql_result:
         if rating[1] not in menu_objs.keys():
             continue
@@ -213,13 +213,15 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     rating_pd = pd.DataFrame(data=cur_ratings, columns=['user_id', 'menu_id', 'rating'])
     rating_pd = rating_pd.pivot(index='user_id', columns='menu_id', values='rating')
 
-    ratings_users = rating_pd.loc[user_id, :]
+    if user_id not in rating_pd.index:
+        rating_pd.loc[user_id] = None
 
     all_items = rating_pd.loc[user_id, :]
 
     unrated_items = all_items.loc[all_items.isnull()]
     unrated_items = unrated_items.index.to_series(name='item_ids').reset_index(drop=True)
     sim = compute_similarity(user_id, rating_pd)
+
     predictions = unrated_items.apply(lambda d: predict_rating(d, rating_pd, sim, N=n_neighbors))
     predictions = predictions.sort_values(ascending=False)
     some_list = list()
@@ -250,14 +252,15 @@ def _init_process(request: ChildInfo):
     global last_access_time
     global CACHE_LIMIT
     global cached_black_list
+    global user_id
     cached_black_list = []
     read_allergy(request.allergyList)
     if (last_access_time is None) or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
         _init()
         last_access_time = datetime.now()
         read_menu()
-    read_ratings(request.cacheList)
-    set_user_id(request.childId)
+    read_ratings(request.childId, request.cacheList)
+    user_id = request.childId
 
 
 """
@@ -315,6 +318,7 @@ def one_diet_recommend(request: ChildInfo) -> list[dict]:
         "CARBOH_QY": require_carbohydrate
     }
     result = recommend_rice(condition_obj)
+
     require_calories -= float(menu_objs[result[0]]["CALORIE_QY"])
     diet.append(menu_objs[result[0]])
     cached_black_list.append(result[0])
@@ -327,6 +331,7 @@ def one_diet_recommend(request: ChildInfo) -> list[dict]:
         "CELLU_QY": require_cellulose,
     }
     result = recommend_soup(condition_obj)
+
     diet.append(menu_objs[result[0]])
     cached_black_list.append(result[0])
     # for i in reversed(range(len(soup_ratings))):
