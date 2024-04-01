@@ -21,7 +21,6 @@ const DiaryCards = (props) => {
       if (month.length < 2) month = "0" + month;
       if (day.length < 2) day = "0" + day;
       const res = await getDietDiary(childId, `${year}-${month}-${day}`);
-      console.log(res);
       setDiets(res.data.data);
     };
     if (selectedDate) {

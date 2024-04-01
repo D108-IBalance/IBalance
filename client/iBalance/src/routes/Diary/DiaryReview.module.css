@@ -112,7 +112,7 @@
     font-size: 0.8rem;
     padding: 5px 10px 5px 10px;
     border-radius: 15px;
-    margin-right: 5px;
+    margin-right: 7px;
     margin-bottom: 7px;
   }
   .notHate {
@@ -121,7 +121,7 @@
     font-size: 0.8rem;
     padding: 5px 10px 5px 10px;
     border-radius: 15px;
-    margin-right: 5px;
+    margin-right: 7px;
     margin-bottom: 7px;
   }
 }
@@ -232,7 +232,7 @@
     font-size: 0.8rem;
     padding: 5px 10px 5px 10px;
     border-radius: 15px;
-    margin-right: 5px;
+    margin-right: 7px;
     margin-bottom: 7px;
   }
   .notHate {
@@ -241,7 +241,18 @@
     font-size: 0.8rem;
     padding: 5px 10px 5px 10px;
     border-radius: 15px;
-    margin-right: 5px;
+    margin-right: 7px;
     margin-bottom: 7px;
   }
+}
+.backIcon {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  background-image: url(../../assets/home/prevArrow.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 }

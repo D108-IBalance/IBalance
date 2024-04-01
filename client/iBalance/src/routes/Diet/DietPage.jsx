@@ -96,7 +96,12 @@ const ListComponent = (props) => {
   return (
     <>
       {isSave ? (
-        <DietComplete userDiet={userDiet} />
+        <DietComplete
+          userDiet={userDiet}
+          setSummaryInfo={setSummaryInfo}
+          setDietId={setDietId}
+          setSelectDate={setSelectDate}
+        />
       ) : (
         <DietListPage
           setDietId={setDietId}

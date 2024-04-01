@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
 
 import WeekCard from "./WeekCard";
-import classes from "./DietComplete.module.css";
+import classes from "./DietListPage.module.css";
 import WeekComplete from "./WeekComplete";
 
 const DietComplete = (props) => {
-  const { userDiet } = props;
+  const { userDiet, setSummaryInfo, setDietId, setSelectDate } = props;
   const [isClick, setIsClick] = useState(0);
   const [weekDiets, setWeekDiets] = useState([]);
   const weekList = useMemo(() => {
@@ -36,7 +36,13 @@ const DietComplete = (props) => {
               return isClick === 0 ||
                 Number.parseInt(isClick) === Number.parseInt(idx) + 1 ? (
                 <div key={idx}>
-                  <WeekComplete weekDate={weekList[idx]} menu={menu} />
+                  <WeekComplete
+                    weekDate={weekList[idx]}
+                    menu={menu}
+                    setSummaryInfo={setSummaryInfo}
+                    setDietId={setDietId}
+                    setSelectDate={setSelectDate}
+                  />
                 </div>
               ) : null;
             })
