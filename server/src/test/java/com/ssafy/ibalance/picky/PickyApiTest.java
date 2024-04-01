@@ -103,7 +103,7 @@ public class PickyApiTest extends ApiTest {
                                 "<br>식재료를 잘못 입력했을 경우, 406 Not Acceptable 이 반환됩니다.", "편식레시피 찾기",
                         CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
                         PickyDocument.pickyRecipeRequestParam,
-                        PickyDocument.pickyRecipeResponseField))
+                        PickyDocument.pickyRecipeListResponseField))
                 .andDo(this::print);
     }
 
@@ -170,7 +170,6 @@ public class PickyApiTest extends ApiTest {
     void 편식레시피_가져오기_아이없음_404() throws Exception {
         List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
         String token = memberInfo.getFirst();
-        Integer childId = Integer.parseInt(memberInfo.getLast());
 
         mockMvc.perform(
                         get("/picky/solution/{childId}", 999999)
@@ -204,6 +203,64 @@ public class PickyApiTest extends ApiTest {
                         CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
                         PickyDocument.pickyRecipeRequestParam))
                 .andDo(this::print);
+    }
+
+    @Test
+    void 편식레시피_하나_가져오기_성공_200() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        String material = "마늘";
+        String recipeId = "66097184ca2d2f3820e1ecc9";
+
+        mockMvc.perform(
+                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "식재료와 레시피 아이디를 기준으로, 상세 레시피를 가져오는 API 입니다." +
+                                "<br>정상적으로 상세 레시피를 받아왔다면, 200 OK 와 함께 레시피 내용이 반환됩니다." +
+                                "<br>로그인 토큰이 없을 때, 401 Unauthorized 가 HTTP Status Code 로 반환됩니다." +
+                                "<br>편식 레시피를 받아오고자 하는 정보에 이상이 있을 때, 406 Not Acceptable 이 body 에 반환됩니다.",
+                        "편식레시피 하나조회", CommonDocument.AccessTokenHeader,
+                        PickyDocument.onePickyRecipePathParam,
+                        PickyDocument.pickyRecipeResponseField));
+
+    }
+
+    @Test
+    void 편식레시피_하나_가져오기_토큰없음_401() throws Exception {
+
+        String material = "마늘";
+        String recipeId = "66097184ca2d2f3820e1ecc9";
+
+        mockMvc.perform(
+                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        PickyDocument.pickyRecipeResponseField));
+    }
+
+    @Test
+    void 편식레시피_하나_가져오기_정보이상_406() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        String material = "마늘";
+        String recipeId = "6asdfdddd";
+
+        mockMvc.perform(
+                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(406))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        PickyDocument.onePickyRecipePathParam));
     }
 
 

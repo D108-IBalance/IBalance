@@ -8,10 +8,8 @@ import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.common.util.DtoConverter;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.common.util.UrlBuilder;
-import com.ssafy.ibalance.diet.dto.response.PickyResultResponse;
 import com.ssafy.ibalance.diet.dto.response.picky.PickyRecipe;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
-import com.ssafy.ibalance.diet.type.PeriodUnit;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,12 +31,23 @@ public class PickyService {
     private final DtoConverter dtoConverter;
 
 
-    public PickyResultResponse getPickyResult(Member member, Integer childId, PeriodUnit periodUnit) {
-        return dietMaterialRepository.getPickyResult(member, childId, PeriodUnit.getStartDate(periodUnit));
+    public List<PickyRecipe> getSolutionRecipeList(Member member, Integer childId, String material,
+                                                   Integer offset, String lastId) {
+
+        List<String> childAllergyName = getAllergyNameCheckedChildHave(member, childId);
+
+        if(lastId == null || lastId.isEmpty() || lastId.isBlank()) {
+            lastId = "";
+        }
+
+        return getSolutionRecipeListFromFastAPI(childAllergyName, material, offset, lastId);
     }
 
-    public List<PickyRecipe> getSolutionRecipeList(Member member, Integer childId, String material, Integer offset, String lastId) {
+    public PickyRecipe getOneDetailRecipe(String material, String recipeId) {
+        return getOneDetailRecipeFromFastAPI(material, recipeId);
+    }
 
+    private List<String> getAllergyNameCheckedChildHave(Member member, Integer childId) {
         RedisChildAllergy redisAllergyInfo = redisChildAllergyRepository.findById(childId).orElseThrow(
                 () -> new ChildNotFoundException("입력된 아이디로 등록된 아이를 찾을 수 없습니다.")
         );
@@ -47,13 +56,7 @@ public class PickyService {
             throw new ChildAccessDeniedException("해당 아이의 정보에 접근할 권한이 없습니다.");
         }
 
-        List<String> childAllergyName = childAllergyRepository.getChildAllergyName(redisAllergyInfo.getChildAllergyId());
-
-        if(lastId == null || lastId.isEmpty() || lastId.isBlank()) {
-            lastId = "";
-        }
-
-        return getSolutionRecipeListFromFastAPI(childAllergyName, material, offset, lastId);
+        return childAllergyRepository.getChildAllergyName(redisAllergyInfo.getChildAllergyId());
     }
 
     private List<PickyRecipe> getSolutionRecipeListFromFastAPI(List<String> allergyList, String material, Integer offset, String lastId) {
@@ -66,5 +69,12 @@ public class PickyService {
         return pickyResult.stream().
                 map(result -> dtoConverter.convertFromMap(result, new PickyRecipe(), true))
                 .toList();
+    }
+
+    private PickyRecipe getOneDetailRecipeFromFastAPI(String material, String recipeId) {
+        String targetUrl = String.format("/picky/%s/%s", material, recipeId);
+
+        LinkedHashMap<String, Object> result = fastAPIConnectionUtil.getApiConnectionResult(targetUrl, new LinkedHashMap<>());
+        return dtoConverter.convertFromMap(result, new PickyRecipe(), true);
     }
 }
