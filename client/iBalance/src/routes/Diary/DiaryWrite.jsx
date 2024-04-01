@@ -1,17 +1,27 @@
 // 외부 모듈
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./DiaryWrite.module.css";
 import prevIcon from "../../assets/diary/img/prevArrow.svg";
+import { getDiaryDetail, writeDiary } from "./ServerConnect";
+import { useSelector } from "react-redux";
 
 const DiaryWrite = (props) => {
-  const { selectedDate, setPageStep } = props;
+  const { selectedDate, setPageStep, dietId, setDietId } = props;
+  const chlidId = useSelector((state) => state.chlidId);
+  const [diaryInfo, setDiaryInfo] = useState({});
+  const [content, setContent] = useState("");
+  const [menuRate, setMenuRate] = useState([]);
+  const [mealTime, setMealTime] = useState("");
+  const [pickyIdList, setPickyIdList] = useState([]);
+  const [writeValidation, setWriteValidation] = useState(false);
+  const [rateValidation, setRateValidation] = useState(false);
   const [selection, setSelection] = useState([
     {
       id: 0,
       title: "아침",
-      content: "morning",
+      content: "BREAKFAST",
       checked: false,
     },
     {
@@ -27,39 +37,93 @@ const DiaryWrite = (props) => {
       checked: false,
     },
   ]);
-  const [rating, setRating] = useState([false, false, false, false, false]);
-  const [ingredients, setIngredients] = useState([
-    { food: "돼지고기", isSelect: false },
-    { food: "대추", isSelect: false },
-    { food: "밀", isSelect: false },
-    { food: "쌀", isSelect: false },
-    { food: "히힣", isSelect: false },
-    { food: "저저", isSelect: false },
-    { food: "zz", isSelect: false },
-  ]);
-  const onSelect = (idx, isChecked) => {
+  const [ingredients, setIngredients] = useState([]);
+  const onSelect = (idx) => {
+    switch (idx) {
+      case 0:
+        setMealTime("BREAKFAST");
+        break;
+      case 1:
+        setMealTime("LUNCH");
+        break;
+      case 2:
+        setMealTime("DINNER");
+        break;
+    }
     setSelection((prev) => {
       return prev.map((data, id) => {
-        data["checked"] = idx === id && !isChecked;
+        data["checked"] = idx === id;
         return data;
       });
     });
   };
-  const onRating = (idx) => {
-    setRating((prev) => {
-      return prev.map((_, id) => id <= idx);
+  const onRating = (key, idx) => {
+    setMenuRate((prev) => {
+      const updatedRate = [...prev];
+      updatedRate[key] = { ...updatedRate[key], rate: idx + 1 };
+      return updatedRate;
     });
   };
   const onBalance = (idx) => {
     setIngredients((prev) => {
       return prev.map((item, index) => {
-        if (index === idx) {
-          return { ...item, isSelect: !item.isSelect };
-        }
-        return item;
+        index === idx ? { ...item, picky: !item.picky } : item;
       });
     });
+    setPickyIdList((prev) => {
+      const newPicks = prev.includes(idx)
+        ? prev.filter((id) => id !== idx)
+        : [...prev, idx];
+      return newPicks;
+    });
   };
+  const writeContent = (e) => {
+    const tempContent = e.currentTarget.value;
+    setContent(tempContent);
+    if (tempContent.length === 0) {
+      setWriteValidation(false);
+    }
+  };
+  const goBack = () => {
+    setPageStep(0);
+    setDietId(0);
+  };
+  const saveDiary = async () => {
+    let diaryData = { dietId, content, menuRate, pickyIdList, mealTime };
+    const res = await writeDiary(chlidId, diaryData);
+    console.log(res);
+  };
+  useEffect(() => {
+    if (menuRate) {
+      let flag = true;
+      for (let menu of menuRate) {
+        if (menu.rate === 0) {
+          flag = false;
+          break;
+        }
+      }
+      setRateValidation(flag);
+    }
+  }, [menuRate]);
+  useEffect(() => {
+    const getDiaryInfo = async () => {
+      const res = await getDiaryDetail(dietId);
+      if (res.data.status === 200) {
+        const info = res.data.data;
+        setDiaryInfo(info);
+
+        const tempRatings = info.menu.map((item) => {
+          let rating = { menuId: item.menuId, rate: 0 };
+          return rating;
+        });
+        setIngredients(info.materials);
+        setMenuRate(tempRatings);
+      }
+    };
+    if (dietId) {
+      getDiaryInfo();
+    }
+  }, [dietId]);
   return (
     <div className={classes.container}>
       <header className={classes.headerContainer}>
@@ -68,7 +132,7 @@ const DiaryWrite = (props) => {
           alt="prev"
           className={classes.backIcon}
           onClick={() => {
-            setPageStep(0);
+            goBack();
           }}
         />
         <p className={classes.title}>{selectedDate}</p>
@@ -85,7 +149,7 @@ const DiaryWrite = (props) => {
                   className={classes[`${data.content}Input`]}
                   checked={data.checked}
                   onChange={() => {
-                    onSelect(idx, data.checked);
+                    onSelect(idx);
                   }}
                 />
                 <label
@@ -100,44 +164,48 @@ const DiaryWrite = (props) => {
           cols="40"
           rows="3"
           className={classes.review}
+          onChange={(e) => {
+            writeContent(e);
+          }}
           maxLength={80}
           placeholder="우리 아이 식습관을 기록해주세요."
         />
         <article>
-          {[1, 2, 3, 4].map((_, key) => {
-            return (
-              <div className={classes.menuBox} key={key}>
-                <div className={classes.menuImg} />
-                <div className={classes.menuInfo}>
-                  <p className={classes.menuTitle}>메뉴명</p>
-                  <p className={classes.ingredient}>히히 히히 히힣 </p>
-                  <div className={classes.rating}>
-                    {rating.map((isStar, idx) => {
-                      return isStar ? (
-                        <p
-                          key={idx}
-                          className={classes.star}
-                          onClick={() => {
-                            onRating(idx);
-                          }}>
-                          ★
-                        </p>
-                      ) : (
-                        <p
-                          key={idx}
-                          className={classes.star}
-                          onClick={() => {
-                            onRating(idx);
-                          }}>
-                          ☆
-                        </p>
-                      );
-                    })}
+          {diaryInfo &&
+            diaryInfo.menu.map((menu, key) => {
+              return (
+                <div className={classes.menuBox} key={key}>
+                  <div className={classes.menuImg} />
+                  <div className={classes.menuInfo}>
+                    <p className={classes.menuTitle}>{menu.menuName}</p>
+                    <p className={classes.ingredient}>{menu.materials} </p>
+                    <div className={classes.rating}>
+                      {[...new Array(5)].map((_, idx) => {
+                        return idx < menuRate[key].rate ? (
+                          <p
+                            key={idx}
+                            className={classes.star}
+                            onClick={() => {
+                              onRating(key, idx);
+                            }}>
+                            ★
+                          </p>
+                        ) : (
+                          <p
+                            key={idx}
+                            className={classes.star}
+                            onClick={() => {
+                              onRating(key, idx);
+                            }}>
+                            ☆
+                          </p>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </article>
         <footer className={classes.footBox}>
           <div>
@@ -145,25 +213,38 @@ const DiaryWrite = (props) => {
               우리 아이가 편식하는 재료를 선택해주세요.
             </p>
             <div className={classes.noBalance}>
-              {ingredients.map((ingredient, idx) => {
-                return (
-                  <div
-                    onClick={() => {
-                      onBalance(idx);
-                    }}
-                    className={
-                      ingredient.isSelect
-                        ? classes.noIngredientClicked
-                        : classes.noIngredient
-                    }
-                    key={idx}>
-                    {ingredient.food}
-                  </div>
-                );
-              })}
+              {ingredients &&
+                ingredients.map((ingredient, idx) => {
+                  return (
+                    <div
+                      onClick={() => {
+                        onBalance(idx);
+                      }}
+                      className={
+                        ingredient.picky
+                          ? classes.noIngredientClicked
+                          : classes.noIngredient
+                      }
+                      key={idx}>
+                      {ingredient.material}
+                    </div>
+                  );
+                })}
             </div>
           </div>
-          <button className={classes.btn}>일기 저장</button>
+          {rateValidation && writeValidation && mealTime ? (
+            <button
+              className={classes.btn}
+              onClick={() => {
+                saveDiary();
+              }}>
+              일기 저장
+            </button>
+          ) : (
+            <button className={classes.noBtn} disabled>
+              일기 작성을 완료 해 주세요.
+            </button>
+          )}
         </footer>
       </section>
     </div>

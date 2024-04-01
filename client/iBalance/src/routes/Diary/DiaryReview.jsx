@@ -1,13 +1,18 @@
+// 외부 모듈
+import { useEffect, useState } from "react";
+
 // 내부 모듈
 import classes from "./DiaryReview.module.css";
 import example1 from "../../assets/diet/recipe1.png";
 import example2 from "../../assets/diet/recipe2.png";
 import example3 from "../../assets/diet/recipe3.png";
-import { useState } from "react";
+import { readDiary } from "./ServerConnect";
+import { useSelector } from "react-redux";
 
 const DiaryReview = (props) => {
   const [current, setCurrent] = useState(0);
-  const { selectedDate } = props;
+  const { selectedDate, dietId } = props;
+  const childId = useSelector((state) => state.childId);
   const hateFoods = [
     { food: "갈치", isHate: true },
     { food: "돼지고기", isHate: false },
@@ -35,6 +40,15 @@ const DiaryReview = (props) => {
     }
     setCurrent(current + step);
   };
+  useEffect(() => {
+    const read = async () => {
+      const res = await readDiary(dietId, childId);
+      console.log(res);
+    };
+    if (dietId && childId) {
+      read();
+    }
+  }, [dietId, childId]);
   return (
     <div className={classes.container}>
       <header

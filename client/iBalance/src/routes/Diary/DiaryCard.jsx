@@ -1,36 +1,42 @@
 import classes from "./DiaryCards.module.css";
 import spoonIcon from "../../assets/diary/img/diet_icon_white.png";
 import addIcon from "../../assets/diary/img/add_diet_icon.png";
+import { useEffect, useState } from "react";
 
 const DiaryCard = (props) => {
-  const { setPageStep } = props;
-  const DIET = {
-    title: "제목1",
-    food: ["돈까스", "수제 함박 스테이크", "어묵 볶음", "두부 계란 탕"],
+  const { setPageStep, diet, setDietId } = props;
+  const [cardTitle, setCardTitle] = useState("");
+  const goToDiary = () => {
+    setDietId(diet.dietId);
+    diet.mealTime === "NONE" ? setPageStep(1) : setPageStep(2);
   };
-  const IS_WRITE = false;
+  useEffect(() => {
+    if (diet) {
+      diet.mealTime === "NONE"
+        ? setCardTitle("제목 없음")
+        : setCardTitle(diet.mealTime);
+    }
+  }, [diet]);
   return (
     <section className={classes.card}>
-      <div className={classes.cardContentBox}>
+      <div
+        className={classes.cardContentBox}
+        onClick={() => {
+          goToDiary();
+        }}>
         <img src={spoonIcon} alt="수저아이콘" className={classes.spoonIcon} />
         <div className={classes.line} />
         <main className={classes.cardContent}>
-          <p className={classes.cardTitle}>{DIET["title"]}</p>
-          {DIET["food"].map((food, idx) => {
+          <p className={classes.cardTitle}>{cardTitle}</p>
+          {diet["menuList"].map((food, idx) => {
             return (
               <p key={idx} className={classes.cardFood}>
                 {food}
               </p>
             );
           })}
-          {IS_WRITE ? null : (
-            <img
-              src={addIcon}
-              className={classes.addDiary}
-              onClick={() => {
-                setPageStep(1);
-              }}
-            />
+          {diet.mealTime !== "NONE" ? null : (
+            <img src={addIcon} className={classes.addDiary} />
           )}
         </main>
       </div>

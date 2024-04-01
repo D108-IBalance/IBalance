@@ -197,6 +197,17 @@
     font-weight: 300;
     margin-top: 15px;
   }
+  .noBtn {
+    width: 100%;
+    height: 50px;
+    outline: none;
+    border: none;
+    background-color: #fe724c;
+    border-radius: 50px;
+    color: rgb(168, 166, 166);
+    font-weight: 300;
+    margin-top: 15px;
+  }
   .noBalaceTitle {
     font-weight: 600;
   }
@@ -390,6 +401,17 @@
     background-color: #fe724c;
     border-radius: 50px;
     color: white;
+    font-weight: 300;
+    margin-top: 15px;
+  }
+  .noBtn {
+    width: 100%;
+    height: 50px;
+    outline: none;
+    border: none;
+    background-color: #fe724c;
+    border-radius: 50px;
+    color: rgb(168, 166, 166);
     font-weight: 300;
     margin-top: 15px;
   }

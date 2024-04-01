@@ -10,18 +10,18 @@ import { getDietDates } from "./ServerConnect";
 
 const Calendar = (props) => {
   const MONTHS = [
-    "1월",
-    "2월",
-    "3월",
-    "4월",
-    "5월",
-    "6월",
-    "7월",
-    "8월",
-    "9월",
-    "10월",
-    "11월",
-    "12월",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
   ];
   const { setSelectedDate, setPageStep } = props;
   const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -110,7 +110,7 @@ const Calendar = (props) => {
           return tempDate.getDate();
         });
       }
-      let dayArr = getDayArr([1, 2, 20, 30]);
+      let dayArr = getDayArr(dietDays);
       const weeks = getWeekArr(dayArr);
       setWeekArr(weeks);
     };
@@ -119,7 +119,8 @@ const Calendar = (props) => {
   return (
     <div className={classes.container}>
       <header className={classes.controller}>
-        <span className={classes.nowDate}>{`${year}년 ${MONTHS[month]}`}</span>
+        <span
+          className={classes.nowDate}>{`${year}년 ${MONTHS[month]}월`}</span>
         <section>
           {IS_PREV ? (
             <img
@@ -160,7 +161,7 @@ const Calendar = (props) => {
                         onClick={() => {
                           day["haveDiets"]
                             ? onClickDay(
-                                `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
+                                `${year}-${MONTHS[month]}-${day["날짜"]}`,
                                 day["날짜"],
                               )
                             : null;

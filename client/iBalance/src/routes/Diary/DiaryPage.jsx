@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 // 외부 모듈
 import { useState } from "react";
 // 내부 모듈
@@ -14,11 +12,28 @@ import notSelectIcon from "../../assets/diary/img/notselect.svg";
 
 const DiaryPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const [dietId, setDietId] = useState(0);
   const [pageStep, setPageStep] = useState(0);
   const cardComponent = [
-    <DiaryCards selectedDate={selectedDate} setPageStep={setPageStep} />,
-    <DiaryWrite selectedDate={selectedDate} setPageStep={setPageStep} />,
-    <DiaryReview selectedDate={selectedDate} setPageStep={setPageStep} />,
+    <DiaryCards
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      setDietId={setDietId}
+      key="DiaryCards"
+    />,
+    <DiaryWrite
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      dietId={dietId}
+      setDietId={setDietId}
+      key="DiaryWrite"
+    />,
+    <DiaryReview
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      dietId={dietId}
+      key="DiaryReview"
+    />,
   ];
   return (
     <>
@@ -39,7 +54,7 @@ const DiaryPage = () => {
                 </p>
               </div>
             ) : (
-              cardComponent[2]
+              cardComponent[pageStep]
             )}
           </div>
         </div>
