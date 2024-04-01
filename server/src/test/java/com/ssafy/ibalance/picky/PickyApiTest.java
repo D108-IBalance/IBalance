@@ -41,39 +41,100 @@ public class PickyApiTest extends ApiTest {
     }
 
 
-//    @Test
-//    void 편식정보_가져오기_성공_200() throws Exception {
-//        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
-//        String token = memberInfo.getFirst();
-//        Integer childId = Integer.parseInt(memberInfo.getLast());
-//
-//        mockMvc.perform(
-//                        get("/picky/{childId}", childId)
-//                                .header(AUTH_HEADER, token)
-//                                .param("limit", "WEEKLY")
-//                )
-//                .andExpect(status().isOk())
-//                .andDo(this::print);
-//
-//    }
-
     @Test
-    void 편식정보_가져오기_아이아이디_음수_400() {
+    void 편식정보_가져오기_성공_200() throws Exception {
+        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
+        String token = memberInfo.getFirst();
+        Integer childId = Integer.parseInt(memberInfo.getLast());
+
+        mockMvc.perform(
+                        get("/picky/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("limit", "WEEKLY")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "아이의 편식 정보와, 그를 바탕으로 해당 식재료들을 " +
+                                "<br>맛있게 만드는 레시피들을 제공하는 API 입니다. " +
+                                "<br>정상적으로 childId 와 limit 을 입력한다면, 200 OK 와 함께 각 식재료별 레시피를 5개씩 받을 수 있습니다." +
+                                "<br>childId 에서 자연수 이외의 정수를 입력하거나, limit 에서 WEEKLY/MONTHLY 이외의 단어를 입력했을 시, " +
+                                "<br>body 에 400 Bad Request 가 반환됩니다." +
+                                "<br>header 에 로그인 토큰을 입력하지 않는다면, 401 Unauthorized 가 HTTP Status Code 로 반환됩니다." +
+                                "<br>해당 childId 에 접근할 수 있는 권한이 없다면, 403 Forbidden 이 body 에 반환됩니다." +
+                                "<br>아이 아이디로 정보를 찾을 수 없을 때, 404 Not Found 가 body 에 반환됩니다.",
+                        "아이편식정보 메인", CommonDocument.AccessTokenHeader, ChildDocument.childIdPathField,
+                        PickyDocument.pickyPeriodRequestParam, PickyDocument.pickyMainResponseField));
 
     }
 
     @Test
-    void 편식정보_가져오기_토큰없음_401() {
+    void 편식정보_가져오기_아이아이디_음수_400() throws Exception {
+        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
+        String token = memberInfo.getFirst();
+        Integer childId = -1;
 
+        mockMvc.perform(
+                        get("/picky/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("limit", "MONTHLY")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(400))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
     }
 
     @Test
-    void 편식정보_가져오기_권한없음_403() {
+    void 편식정보_가져오기_토큰없음_401() throws Exception {
+        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
+        Integer childId = Integer.parseInt(memberInfo.getLast());
 
+        mockMvc.perform(
+                        get("/picky/{childId}", childId)
+                                .param("limit", "MONTHLY")
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, ChildDocument.childIdPathField));
     }
 
     @Test
-    void 편식정보_가져오기_아이없음_404() {
+    void 편식정보_가져오기_권한없음_403() throws Exception {
+        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
+        String otherToken = memberTestUtil.회원가입_다른유저_토큰반환(mockMvc);
+        Integer childId = Integer.parseInt(memberInfo.getLast());
+
+        mockMvc.perform(
+                        get("/picky/{childId}", childId)
+                                .header(AUTH_HEADER, otherToken)
+                                .param("limit", "MONTHLY")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(403))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
+    }
+
+    @Test
+    void 편식정보_가져오기_아이없음_404() throws Exception {
+        List<String> memberInfo = 아이_편식정보_저장_프로세스(mockMvc);
+        String token = memberInfo.getFirst();
+        Integer childId = 99999999;
+
+        mockMvc.perform(
+                        get("/picky/{childId}", childId)
+                                .header(AUTH_HEADER, token)
+                                .param("limit", "MONTHLY")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(404))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        ChildDocument.childIdPathField));
 
     }
 
@@ -245,23 +306,23 @@ public class PickyApiTest extends ApiTest {
                         PickyDocument.onePickyRecipePathParam));
     }
 
-//    @Test
-//    void 편식레시피_하나_가져오기_정보이상_406() throws Exception {
-//        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
-//
-//        String material = "마늘";
-//        String recipeId = "6asdfdddd";
-//
-//        mockMvc.perform(
-//                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
-//                                .header(AUTH_HEADER, token)
-//                )
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value(406))
-//                .andDo(this::print)
-//                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
-//                        PickyDocument.onePickyRecipePathParam));
-//    }
+    @Test
+    void 편식레시피_하나_가져오기_정보이상_406() throws Exception {
+        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+
+        String material = "마늘";
+        String recipeId = "6asdfdddd";
+
+        mockMvc.perform(
+                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
+                                .header(AUTH_HEADER, token)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(406))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+                        PickyDocument.onePickyRecipePathParam));
+    }
 
 
     List<String> 아이_편식정보_저장_프로세스(MockMvc mockMvc) throws Exception {

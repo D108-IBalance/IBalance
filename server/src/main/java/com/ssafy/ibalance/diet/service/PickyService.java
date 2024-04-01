@@ -8,8 +8,12 @@ import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.common.util.DtoConverter;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.common.util.UrlBuilder;
+import com.ssafy.ibalance.diet.dto.request.PickyMainFastApiRequest;
+import com.ssafy.ibalance.diet.dto.response.PickyResultResponse;
 import com.ssafy.ibalance.diet.dto.response.picky.PickyRecipe;
+import com.ssafy.ibalance.diet.dto.response.picky.SimplePickyResponse;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
+import com.ssafy.ibalance.diet.type.PeriodUnit;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,14 @@ public class PickyService {
     private final UrlBuilder urlBuilder;
     private final DtoConverter dtoConverter;
 
+    public List<SimplePickyResponse> getPickyResult(Member member, Integer childId, PeriodUnit periodUnit) {
+        List<String> childAllergyName = getAllergyNameCheckedChildHave(member, childId);
+        PickyResultResponse pickyResult =
+                dietMaterialRepository.getPickyResult(childId, PeriodUnit.getStartDate(periodUnit));
+
+        return getPickyMainResultFromFastAPI(childAllergyName, pickyResult);
+    }
+
 
     public List<PickyRecipe> getSolutionRecipeList(Member member, Integer childId, String material,
                                                    Integer offset, String lastId) {
@@ -45,6 +57,21 @@ public class PickyService {
 
     public PickyRecipe getOneDetailRecipe(String material, String recipeId) {
         return getOneDetailRecipeFromFastAPI(material, recipeId);
+    }
+
+
+    private List<SimplePickyResponse> getPickyMainResultFromFastAPI(List<String> childAllergyName, PickyResultResponse pickyResult) {
+        PickyMainFastApiRequest requestForFastAPI = PickyMainFastApiRequest.builder()
+                .allergyNameList(childAllergyName)
+                .pickyMatrlList(pickyResult.pickyMaterials())
+                .build();
+
+        ArrayList<LinkedHashMap<String, Object>> result =
+                fastAPIConnectionUtil.postApiConnectionResult("/picky/main", requestForFastAPI, new ArrayList<>());
+
+        return result.stream()
+                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new SimplePickyResponse(), true))
+                .toList();
     }
 
     private List<String> getAllergyNameCheckedChildHave(Member member, Integer childId) {
