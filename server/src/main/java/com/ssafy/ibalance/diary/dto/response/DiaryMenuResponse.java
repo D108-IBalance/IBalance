@@ -14,4 +14,5 @@ public class DiaryMenuResponse {
     private String menuName;
     private List<String> materials;
     private String menuImgUrl;
+    private Integer score;
 }

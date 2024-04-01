@@ -113,12 +113,24 @@ public class DiaryService {
     private List<DiaryMenuResponse> getDiaryMenuListFromFastAPI(List<DietMenu> dietMenuList) {
         List<String> menuIdList = dietMenuList.stream().map(DietMenu::getMenuId).toList();
 
-        ArrayList<LinkedHashMap<String, String>> diaryMenuResponses
+        ArrayList<LinkedHashMap<String, Object>> diaryMenuResponses
                 = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
 
-        return diaryMenuResponses.stream()
-                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse()))
+        List<DiaryMenuResponse> diaryMenuResponseList = diaryMenuResponses.stream()
+                .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse(), false))
                 .toList();
+
+        dietMenuList.stream().filter(menu -> menu.getScore() != null)
+                .forEachOrdered(menu -> {
+                    for (DiaryMenuResponse response : diaryMenuResponseList) {
+                        if(menu.getMenuId().equals(response.getMenuId())) {
+                            response.setScore(menu.getScore().intValue());
+                            break;
+                        }
+                    }
+                });
+
+        return diaryMenuResponseList;
     }
 
     private void saveMenuScore(List<DietMenu> dietMenuList, List<MenuRateRequest> menuRateRequests) {

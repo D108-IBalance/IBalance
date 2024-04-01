@@ -17,5 +17,7 @@ public class RedisChildAllergy {
     @Id
     private Integer childId;
 
+    private Integer memberId;
+
     private List<Long> childAllergyId;
 }

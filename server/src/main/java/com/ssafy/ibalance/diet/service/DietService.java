@@ -2,16 +2,17 @@ package com.ssafy.ibalance.diet.service;
 
 import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
+import com.ssafy.ibalance.child.repository.AllergyRepository;
+import com.ssafy.ibalance.child.repository.ChildRepository;
+import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
+import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
 import com.ssafy.ibalance.diet.dto.RedisDietDto;
 import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
-import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
-import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
+import com.ssafy.ibalance.diet.dto.response.*;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
@@ -50,14 +51,34 @@ public class DietService {
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
 
-    public List<DietByDateResponse> getRecommendedDiet(Integer childId, LocalDate today) {
+    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
-        return dietRepository.getDietByDateBetween(childId, today, endday);
+        List<DietByDateResponse> dietList =  dietRepository.getDietByDateBetween(childId, today, endday);
+
+        List<RecommendedDietResponse> recommendedDiet = new ArrayList<>();
+        for(int day = 0; day < 7; day++) {
+            recommendedDiet.add(RecommendedDietResponse.builder()
+                    .dietDate(LocalDate.now().plusDays(day))
+                    .dietList(new ArrayList<RecommendedMenuResponse>())
+                    .build());
+        }
+
+        dietList.forEach(diet -> {
+            recommendedDiet.stream()
+                    .filter(recommendedDietResponse -> recommendedDietResponse.getDietDate().equals(diet.getDietDate()))
+                    .forEach(recommendedDietResponse -> recommendedDietResponse.getDietList().add(
+                            RecommendedMenuResponse.builder()
+                                    .dietId(diet.getDietId())
+                                    .menuList(diet.getMenuList())
+                                    .build()
+                    ));
+        });
+        return recommendedDiet;
     }
 
     public List<MenuDetailResponse> getDietDetail(Long dietId) {
         List<String> menuIdList = dietRepository.getMenuIdByDietId(dietId);
-        return getMenuDetailByMenuId(menuIdList);
+        return convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>()));
     }
 
     public List<Integer> getAllergy(Integer childId) {
@@ -185,16 +206,20 @@ public class DietService {
     @Transactional
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
-        List<String> menuIdList = new ArrayList<>();
+        List<List<String>> menuIdList = new ArrayList<>();
 
         for (int day = 0; day < 7; day++) {
+            List<String> menuInDiet = new ArrayList<>();
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
-            diet.getDietList().forEach(menus -> menuIdList.addAll(menus.getMenuList()));
+            diet.getDietList().forEach(menus -> menuInDiet.addAll(menus.getMenuList()));
+            menuIdList.add(menuInDiet);
             redisInitDietRepository.delete(diet);
         }
 
-        List<MenuDetailResponse> menuDetailResponseList = getMenuDetailByMenuId(menuIdList);
+        List<MenuDetailResponse> menuDetailResponseList  = new ArrayList<>();
+
+        menuIdList.forEach(list -> menuDetailResponseList.addAll(convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", list, new ArrayList<>()))));
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 자녀를 찾을 수 없습니다."));
 
         List<Diet> dietList = new ArrayList<>();
@@ -245,12 +270,6 @@ public class DietService {
         List<Long> dietIds = new ArrayList<>();
         diets.forEach(diet -> dietIds.add(diet.getId()));
         return dietIds;
-    }
-
-    private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
-        return menuIdList.stream().map(menuId ->
-                        fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
-                .toList();
     }
 
     private List<InitDietResponse> getInitRecommend(Child child, List<Integer> allergyList, List<String> pastMenu) {

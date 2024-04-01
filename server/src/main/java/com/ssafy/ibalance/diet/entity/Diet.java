@@ -5,6 +5,8 @@ import com.ssafy.ibalance.common.util.BaseTime;
 import com.ssafy.ibalance.diet.type.MealTime;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -37,5 +39,6 @@ public class Diet extends BaseTime {
     private boolean isReviewed;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Child child;
 }
