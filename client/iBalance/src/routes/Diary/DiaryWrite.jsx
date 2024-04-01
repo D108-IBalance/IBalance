@@ -110,6 +110,7 @@ const DiaryWrite = (props) => {
       const res = await getDiaryDetail(dietId);
       if (res.data.status === 200) {
         const info = res.data.data;
+        console.log(info);
         setDiaryInfo(info);
 
         const tempRatings = info.menu.map((item) => {
@@ -139,26 +140,27 @@ const DiaryWrite = (props) => {
       </header>
       <section className={classes.sectionContainer}>
         <header className={classes.selectBox}>
-          {selection.map((data, idx) => {
-            return (
-              <div className={classes.selection} key={data.id}>
-                <span className={classes.checkTitle}>{data.title}</span>
-                <input
-                  type="checkbox"
-                  id={data.content}
-                  className={classes[`${data.content}Input`]}
-                  checked={data.checked}
-                  onChange={() => {
-                    onSelect(idx);
-                  }}
-                />
-                <label
-                  htmlFor={data.content}
-                  className={classes[data.content]}
-                />
-              </div>
-            );
-          })}
+          {selection.length > 0 &&
+            selection.map((data, idx) => {
+              return (
+                <div className={classes.selection} key={data.id}>
+                  <span className={classes.checkTitle}>{data.title}</span>
+                  <input
+                    type="checkbox"
+                    id={data.content}
+                    className={classes[`${data.content}Input`]}
+                    checked={data.checked}
+                    onChange={() => {
+                      onSelect(idx);
+                    }}
+                  />
+                  <label
+                    htmlFor={data.content}
+                    className={classes[data.content]}
+                  />
+                </div>
+              );
+            })}
         </header>
         <textarea
           cols="40"
@@ -171,11 +173,11 @@ const DiaryWrite = (props) => {
           placeholder="우리 아이 식습관을 기록해주세요."
         />
         <article>
-          {diaryInfo &&
+          {Object.keys(diaryInfo).length > 0 &&
             diaryInfo.menu.map((menu, key) => {
               return (
                 <div className={classes.menuBox} key={key}>
-                  <div className={classes.menuImg} />
+                  <img className={classes.menuImg} src={menu.menuImgUrl} />
                   <div className={classes.menuInfo}>
                     <p className={classes.menuTitle}>{menu.menuName}</p>
                     <p className={classes.ingredient}>{menu.materials} </p>

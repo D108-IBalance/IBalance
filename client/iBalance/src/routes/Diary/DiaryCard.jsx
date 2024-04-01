@@ -11,7 +11,7 @@ const DiaryCard = (props) => {
     diet.mealTime === "NONE" ? setPageStep(1) : setPageStep(2);
   };
   useEffect(() => {
-    if (diet) {
+    if (Object.keys(diet).length > 0) {
       diet.mealTime === "NONE"
         ? setCardTitle("제목 없음")
         : setCardTitle(diet.mealTime);
@@ -28,14 +28,15 @@ const DiaryCard = (props) => {
         <div className={classes.line} />
         <main className={classes.cardContent}>
           <p className={classes.cardTitle}>{cardTitle}</p>
-          {diet["menuList"].map((food, idx) => {
-            return (
-              <p key={idx} className={classes.cardFood}>
-                {food}
-              </p>
-            );
-          })}
-          {diet.mealTime !== "NONE" ? null : (
+          {Object.keys(diet).length > 0 &&
+            diet["menuList"].map((food, idx) => {
+              return (
+                <p key={idx} className={classes.cardFood}>
+                  {food.menuName}
+                </p>
+              );
+            })}
+          {Object.keys(diet).length > 0 && diet.mealTime !== "NONE" ? null : (
             <img src={addIcon} className={classes.addDiary} />
           )}
         </main>
