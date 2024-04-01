@@ -16,7 +16,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @Value("${JASYPT_KEY}")
+    @Value("${jasypt.key}")
     private String jasyptKey;
 
     @PostMapping("/refresh-allergy/{password}")
