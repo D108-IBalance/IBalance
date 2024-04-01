@@ -31,7 +31,7 @@ const DayDiet = (props) => {
       let nextDiet = nextDiets;
       nextDiet.map((data, idx) => {
         if (idx === dayIdx) {
-          data.menuList.push(res);
+          data.menuList.push(res.data.data);
         }
         return data;
       });
