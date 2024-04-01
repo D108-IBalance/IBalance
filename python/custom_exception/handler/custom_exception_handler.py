@@ -14,7 +14,6 @@ async def _json_to_dict(request: Request) -> dict:
 
 
 async def not_found_exception_handler(request: Request, exception: NotFoundException) -> JSONResponse:
-    body = await _json_to_dict(request)
     return JSONResponse(
         status_code=exception.status_code,
         content={"msg": exception.detail}
@@ -22,7 +21,6 @@ async def not_found_exception_handler(request: Request, exception: NotFoundExcep
 
 
 async def body_validation_exception_handler(request: Request, exception: BodyValidationException) -> JSONResponse:
-    body = await _json_to_dict(request)
     return JSONResponse(
         status_code=exception.status_code,
         content={"msgList": exception.msg_list}
