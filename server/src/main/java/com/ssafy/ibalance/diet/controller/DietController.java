@@ -1,10 +1,7 @@
 package com.ssafy.ibalance.diet.controller;
 
 import com.ssafy.ibalance.common.util.CookieUtil;
-import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
-import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
+import com.ssafy.ibalance.diet.dto.response.*;
 import com.ssafy.ibalance.diet.service.DietService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,8 +32,8 @@ public class DietController {
      * @return 일주일 식단 목록
      */
     @GetMapping("/{childId}")
-    public List<DietByDateResponse> getRecommendedDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                                                       @RequestParam LocalDate today) {
+    public List<RecommendedDietResponse> getRecommendedDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
+                                                            @RequestParam LocalDate today) {
         return dietService.getRecommendedDiet(childId, today);
     }
 

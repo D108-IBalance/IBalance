@@ -2,6 +2,8 @@ package com.ssafy.ibalance.diet.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Builder
@@ -22,5 +24,6 @@ public class DietMaterial {
     private String material;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Diet diet;
 }

@@ -12,7 +12,7 @@ public record PickyResultResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate startDate,
 
-        List<PickyMaterialResponse> pickyMaterials
+        List<String> pickyMaterials
 ) {
 
 

@@ -2,8 +2,8 @@ package com.ssafy.ibalance.child;
 
 import com.ssafy.ibalance.ApiTest;
 import com.ssafy.ibalance.child.entity.Child;
-import com.ssafy.ibalance.child.repository.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
+import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.child.util.AllergyTestUtil;
 import com.ssafy.ibalance.child.util.ChildTestUtil;
 import com.ssafy.ibalance.common.CommonDocument;
@@ -859,7 +859,7 @@ public class ChildApiTest extends ApiTest {
                                 "<br>- <b>Header</b> 에 <b>JWT 토큰</b>이 올바르게 입력되지 않았을 때, <b>401 Unauthorized</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
                                 "<br>- 해당 자녀 정보에 접근 권한이 없을 때, <b>403 Forbidden</b> 이 <b>body</b> 의 <b>status</b> 로 반환됩니다." +
                                 "<br>- 해당 아이디로 된 자녀를 찾을 수 없을 때, <b>404 Not Found</b> 가 <b>body</b> 의 <b>status</b> 로 반환됩니다.",
-                                "자녀상세정보조회", CommonDocument.AccessTokenHeader,
+                        "자녀상세정보조회", CommonDocument.AccessTokenHeader,
                         ChildDocument.childIdPathField,
                         ChildDocument.childDetailResponseField
                 ));
@@ -871,8 +871,8 @@ public class ChildApiTest extends ApiTest {
         Integer childId = -1;
 
         mockMvc.perform(
-                get("/child/{childId}", childId)
-                        .header(AUTH_HEADER, token)
+                        get("/child/{childId}", childId)
+                                .header(AUTH_HEADER, token)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(400))
