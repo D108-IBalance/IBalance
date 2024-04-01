@@ -157,6 +157,6 @@ def get_picky_recipe_detail(
 
 
 @app.post("/recomm/picky/main")
-def get_picky_recipes_main(request: PickyWithAllergy) -> dict:
+def get_picky_recipes_main(request: PickyWithAllergy) -> list[dict]:
     picky_with_allergy_validation_check(request)
     return picky_main(request)

@@ -163,7 +163,7 @@ def picky_recipe(matrl_name: str, recipe_id: str) -> dict:
 """
 
 
-def picky_main(request: PickyWithAllergy) -> dict:
+def picky_main(request: PickyWithAllergy) -> list[dict]:
     hazard = None
     offset = 5
     if not len(request.allergyNameList) == 0:
@@ -175,9 +175,14 @@ def picky_main(request: PickyWithAllergy) -> dict:
         for allergy_obj in allergy_obj_list:
             for hazard_menu in allergy_obj["allergy_hazard"]:
                 hazard.append(hazard_menu)
-    result = dict()
+    result = list()
     exclude_attr = ["recipe_material_list", "recipe_steps"]
     for picky_name in request.pickyMatrlList:
+        new_picky_obj = dict()
+        new_picky_obj["picky_material_name"] = picky_name
+        new_picky_obj["recipes"] = list()
         recipes = find_picky_recipes(picky_name, offset, last_id=None, exclude_materials=hazard, exclude_attr=exclude_attr)
-        result[picky_name] = recipes
+        if len(recipes) > 0:
+            new_picky_obj["recipes"] = recipes
+        result.append(new_picky_obj)
     return result
