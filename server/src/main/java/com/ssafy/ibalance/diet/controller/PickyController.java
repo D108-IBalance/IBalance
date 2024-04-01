@@ -3,7 +3,6 @@ package com.ssafy.ibalance.diet.controller;
 import com.ssafy.ibalance.diet.dto.response.PickyResultResponse;
 import com.ssafy.ibalance.diet.dto.response.picky.PickyRecipe;
 import com.ssafy.ibalance.diet.service.PickyService;
-import com.ssafy.ibalance.diet.type.PeriodUnit;
 import com.ssafy.ibalance.member.entity.Member;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,8 @@ public class PickyController {
                                                @PathVariable Integer childId,
                                                @RequestParam String limit) {
 
-        return pickyService.getPickyResult(member, childId, PeriodUnit.valueOf(limit));
+//        return pickyService.getPickyResult(member, childId, PeriodUnit.valueOf(limit));
+        return null;
     }
 
     @GetMapping("/solution/{childId}")
