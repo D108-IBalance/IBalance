@@ -12,10 +12,7 @@ import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
 import com.ssafy.ibalance.diet.dto.RedisDietDto;
 import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
-import com.ssafy.ibalance.diet.dto.response.DietByDateResponse;
-import com.ssafy.ibalance.diet.dto.response.DietMenuResponse;
-import com.ssafy.ibalance.diet.dto.response.InitDietResponse;
-import com.ssafy.ibalance.diet.dto.response.MenuDetailResponse;
+import com.ssafy.ibalance.diet.dto.response.*;
 import com.ssafy.ibalance.diet.entity.Diet;
 import com.ssafy.ibalance.diet.entity.DietMaterial;
 import com.ssafy.ibalance.diet.entity.DietMenu;
@@ -54,9 +51,29 @@ public class DietService {
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
 
-    public List<DietByDateResponse> getRecommendedDiet(Integer childId, LocalDate today) {
+    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
         LocalDate endday = today.plusDays(6);
-        return dietRepository.getDietByDateBetween(childId, today, endday);
+        List<DietByDateResponse> dietList =  dietRepository.getDietByDateBetween(childId, today, endday);
+
+        List<RecommendedDietResponse> recommendedDiet = new ArrayList<>();
+        for(int day = 0; day < 7; day++) {
+            recommendedDiet.add(RecommendedDietResponse.builder()
+                    .dietDate(LocalDate.now().plusDays(day))
+                    .dietList(new ArrayList<RecommendedMenuResponse>())
+                    .build());
+        }
+
+        dietList.forEach(diet -> {
+            recommendedDiet.stream()
+                    .filter(recommendedDietResponse -> recommendedDietResponse.getDietDate().equals(diet.getDietDate()))
+                    .forEach(recommendedDietResponse -> recommendedDietResponse.getDietList().add(
+                            RecommendedMenuResponse.builder()
+                                    .dietId(diet.getDietId())
+                                    .menuList(diet.getMenuList())
+                                    .build()
+                    ));
+        });
+        return recommendedDiet;
     }
 
     public List<MenuDetailResponse> getDietDetail(Long dietId) {
