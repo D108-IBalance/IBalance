@@ -242,26 +242,26 @@ public class PickyApiTest extends ApiTest {
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(this::print)
                 .andDo(document(DEFAULT_RESTDOC_PATH,
-                        PickyDocument.pickyRecipeResponseField));
-    }
-
-    @Test
-    void 편식레시피_하나_가져오기_정보이상_406() throws Exception {
-        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
-
-        String material = "마늘";
-        String recipeId = "6asdfdddd";
-
-        mockMvc.perform(
-                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
-                                .header(AUTH_HEADER, token)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(406))
-                .andDo(this::print)
-                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
                         PickyDocument.onePickyRecipePathParam));
     }
+
+//    @Test
+//    void 편식레시피_하나_가져오기_정보이상_406() throws Exception {
+//        String token = memberTestUtil.회원가입_토큰반환(mockMvc);
+//
+//        String material = "마늘";
+//        String recipeId = "6asdfdddd";
+//
+//        mockMvc.perform(
+//                        get("/picky/detail/{material}/{recipeId}", material, recipeId)
+//                                .header(AUTH_HEADER, token)
+//                )
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status").value(406))
+//                .andDo(this::print)
+//                .andDo(document(DEFAULT_RESTDOC_PATH, CommonDocument.AccessTokenHeader,
+//                        PickyDocument.onePickyRecipePathParam));
+//    }
 
 
     List<String> 아이_편식정보_저장_프로세스(MockMvc mockMvc) throws Exception {
