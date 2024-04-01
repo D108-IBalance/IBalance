@@ -9,6 +9,7 @@ import EmptyDiet from "./EmptyDiet";
 import DietListPage from "./DietListPage";
 import Header from "../../modules/Header/Header";
 import DietSummary from "../DietDetail/DietSummary";
+import DietComplete from "./DietComplete";
 import { getRecommendedDiet } from "./ServerConnect";
 
 const DietPage = () => {
@@ -36,13 +37,16 @@ const DietPage = () => {
   useEffect(() => {
     const getDietData = async () => {
       const res = await getRecommendedDiet(childId);
-      const checkSave = res.data.data.length === 0 ? false : true;
-      setIsSave(checkSave);
-      setUserDiet(res.data.data);
+      if (res.data.data[0].dietList.length === 0) {
+        setIsSave(false);
+        setUserDiet([]);
+      } else {
+        setIsSave(true);
+        setUserDiet(res.data.data);
+      }
     };
     getDietData();
   }, [childId]);
-
   return (
     <>
       <div className={classes.gridSet}>
@@ -50,19 +54,16 @@ const DietPage = () => {
         <NavbarModule isClick={2} />
         <div className={classes.dietContentBox}>
           {Object.keys(summaryInfo).length === 0 ? (
-            userDiet.length === 0 ? (
-              <EmptyDiet setUserDiet={setUserDiet} isSave={isSave}></EmptyDiet>
-            ) : (
-              <DietListPage
-                setDietId={setDietId}
-                weekListKo={weekListKo}
-                setSelectDate={setSelectDate}
-                userDiet={userDiet}
-                setUserDiet={setUserDiet}
-                setSummaryInfo={setSummaryInfo}
-                isSave={isSave}
-                setIsSave={setIsSave}></DietListPage>
-            )
+            <EmptyOrList
+              setDietId={setDietId}
+              weekListKo={weekListKo}
+              setSelectDate={setSelectDate}
+              userDiet={userDiet}
+              setUserDiet={setUserDiet}
+              setSummaryInfo={setSummaryInfo}
+              isSave={isSave}
+              setIsSave={setIsSave}
+            />
           ) : (
             <DietSummary
               dietId={dietId}
@@ -77,6 +78,67 @@ const DietPage = () => {
           )}
         </div>
       </div>
+    </>
+  );
+};
+
+const ListComponent = (props) => {
+  const {
+    userDiet,
+    setDietId,
+    weekListKo,
+    setSelectDate,
+    setUserDiet,
+    setSummaryInfo,
+    isSave,
+    setIsSave,
+  } = props;
+  return (
+    <>
+      {isSave ? (
+        <DietComplete userDiet={userDiet} />
+      ) : (
+        <DietListPage
+          setDietId={setDietId}
+          weekListKo={weekListKo}
+          setSelectDate={setSelectDate}
+          userDiet={userDiet}
+          setUserDiet={setUserDiet}
+          setSummaryInfo={setSummaryInfo}
+          isSave={isSave}
+          setIsSave={setIsSave}></DietListPage>
+      )}
+    </>
+  );
+};
+
+const EmptyOrList = (props) => {
+  const {
+    userDiet,
+    setDietId,
+    weekListKo,
+    setSelectDate,
+    setUserDiet,
+    setSummaryInfo,
+    isSave,
+    setIsSave,
+  } = props;
+  return (
+    <>
+      {userDiet.length === 0 ? (
+        <EmptyDiet setUserDiet={setUserDiet} isSave={isSave}></EmptyDiet>
+      ) : (
+        <ListComponent
+          setDietId={setDietId}
+          weekListKo={weekListKo}
+          setSelectDate={setSelectDate}
+          userDiet={userDiet}
+          setUserDiet={setUserDiet}
+          setSummaryInfo={setSummaryInfo}
+          isSave={isSave}
+          setIsSave={setIsSave}
+        />
+      )}
     </>
   );
 };
