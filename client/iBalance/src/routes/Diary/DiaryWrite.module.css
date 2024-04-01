@@ -203,7 +203,7 @@
     border: none;
     background-color: #fe724c;
     border-radius: 50px;
-    color: rgb(168, 166, 166);
+    color: rgb(255, 255, 255, 0.8);
     font-weight: 300;
     margin-top: 15px;
   }
@@ -409,7 +409,7 @@
     border: none;
     background-color: #fe724c;
     border-radius: 50px;
-    color: rgb(168, 166, 166);
+    color: rgb(255, 255, 255, 0.8);
     font-weight: 300;
     margin-top: 15px;
   }

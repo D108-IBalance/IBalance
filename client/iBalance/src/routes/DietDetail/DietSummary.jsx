@@ -44,12 +44,12 @@ const DietSummary = (props) => {
         console.log(err);
       }
     };
-    if (isSave === false) {
+    if (Object.keys(summaryInfo).length > 0 && isSave === false) {
       getDietDetailData();
-    } else {
+    } else if (dietId && isSave === true) {
       getDetailData();
     }
-  }, []);
+  }, [summaryInfo, isSave, dietId]);
 
   const refreshMenu = async (prevMenuId) => {
     const res = await changeMenuOfTempDiet(

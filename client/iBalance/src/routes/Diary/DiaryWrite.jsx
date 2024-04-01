@@ -9,7 +9,9 @@ import { useSelector } from "react-redux";
 
 const DiaryWrite = (props) => {
   const { selectedDate, setPageStep, dietId, setDietId } = props;
-  const chlidId = useSelector((state) => state.chlidId);
+  const childId = useSelector((state) => {
+    return state.childId;
+  });
   const [diaryInfo, setDiaryInfo] = useState({});
   const [content, setContent] = useState("");
   const [menuRate, setMenuRate] = useState([]);
@@ -64,16 +66,16 @@ const DiaryWrite = (props) => {
       return updatedRate;
     });
   };
-  const onBalance = (idx) => {
+  const onBalance = (idx, pickId) => {
     setIngredients((prev) => {
       return prev.map((item, index) => {
-        index === idx ? { ...item, picky: !item.picky } : item;
+        return index == idx ? { ...item, picky: !item.picky } : item;
       });
     });
     setPickyIdList((prev) => {
-      const newPicks = prev.includes(idx)
-        ? prev.filter((id) => id !== idx)
-        : [...prev, idx];
+      const newPicks = prev.includes(pickId)
+        ? prev.filter((id) => id !== pickId)
+        : [...prev, pickId];
       return newPicks;
     });
   };
@@ -82,7 +84,9 @@ const DiaryWrite = (props) => {
     setContent(tempContent);
     if (tempContent.length === 0) {
       setWriteValidation(false);
+      return;
     }
+    setWriteValidation(true);
   };
   const goBack = () => {
     setPageStep(0);
@@ -90,8 +94,8 @@ const DiaryWrite = (props) => {
   };
   const saveDiary = async () => {
     let diaryData = { dietId, content, menuRate, pickyIdList, mealTime };
-    const res = await writeDiary(chlidId, diaryData);
-    console.log(res);
+    await writeDiary(childId, diaryData);
+    setPageStep(0);
   };
   useEffect(() => {
     if (menuRate) {
@@ -110,7 +114,6 @@ const DiaryWrite = (props) => {
       const res = await getDiaryDetail(dietId);
       if (res.data.status === 200) {
         const info = res.data.data;
-        console.log(info);
         setDiaryInfo(info);
 
         const tempRatings = info.menu.map((item) => {
@@ -136,7 +139,10 @@ const DiaryWrite = (props) => {
             goBack();
           }}
         />
-        <p className={classes.title}>{selectedDate}</p>
+        <p
+          className={
+            classes.title
+          }>{`${new Date(selectedDate).getFullYear()}년 ${new Date(selectedDate).getMonth() + 1}월 ${new Date(selectedDate).getDate()}일`}</p>
       </header>
       <section className={classes.sectionContainer}>
         <header className={classes.selectBox}>
@@ -180,7 +186,15 @@ const DiaryWrite = (props) => {
                   <img className={classes.menuImg} src={menu.menuImgUrl} />
                   <div className={classes.menuInfo}>
                     <p className={classes.menuTitle}>{menu.menuName}</p>
-                    <p className={classes.ingredient}>{menu.materials} </p>
+                    <p className={classes.ingredient}>
+                      {menu.materials.map((data, idx) => {
+                        return menu.materials.length - 1 === idx ? (
+                          <span key={idx}>{`${data}`}</span>
+                        ) : (
+                          <span key={idx}>{`${data}, `}</span>
+                        );
+                      })}{" "}
+                    </p>
                     <div className={classes.rating}>
                       {[...new Array(5)].map((_, idx) => {
                         return idx < menuRate[key].rate ? (
@@ -215,20 +229,20 @@ const DiaryWrite = (props) => {
               우리 아이가 편식하는 재료를 선택해주세요.
             </p>
             <div className={classes.noBalance}>
-              {ingredients &&
+              {ingredients.length > 0 &&
                 ingredients.map((ingredient, idx) => {
                   return (
                     <div
                       onClick={() => {
-                        onBalance(idx);
+                        onBalance(idx, ingredient.id);
                       }}
                       className={
-                        ingredient.picky
+                        ingredient?.picky
                           ? classes.noIngredientClicked
                           : classes.noIngredient
                       }
                       key={idx}>
-                      {ingredient.material}
+                      {ingredient?.material}
                     </div>
                   );
                 })}
