@@ -2,6 +2,10 @@ package com.ssafy.ibalance.diet.service;
 
 import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
+import com.ssafy.ibalance.child.repository.AllergyRepository;
+import com.ssafy.ibalance.child.repository.ChildRepository;
+import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
+import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
