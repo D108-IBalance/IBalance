@@ -113,6 +113,9 @@ dependencies {
 
     // file-upload
     implementation 'commons-fileupload:commons-fileupload:1.4'
+
+    // FCM
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 }
 
 
