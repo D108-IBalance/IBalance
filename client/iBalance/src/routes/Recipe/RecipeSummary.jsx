@@ -16,6 +16,7 @@ const RecipeSummary = (props) => {
             <span>당근</span> 레시피
           </p>
           <p
+            className={classes.moreBtn}
             onClick={() => {
               navigate("/recipe/more");
             }}>
