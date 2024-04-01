@@ -17,28 +17,28 @@ const DietSummary = (props) => {
   const [dietDetail, setDietDetail] = useState();
 
   useEffect(() => {
-    const getDietDetailData = () => {
-      // const res = await getInitDietDetail(
-      //   childId,
-      //   summaryInfo.dietDay,
-      //   summaryInfo.sequence,
-      // );
-      const res = dummyDetail.data;
-      setDietSummary(res);
+    const getDietDetailData = async () => {
+      const res = await getInitDietDetail(
+        childId,
+        summaryInfo.dietDay,
+        summaryInfo.sequence,
+      );
+      // const res = dummyDetail.data;
+      setDietSummary(res.data.data);
     };
     getDietDetailData();
   }, []);
 
-  const refreshMenu = (prevMenuId) => {
-    // const res = await changeMenuOfTempDiet(
-    //     childId,
-    //     summaryInfo.dietDay,
-    //     summaryInfo.sequence,
-    //     prevMenuId
-    // )
-    const res = dummyRefresh.data;
+  const refreshMenu = async (prevMenuId) => {
+    const res = await changeMenuOfTempDiet(
+      childId,
+      summaryInfo.dietDay,
+      summaryInfo.sequence,
+      prevMenuId,
+    );
+    // const res = dummyRefresh.data;
     const nextDietSummary = dietSummary.map((menu) => {
-      if (menu.menuId == prevMenuId) return res;
+      if (menu.menuId == prevMenuId) return res.data.data;
       return menu;
     });
     setDietSummary(nextDietSummary);
