@@ -39,6 +39,10 @@ public class PickyService {
         PickyResultResponse pickyResult =
                 dietMaterialRepository.getPickyResult(childId, PeriodUnit.getStartDate(periodUnit));
 
+        if(pickyResult.pickyMaterials().isEmpty()) {
+            return List.of();
+        }
+
         return getPickyMainResultFromFastAPI(childAllergyName, pickyResult);
     }
 
