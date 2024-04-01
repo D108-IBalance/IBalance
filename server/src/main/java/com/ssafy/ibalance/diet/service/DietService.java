@@ -1,14 +1,13 @@
 package com.ssafy.ibalance.diet.service;
 
-import com.ssafy.ibalance.child.entity.Allergy;
-import com.ssafy.ibalance.child.entity.Child;
-import com.ssafy.ibalance.child.entity.ChildAllergy;
-import com.ssafy.ibalance.child.entity.RedisChildAllergy;
+import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.AllergyRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
+import com.ssafy.ibalance.child.repository.*;
+import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
 import com.ssafy.ibalance.diet.dto.RedisDietDto;
@@ -28,6 +27,7 @@ import com.ssafy.ibalance.diet.repository.DietMenuRepository;
 import com.ssafy.ibalance.diet.repository.RedisInitDietRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
+import com.ssafy.ibalance.diet.type.DietNutrition;
 import com.ssafy.ibalance.diet.type.MealTime;
 import com.ssafy.ibalance.diet.type.MenuType;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 
 @Service
@@ -47,6 +48,7 @@ public class DietService {
     private final ChildRepository childRepository;
     private final DietMenuRepository dietMenuRepository;
     private final DietMaterialRepository dietMaterialRepository;
+    private final BmiConditionRepository bmiConditionRepository;
     private final RedisChildAllergyRepository redisChildAllergyRepository;
     private final RedisInitDietRepository redisInitDietRepository;
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
@@ -59,7 +61,7 @@ public class DietService {
 
     public List<MenuDetailResponse> getDietDetail(Long dietId) {
         List<String> menuIdList = dietRepository.getMenuIdByDietId(dietId);
-        return getMenuDetailByMenuId(menuIdList);
+        return convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>()));
     }
 
     public List<Integer> getAllergy(Integer childId) {
@@ -80,7 +82,9 @@ public class DietService {
     }
 
     public List<InitDietResponse> getInitDiet(Integer childId, List<Integer> allergyList, List<String> pastMenu) {
-        List<InitDietResponse> initDietResponseList = getInitRecommend(childId, allergyList, pastMenu);
+        Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 ID의 자녀를 찾을 수 없습니다."));
+
+        List<InitDietResponse> initDietResponseList = getInitRecommend(child, allergyList, pastMenu);
 
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
 
@@ -111,7 +115,8 @@ public class DietService {
         List<String> menuList = diet.getDietList().get(sequence).getMenuList();
 
         List<LinkedHashMap<String, Object>> menuDetailList = fastAPIConnectionUtil.postApiConnectionResult("/info", menuList, new ArrayList<>());
-        return menuDetailList.stream().map(this::convertPythonAPIToResponse).toList();
+
+        return convertPythonInfoAPIToResponse(menuDetailList);
     }
 
     public List<DietMenuResponse> addTempDiet(Integer childId, int dietDay, String allergy, String doNotRecommend) {
@@ -184,16 +189,20 @@ public class DietService {
     @Transactional
     public List<Long> insertTempDiet(Integer childId, LocalDate startDate) {
         List<RedisRecommendDiet> redisRecommendDietList = new ArrayList<>();
-        List<String> menuIdList = new ArrayList<>();
+        List<List<String>> menuIdList = new ArrayList<>();
 
         for (int day = 0; day < 7; day++) {
+            List<String> menuInDiet = new ArrayList<>();
             RedisRecommendDiet diet = redisInitDietRepository.findById(childId + "_" + day).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
             redisRecommendDietList.add(diet);
-            diet.getDietList().forEach(menus -> menuIdList.addAll(menus.getMenuList()));
+            diet.getDietList().forEach(menus -> menuInDiet.addAll(menus.getMenuList()));
+            menuIdList.add(menuInDiet);
             redisInitDietRepository.delete(diet);
         }
 
-        List<MenuDetailResponse> menuDetailResponseList = getMenuDetailByMenuId(menuIdList);
+        List<MenuDetailResponse> menuDetailResponseList  = new ArrayList<>();
+
+        menuIdList.forEach(list -> menuDetailResponseList.addAll(convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", list, new ArrayList<>()))));
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 자녀를 찾을 수 없습니다."));
 
         List<Diet> dietList = new ArrayList<>();
@@ -246,36 +255,27 @@ public class DietService {
         return dietIds;
     }
 
-    private List<MenuDetailResponse> getMenuDetailByMenuId(List<String> menuIdList) {
-        return menuIdList.stream().map(menuId ->
-                        fastAPIConnectionUtil.getApiConnectionResult("/info/" + menuId, MenuDetailResponse.builder().build()))
-                .toList();
-    }
+    private List<InitDietResponse> getInitRecommend(Child child, List<Integer> allergyList, List<String> pastMenu) {
 
-    private List<InitDietResponse> getInitRecommend(Integer childId, List<Integer> allergyList, List<String> pastMenu) {
-        // TODO : childId로 필요 영양소 가져오기
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
+
         RecommendRequest recommendRequest = RecommendRequest.builder()
-                .childId(childId)
+                .childId(child.getId())
                 .allergyList(allergyName)
                 .cacheList(pastMenu)
-                .need(RecommendNeedDto.builder()
-                        .calories(250)
-                        .carbohydrate(45.2)
-                        .protein(21.3)
-                        .cellulose(12.1)
-                        .build())
+                .need(getChildNeed(child))
                 .needType(null)
                 .currentMenuIdOfDiet(null)
                 .build();
 
         List<List<LinkedHashMap<String, Object>>> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("/init", recommendRequest, new ArrayList<>());
+
         return convertInitRecommend(recommendResult);
     }
 
     private List<InitDietResponse> convertInitRecommend(List<List<LinkedHashMap<String, Object>>> recommendResult) {
         List<List<MenuDetailResponse>> recommendList = recommendResult.stream().map(
-                diet -> diet.stream().map(this::convertPythonAPIToResponse).toList()).toList();
+                diet -> diet.stream().map(this::convertPythonRecommendAPIToResponse).toList()).toList();
 
         List<InitDietResponse> initDietResponseList = new ArrayList<>();
         for (int day = 0; day < 7; day++) {
@@ -301,18 +301,15 @@ public class DietService {
     }
 
     private List<DietMenuResponse> getTempRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend) {
-        // TODO : childId로 필요 영양소 가져오기
+        Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 ID의 자녀를 찾을 수 없습니다."));
+
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
+
         RecommendRequest recommendRequest = RecommendRequest.builder()
                 .childId(childId)
                 .allergyList(allergyName)
                 .cacheList(doNotRecommend)
-                .need(RecommendNeedDto.builder()
-                        .calories(250)
-                        .carbohydrate(45.2)
-                        .protein(21.3)
-                        .cellulose(12.1)
-                        .build())
+                .need(getChildNeed(child))
                 .needType(null)
                 .currentMenuIdOfDiet(null)
                 .build();
@@ -323,7 +320,7 @@ public class DietService {
 
     private List<DietMenuResponse> convertTempRecommend(List<LinkedHashMap<String, Object>> recommendResult) {
         List<MenuDetailResponse> recommendList = recommendResult.stream()
-                .map(this::convertPythonAPIToResponse).toList();
+                .map(this::convertPythonRecommendAPIToResponse).toList();
 
 
         return recommendList.stream().map(
@@ -336,21 +333,18 @@ public class DietService {
     }
 
     private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
+        Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 ID의 자녀를 찾을 수 없습니다."));
+
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
 
         MenuType needType = fastAPIConnectionUtil.getApiConnectionResult("/info/" + refreshMenuId, DietMenuResponse.builder().build()).getMenuType();
 
-        return convertPythonAPIToResponse(
+        return convertPythonRecommendAPIToResponse(
                 fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
                         .childId(childId)
                         .allergyList(allergyName)
                         .cacheList(doNotRecommend)
-                        .need(RecommendNeedDto.builder()
-                                .calories(250)
-                                .carbohydrate(45.2)
-                                .protein(21.3)
-                                .cellulose(12.1)
-                                .build())
+                        .need(getChildNeed(child))
                         .needType(needType)
                         .currentMenuIdOfDiet(menuList)
                         .build(), new LinkedHashMap<>()
@@ -358,16 +352,37 @@ public class DietService {
         );
     }
 
+    private RecommendNeedDto getChildNeed(Child child) {
+        int age = Period.between(child.getBirthDate(), LocalDate.now()).getYears();
+        int growMonth = Period.between(child.getBirthDate(), LocalDate.now()).getMonths() + (age * 12);
+        double bmi = child.getWeight() / Math.pow(child.getHeight(), 2) * 10000;
+
+        double obesityBmi = bmiConditionRepository.findAllByGenderAndGrowMonthAndWeightCondition(child.getGender(), growMonth, WeightCondition.HIGH_WEIGHT).getStandard();
+
+        DietNutrition dietNutrition = DietNutrition.getNutrition(age, child.getGender(), bmi >= obesityBmi);
+
+        return RecommendNeedDto.builder()
+                .calories(dietNutrition.getCalorie())
+                .carbohydrate(dietNutrition.getCarbonHydrate())
+                .protein(dietNutrition.getProtein())
+                .cellulose(dietNutrition.getDietFiber())
+                .build();
+    }
+
     private List<Integer> convertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
-        String[] cookieSplit = cookie.split("\\|");
-        try {
-            Arrays.stream(cookieSplit)
-                    .forEach(id -> result.add(Integer.parseInt(id)));
-        } catch (NumberFormatException e) {
-            throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");
+        if(!cookie.isEmpty()) {
+            String[] cookieSplit = cookie.split("\\|");
+            try {
+                Arrays.stream(cookieSplit)
+                        .forEach(id -> result.add(Integer.parseInt(id)));
+            } catch (NumberFormatException e) {
+                throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");
+            }
         }
+
         return result;
+
     }
 
     private List<String> convertCookieStringToStringList(String cookie) {
@@ -381,7 +396,7 @@ public class DietService {
         return result;
     }
 
-    private MenuDetailResponse convertPythonAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
+    private MenuDetailResponse convertPythonRecommendAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
         return MenuDetailResponse.builder()
                 .menuId((String) recommendResult.get("menu_id"))
                 .menuName((String) recommendResult.get("menu_name"))
@@ -395,5 +410,21 @@ public class DietService {
                 .recipe((List<String>) ((Map<String, Object>) recommendResult.get("recipe")).get("content_list"))
                 .need((String) ((Map<String, Object>) recommendResult.get("recipe")).get("need"))
                 .build();
+    }
+
+    private List<MenuDetailResponse> convertPythonInfoAPIToResponse(List<LinkedHashMap<String, Object>> infoResult) {
+        return infoResult.stream().map(menuInfo -> MenuDetailResponse.builder()
+                .menuId((String) menuInfo.get("menuId"))
+                .menuName((String) menuInfo.get("menuName"))
+                .menuImgUrl((String) menuInfo.get("menuImgUrl"))
+                .menuType(MenuType.valueOf((String) menuInfo.get("menuType")))
+                .calorie((int) menuInfo.get("calorie"))
+                .carbohydrate((double) menuInfo.get("carbohydrate"))
+                .protein((double) menuInfo.get("protein"))
+                .fat((double) menuInfo.get("fat"))
+                .materials((List<String>) menuInfo.get("materials"))
+                .recipe((List<String>) menuInfo.get("recipe"))
+                .need((String) menuInfo.get("need"))
+                .build()).toList();
     }
 }

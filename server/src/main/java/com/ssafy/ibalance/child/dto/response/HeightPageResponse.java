@@ -7,9 +7,9 @@ import java.util.List;
 
 @Builder
 @Getter
-public class GrowthPageResponse {
+public class HeightPageResponse {
 
     private boolean last;
-    private List<GrowthResponse> growthList;
+    private List<HeightGrowthResponse> growthList;
     private List<AverageGrowthResponse> averageList;
 }
