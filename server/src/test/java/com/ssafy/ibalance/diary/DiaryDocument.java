@@ -57,6 +57,7 @@ public class DiaryDocument {
             fieldWithPath("data.menu[].menuName").type(STRING).description("추천받은 메뉴 이름"),
             fieldWithPath("data.menu[].materials").type(VARIES).description("추천받은 메뉴 재료"),
             fieldWithPath("data.menu[].menuImgUrl").type(STRING).description("추천받은 메뉴 사진 url"),
+            fieldWithPath("data.menu[].score").type(VARIES).description("메뉴의 별점"),
             fieldWithPath("data.materials[].id").type(NUMBER).description("식재료 아이디"),
             fieldWithPath("data.materials[].picky").type(BOOLEAN).description("편식 여부"),
             fieldWithPath("data.materials[].material").type(STRING).description("식재료 이름")
@@ -82,6 +83,7 @@ public class DiaryDocument {
             fieldWithPath("data.diaryMenuList[].menuName").type(STRING).description("식사 메뉴 이름"),
             fieldWithPath("data.diaryMenuList[].materials").type(ARRAY).description("식사 메뉴에 들어가는 식재료"),
             fieldWithPath("data.diaryMenuList[].menuImgUrl").type(STRING).description("식사 메뉴 사진"),
+            fieldWithPath("data.diaryMenuList[].score").type(NUMBER).description("식사 메뉴 별점"),
             fieldWithPath("data.materials[].id").type(NUMBER).description("식재료 고유 아이디"),
             fieldWithPath("data.materials[].picky").type(BOOLEAN).description("식재료 편식 여부"),
             fieldWithPath("data.materials[].material").type(STRING).description("식단 식재료 이름")

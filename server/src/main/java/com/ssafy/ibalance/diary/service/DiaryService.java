@@ -116,9 +116,21 @@ public class DiaryService {
         ArrayList<LinkedHashMap<String, Object>> diaryMenuResponses
                 = fastAPIConnectionUtil.postApiConnectionResult("/info", menuIdList, new ArrayList<>());
 
-        return diaryMenuResponses.stream()
+        List<DiaryMenuResponse> diaryMenuResponseList = diaryMenuResponses.stream()
                 .map(resultMap -> dtoConverter.convertFromMap(resultMap, new DiaryMenuResponse(), false))
                 .toList();
+
+        dietMenuList.stream().filter(menu -> menu.getScore() != null)
+                .forEachOrdered(menu -> {
+                    for (DiaryMenuResponse response : diaryMenuResponseList) {
+                        if(menu.getMenuId().equals(response.getMenuId())) {
+                            response.setScore(menu.getScore().intValue());
+                            break;
+                        }
+                    }
+                });
+
+        return diaryMenuResponseList;
     }
 
     private void saveMenuScore(List<DietMenu> dietMenuList, List<MenuRateRequest> menuRateRequests) {
