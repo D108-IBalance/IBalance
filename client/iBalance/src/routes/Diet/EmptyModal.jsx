@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import classes from "./EmptyDiet.module.css";
 import { getUserInfo, getInitDiet } from "./ServerConnect";
 import { useSelector } from "react-redux";
-import { init } from "./dummy.js";
 
 const EmptyModal = (props) => {
   const { setIsModal, setUserDiet } = props;
@@ -18,9 +17,8 @@ const EmptyModal = (props) => {
   }, []);
 
   const dietHandler = async () => {
-    // const res = await getInitDiet(childId);
-    const res = init;
-    setUserDiet([res.data, false]);
+    const res = await getInitDiet(childId);
+    setUserDiet(res.data.data);
   };
   return (
     <div
