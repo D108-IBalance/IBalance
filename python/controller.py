@@ -46,9 +46,8 @@ app.add_exception_handler(BodyValidationException,
 
 uri = f'{settings.MONGO_HOST}'
 
-mongodb_connect(uri)  # 몽고DB 연결
-mysql_connect(settings.MYSQL_HOST, settings.MYSQL_USER, settings.MYSQL_PASSWORD, settings.MYSQL_DATABASE,
-              settings.MYSQL_PORT)  # MySQL 연결
+mongodb_connect()  # 몽고DB 연결
+mysql_connect()  # MySQL 연결
 
 """
 초창기 식단 7개를 한번에 추천해주는 컨트롤러
