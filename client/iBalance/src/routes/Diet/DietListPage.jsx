@@ -18,6 +18,7 @@ const DietListPage = (props) => {
     setSelectDate,
     isSave,
     setIsSave,
+    setDietId,
   } = props;
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
 
@@ -75,6 +76,7 @@ const DietListPage = (props) => {
                       <div key={idx}>
                         <DayDiet
                           setSelectDate={setSelectDate}
+                          setDietId={setDietId}
                           day={weekListKo[idx]}
                           diets={menu}
                           setUserDiet={setUserDiet}
@@ -90,7 +92,6 @@ const DietListPage = (props) => {
               <div
                 className={classes.saveBtn}
                 onClick={() => {
-                  // setUserDiet(dietData);
                   setSaveModal(true);
                 }}>
                 식단 저장
