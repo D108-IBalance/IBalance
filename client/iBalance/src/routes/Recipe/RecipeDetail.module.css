@@ -151,10 +151,9 @@
     font-weight: 300;
   }
   .ingreBox {
-    display: inline-flex;
+    display: flex;
     font-size: 0.8rem;
-    border: 2px solid #fe724c;
-    border-radius: 30px;
+    border-bottom: 1px #f1f2f3 solid;
     padding: 8px 15px;
     background: #fff;
     margin: 5px;
@@ -328,10 +327,9 @@
     font-weight: 300;
   }
   .ingreBox {
-    display: inline-flex;
+    display: flex;
     font-size: 0.8rem;
-    border: 2px solid #fe724c;
-    border-radius: 30px;
+    border-bottom: 1px #f1f2f3 solid;
     padding: 8px 15px;
     background: #fff;
     margin: 5px;

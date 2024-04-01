@@ -49,6 +49,14 @@
     width: 200px;
     margin-right: 20px;
   }
+  .moreBtn {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .moreBtn:hover {
+    transform: scale(1.02);
+  }
 }
 @media screen and (min-width: 576px) {
   .container {
@@ -85,5 +93,13 @@
     width: 200px;
     margin-right: 12px;
     margin-left: 12px;
+  }
+  .moreBtn {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .moreBtn:hover {
+    transform: scale(1.02);
   }
 }

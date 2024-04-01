@@ -59,60 +59,13 @@ const RecipeDetail = () => {
                   }}></div>
               </div>
               <img src={menuList.img} className={classes.menuImg}></img>
-              <div className={classes.likeBtn}></div>
             </div>
             <div className={classes.nameBox}>
               <div className={classes.menuName}>{menuList.name}</div>
-              <div className={classes.grayText}>{menuList.foodKind}</div>
             </div>
           </div>
 
           <div className={classes.contentBox}>
-            <div className={classes.orangeText}>영양 정보</div>
-            <div>
-              <div className={classes.flexRow}>
-                <p>총 칼로리</p>
-                <p className={classes.orangeText}>
-                  {menuList.kcal}
-                  <span className={classes.grayText}>kcal</span>
-                </p>
-              </div>
-
-              <div className={classes.nutriBox}>
-                <div className={classes.flexLine}>
-                  <div className={classes.flexRow}>
-                    <div className={classes.carboIcon}></div>
-                    <p> 탄수화물</p>
-                  </div>
-                  <p className={classes.flexRow}>
-                    {menuList.nutrients.carbo}
-                    <span className={classes.gramText}>g</span>
-                  </p>
-                </div>
-
-                <div className={classes.flexLine}>
-                  <div className={classes.flexRow}>
-                    <div className={classes.protein}></div>
-                    <p> 단백질</p>
-                  </div>
-                  <p className={classes.flexRow}>
-                    {menuList.nutrients.protein}
-                    <span className={classes.gramText}>g</span>
-                  </p>
-                </div>
-
-                <div className={classes.flexLine}>
-                  <div className={classes.flexRow}>
-                    <div className={classes.fat}></div>
-                    <p> 지방</p>
-                  </div>
-                  <p className={classes.flexRow}>
-                    {menuList.nutrients.fat}
-                    <span className={classes.gramText}> g</span>
-                  </p>
-                </div>
-              </div>
-            </div>
             <div className={classes.contentBox}>
               <div className={classes.orangeText}>식재료</div>
               {menuList.ingredient.map((item, idx) => {
