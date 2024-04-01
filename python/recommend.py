@@ -28,12 +28,6 @@ cached_black_list = []  # 식단 추천시 임시로 검색되지 않게 도와�
 
 def _init():
     global user_id
-    global rice_ratings
-    global side_ratings
-    global soup_ratings
-    rice_ratings = []
-    side_ratings = []
-    soup_ratings = []
     user_id = None
 
 
@@ -63,6 +57,9 @@ def read_ratings(exclude_id_list: list):
     global side_ratings
     global soup_ratings
     global hazard
+    rice_ratings = []
+    side_ratings = []
+    soup_ratings = []
     mysql_result = find_all_rating(exclude_id_list)
     for rating in mysql_result:
         if rating[1] not in menu_objs.keys():
@@ -215,6 +212,7 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     global menu_objs
     rating_pd = pd.DataFrame(data=cur_ratings, columns=['user_id', 'menu_id', 'rating'])
     rating_pd = rating_pd.pivot(index='user_id', columns='menu_id', values='rating')
+
     ratings_users = rating_pd.loc[user_id, :]
 
     all_items = rating_pd.loc[user_id, :]
@@ -254,11 +252,11 @@ def _init_process(request: ChildInfo):
     global cached_black_list
     cached_black_list = []
     read_allergy(request.allergyList)
-    if last_access_time is None or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
+    if (last_access_time is None) or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
         _init()
         last_access_time = datetime.now()
         read_menu()
-        read_ratings(request.cacheList)
+    read_ratings(request.cacheList)
     set_user_id(request.childId)
 
 

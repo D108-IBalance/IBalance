@@ -1,16 +1,21 @@
 import mysql.connector
-
+from pydantic_settings import BaseSettings
 """
 @Author: 김회창
 """
 
 
+class Settings(BaseSettings):
+    MYSQL_HOST: str  # MySQL 호스트 주소
+    MYSQL_USER: str  # MySQL 접속 유저 명
+    MYSQL_PASSWORD: str  # MySQL 패스워드
+    MYSQL_DATABASE: str  # MySQL 접속 대상 스키마
+    MYSQL_PORT: str  # MYSQL 접속 포트
+
+
+settings = Settings()  # 클래스 객체 생성
+
 mysql_client = None # mysql 클라이언트 객체
-last_host = None    # 마지막 mysql 호스트 주소
-last_user = None    # 마지막 mysql 접속 유저 정보
-last_password = None    # 마지막 mysql 접속 유저 패스워드
-last_database = None    # 마지막 접근한 데이터베이스 이름
-last_port = None    # 마지막 접근한 port 번호
 
 
 """
@@ -23,14 +28,14 @@ mysql 접속 클라이언트를 하나로 유지시켜주는 함수
 """
 
 
-def mysql_connect(host, user, password, database, port):
+def mysql_connect():
     global mysql_client
     mysql_client = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database,
-        port=port
+        host=settings.MYSQL_HOST,
+        user=settings.MYSQL_USER,
+        password=settings.MYSQL_PASSWORD,
+        database=settings.MYSQL_DATABASE,
+        port=settings.MYSQL_PORT,
     )
     if mysql_client.is_connected():
         print("mysql connected!!!")
@@ -45,10 +50,9 @@ mysql 접속 클라이언트가 유효한지 검사하는 함수
 
 def mysql_validation_check():
     global mysql_client
-    global last_host, last_user, last_password, last_database, last_port
-    if mysql_client is None or not mysql_client.is_connected():
-        print("mysql_client is empty, mysql reconnect...")
-        mysql_connect(last_host, last_user, last_password, last_database, last_port)
+    if mysql_client is None or mysql_client.is_connected():
+        print("mysql_client is None or disconnect, mysql reconnect...")
+        mysql_connect()
     return mysql_client.cursor()
 
 
@@ -62,7 +66,7 @@ select 문과 그 밖의 DML 문에 따라 구분지어 실행시키는 함수�
 
 def _execute(query: str):
     cursor = mysql_validation_check()
-    print(f'preparing sql: {query}')
+    print(f'preparing mysql sql: {query}')
     if query in ["UPDATE", "INSERT", "DELETE"]:
         _execute_and_commit(query, cursor)
     else:
@@ -109,7 +113,7 @@ def _execute_and_fetchall(query: str, cursor: mysql.connector):
 def find_all_rating(exclude_id_list=[]):
     sql = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet-menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id INNER JOIN child AS c ON d.child_id = c.id WHERE 1=1 AND is_reviewed = 1 '''
     if exclude_id_list is not None and len(exclude_id_list) > 0:
-        sql += '''AND m.menu_id NOT IN ('{}') '''.format(", ".join(map(str, exclude_id_list)))
+        sql += '''AND m.menu_id NOT IN ('{}') '''.format("', '".join(map(str, exclude_id_list)))
     sql += '''group by c.id, menu_id '''
     result = _execute(sql)
     return result
