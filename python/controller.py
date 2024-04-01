@@ -2,7 +2,6 @@ from fastapi import FastAPI, Query, Body, Path
 from custom_exception.exception.custom_http_exception import NotFoundException, BodyValidationException
 from custom_exception.handler.custom_exception_handler import not_found_exception_handler, \
     body_validation_exception_handler
-from pydantic_settings import BaseSettings
 from dbUtil.mongodb_api import mongodb_connect
 from dbUtil.mysql_api import mysql_connect
 from request.request_dto import ChildInfo, DietOfMenuId, PickyWithAllergy
@@ -11,7 +10,6 @@ from service import diet_init, menu_info, one_diet_recommend, new_menu_recommend
 from request.validation_check import child_info_request_validation_checker, object_id_validation_checker, \
     diet_of_menu_id_validation_checker, menu_id_list_validation_checker, picky_detail_validation_checker, \
     picky_with_allergy_validation_check
-from bson.objectid import ObjectId, InvalidId
 import warnings
 
 # 특정 유형의 경고를 필터링
@@ -21,30 +19,12 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 @Author : 김회창
 """
 
-"""
-pydantic 라이브러리를 이용하여 환경변수를 실행옵션으로 주입받는 클래스
-"""
-
-
-class Settings(BaseSettings):
-    MONGO_HOST: str  # 몽고DB 호스트 주소
-    MYSQL_HOST: str  # MySQL 호스트 주소
-    MYSQL_USER: str  # MySQL 접속 유저 명
-    MYSQL_PASSWORD: str  # MySQL 패스워드
-    MYSQL_DATABASE: str  # MySQL 접속 대상 스키마
-    MYSQL_PORT: str  # MYSQL 접속 포트
-
-
-settings = Settings()  # 클래스 객체 생성
-
 app = FastAPI()  # Fast API 앱 객체 생성
 
 app.add_exception_handler(NotFoundException,
                           not_found_exception_handler)  # HTTPStatus code 404 exception에 해당하는 handler를 FastAPI app에 등록
 app.add_exception_handler(BodyValidationException,
                           body_validation_exception_handler)  # HTTPStatus code 422 exception에 해당하는 handler를 FastAPI app에 등록
-
-uri = f'{settings.MONGO_HOST}'
 
 mongodb_connect()  # 몽고DB 연결
 mysql_connect()  # MySQL 연결
