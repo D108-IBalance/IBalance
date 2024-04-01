@@ -23,7 +23,6 @@ const SocialLogin = () => {
     let login = async () => {
       try {
         const value = await getToken(code, provider);
-        console.log(value);
         const accessToken = value.data.data.accessToken;
         dispatch(setToken(accessToken));
         timer = setTimeout(() => {

@@ -20,7 +20,7 @@ const getInitDiet = async (CHILDID) => {
 };
 
 const addTempDiet = async (CHILDID, dayId) => {
-  return customAxios.get(`diet/${CHILDID}?dietDay=${dayId}`);
+  return customAxios.get(`diet/${CHILDID}/temp?dietDay=${dayId}`);
 };
 
 const getDietDetail = async (dietId) => {

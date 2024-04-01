@@ -7,7 +7,7 @@ import { setToken } from "./store";
 
 const customAxios = axios.create({
   baseURL: "https://j10d108.p.ssafy.io/api/",
-  timeout: 2000,
+  timeout: 50000,
   headers: {
     "Content-Type": "application/json",
   },

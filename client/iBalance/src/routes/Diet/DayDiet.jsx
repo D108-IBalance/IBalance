@@ -22,8 +22,10 @@ const DayDiet = (props) => {
   } = props;
 
   const addDietCard = async () => {
-    // const res = await addTempDiet(childId, diets.dietDay);
-    const res = add.data;
+    console.log(childId, diets.dietDay);
+    const res = await addTempDiet(childId, diets.dietDay);
+    console.log(res);
+    // const res = add.data;
     setUserDiet((prev) => {
       let nextDiets = JSON.parse(JSON.stringify(prev));
       let nextDiet = nextDiets;
