@@ -11,6 +11,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 public class PickyDocument {
 
+    public static final Snippet pickyPeriodRequestParam = queryParameters(
+            parameterWithName("limit").attributes(required()).description("일주일/한달 단위로 편식 관련 기간 설정하는 field")
+    );
+
     public static final Snippet pickyRecipeRequestParam = queryParameters(
             parameterWithName("material").attributes(required()).description("찾고자 하는 음식 재료 이름"),
             parameterWithName("offset").attributes(required()).description("받고자 하는 정보의 갯수"),
@@ -21,6 +25,14 @@ public class PickyDocument {
     public static final Snippet onePickyRecipePathParam = pathParameters(
             parameterWithName("material").attributes(required()).description("조회하고자 하는 재료 이름"),
             parameterWithName("recipeId").attributes(required()).description("조회하고자 하는 레시피 아이디")
+    );
+
+    public static final Snippet pickyMainResponseField = responseFields(
+            fieldWithPath("status").type(NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data[].pickyMaterialName").type(STRING).description("편식 식재료명"),
+            fieldWithPath("data[].recipes[].recipeTitle").type(STRING).description("레시피제목"),
+            fieldWithPath("data[].recipes[].recipeImgUrl").type(STRING).description("레시피 사진 URL"),
+            fieldWithPath("data[].recipes[].recipeId").type(STRING).description("레시피 고유 ID")
     );
 
     public static final Snippet pickyRecipeResponseField = responseFields(

@@ -36,7 +36,7 @@ public class DietTestUtil extends TestBase {
             "소고기", "고추가루", "당근", "멸치", "백설탕", "양송이", "버터", "수삼", "찹쌀", "밀가루");
 
 
-    private final List<String> pickyMaterials = List.of("대추", "마늘");
+    private final List<String> pickyMaterials = List.of("당근", "마늘");
 
     public List<DietMenu> 식단_메뉴_저장(List<Diet> dietList) {
         List<String> menuIdList = List.of("65fa83bf3eb83d319efa85da", "65fa83f63eb83d319efa85de",
