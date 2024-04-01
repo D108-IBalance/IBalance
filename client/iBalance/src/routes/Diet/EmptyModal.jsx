@@ -1,9 +1,25 @@
 // 내부 모듈
+import { useEffect, useState } from "react";
 import classes from "./EmptyDiet.module.css";
+import { getUserInfo, getInitDiet } from "./ServerConnect";
+import { useSelector } from "react-redux";
 
 const EmptyModal = (props) => {
-  const { setIsEmptyDiet } = props;
-  const { setIsModal } = props;
+  const { setIsModal, setUserDiet } = props;
+  const [userProfile, setUserProfile] = useState({});
+  const childId = useSelector((state) => state.childId);
+  useEffect(() => {
+    const getUserData = async () => {
+      const res = await getUserInfo(childId);
+      setUserProfile(res.data.data.childMainResponse);
+    };
+    getUserData();
+  }, []);
+
+  const dietHandler = async () => {
+    const res = await getInitDiet(childId);
+    setUserDiet(res.data.data);
+  };
   return (
     <div
       className={classes.emptyModalBack}
@@ -16,9 +32,11 @@ const EmptyModal = (props) => {
         <div className={classes.modalTextBox}>
           <div className={classes.modalTextImg}></div>
           <div className={classes.modalText}>
-            <p>박서준</p>
-            <p>11세</p>
-            <p>130cm / 35kg</p>
+            <p>{userProfile?.name}</p>
+            <p>{userProfile?.birthDate}</p>
+            <p>
+              {userProfile?.height}cm / {userProfile?.weight}kg
+            </p>
           </div>
         </div>
         <div className={classes.btnList}>
@@ -32,7 +50,8 @@ const EmptyModal = (props) => {
           <div
             className={classes.confirmBtn}
             onClick={() => {
-              setIsEmptyDiet(false);
+              dietHandler();
+              setIsModal(false);
             }}>
             확인
           </div>

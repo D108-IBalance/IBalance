@@ -1,70 +1,31 @@
-// 외부 모듈
-import { useNavigate, useOutletContext } from "react-router-dom";
-
 // 내부 모듈
 import classes from "./DietDetail.module.css";
-import sampleMenu from "../../assets/diet/sampleImg.png";
-import recipe1 from "../../assets/diet/recipe1.png";
-import recipe2 from "../../assets/diet/recipe2.png";
-import recipe3 from "../../assets/diet/recipe3.png";
 
-const DietDetail = () => {
-  const { setIsOpen } = useOutletContext();
-  const navigate = useNavigate();
-  const menuList = {
-    foodId: 0,
-    foodKind: "Main menu",
-    name: "수제 함박 스테이크",
-    kcal: "561",
-    ingredient: [
-      "돼지고기",
-      "빵가루",
-      "우스터소스",
-      "후추가루",
-      "토마토케찹",
-      "버터",
-    ],
-    nutrients: { carbo: "42.55", fat: "26.42", protein: "36.76" },
-    img: sampleMenu,
-    recipe: [
-      {
-        recipeImg: recipe1,
-        recipeText:
-          "양파는 곱게다져 후라이팬에 식용유를 둘러 소금,후추간으로 볶아서 식혀 주세요. 볼에 재료를 모두 넣고 양손으로 잘 치대어 주세요.",
-      },
-      {
-        recipeImg: recipe2,
-        recipeText:
-          "프라이팬에 식용유를 두르고 양면 모두 노릇하게 구워 주세요. 버터를 제외한 소스의 재료를 볼에 넣고 잘 섞어주고, 프라이팬에 버터를 녹인 후 잘 섞은 소스의 재료를 모두 넣고 한번 끓여 주세요.",
-      },
-      {
-        recipeImg: recipe3,
-        recipeText:
-          "그릇에 고기를 올리고 소스를 부운 후에 새싹을 올려주세요.냉장고에 있는 채소들과 곁들여 주면 더 좋아요",
-      },
-    ],
-  };
+const DietDetail = (props) => {
+  const { setIsOpen, dietDetail } = props;
+
   return (
     <>
       <div className={classes.ModalBack}>
         <div className={classes.detailModal}>
-          <div className={classes.webVer}>
-            <div className={classes.ImgBox}>
-              <div className={classes.titleBox}>
-                <div
-                  className={classes.backIcon}
-                  onClick={() => {
-                    navigate("/detail");
-                    setIsOpen(false);
-                  }}></div>
-              </div>
-              <img src={menuList.img} className={classes.menuImg}></img>
-              <div className={classes.likeBtn}></div>
+          <div className={classes.ImgBox}>
+            <div className={classes.titleBox}>
+              <div
+                className={classes.backIcon}
+                onClick={() => {
+                  setIsOpen(false);
+                }}></div>
             </div>
-            <div className={classes.nameBox}>
-              <div className={classes.menuName}>{menuList.name}</div>
-              <div className={classes.grayText}>{menuList.foodKind}</div>
-            </div>
+            <div
+              className={classes.menuImg}
+              style={{
+                backgroundImage: `url(${dietDetail.menuImgUrl})`,
+              }}></div>
+            {/* <img src={dietDetail.menuImgUrl} className={classes.menuImg}></img> */}
+          </div>
+          <div className={classes.nameBox}>
+            <div className={classes.menuName}>{dietDetail.menuName}</div>
+            <div className={classes.grayText}>{dietDetail.menuType} MENU</div>
           </div>
 
           <div className={classes.contentBox}>
@@ -73,7 +34,7 @@ const DietDetail = () => {
               <div className={classes.flexRow}>
                 <p>총 칼로리</p>
                 <p className={classes.orangeText}>
-                  {menuList.kcal}
+                  {dietDetail.calorie}
                   <span className={classes.grayText}>kcal</span>
                 </p>
               </div>
@@ -85,7 +46,7 @@ const DietDetail = () => {
                     <p> 탄수화물</p>
                   </div>
                   <p className={classes.flexRow}>
-                    {menuList.nutrients.carbo}
+                    {dietDetail.carbohydrate}
                     <span className={classes.gramText}>g</span>
                   </p>
                 </div>
@@ -96,7 +57,7 @@ const DietDetail = () => {
                     <p> 단백질</p>
                   </div>
                   <p className={classes.flexRow}>
-                    {menuList.nutrients.protein}
+                    {dietDetail.protein}
                     <span className={classes.gramText}>g</span>
                   </p>
                 </div>
@@ -107,7 +68,7 @@ const DietDetail = () => {
                     <p> 지방</p>
                   </div>
                   <p className={classes.flexRow}>
-                    {menuList.nutrients.fat}
+                    {dietDetail.fat}
                     <span className={classes.gramText}> g</span>
                   </p>
                 </div>
@@ -115,7 +76,7 @@ const DietDetail = () => {
             </div>
             <div className={classes.contentBox}>
               <div className={classes.orangeText}>식재료</div>
-              {menuList.ingredient.map((item, idx) => {
+              {dietDetail.materials.map((item, idx) => {
                 return (
                   <div className={classes.ingreBox} key={idx}>
                     {item}
@@ -124,20 +85,15 @@ const DietDetail = () => {
               })}
               <div className={classes.flexLine}></div>
               <div className={classes.orangeText}>레시피</div>
-              {menuList.recipe.map((item, idx) => {
-                return (
-                  <div className={classes.recipeBox} key={idx}>
-                    <img
-                      src={item.recipeImg}
-                      className={classes.recipeImg}
-                      alt=""
-                    />
-                    <p>
-                      {idx + 1}. {item.recipeText}
-                    </p>
-                  </div>
-                );
-              })}
+              <div className={classes.recipeBox}>
+                {dietDetail.recipe.map((item, idx) => {
+                  return (
+                    <div className={classes.recipe} key={idx}>
+                      <p>{item}</p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

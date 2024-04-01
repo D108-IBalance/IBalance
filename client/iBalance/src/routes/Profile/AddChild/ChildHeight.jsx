@@ -1,5 +1,5 @@
 // 내부 모듈
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classes from "./ChildHeight.module.css";
 
 const ChildHeight = (props) => {
@@ -9,9 +9,10 @@ const ChildHeight = (props) => {
   const [current, setCurrent] = useState(0);
   const [animation, setAnimation] = useState("fadeIn");
   const { setStep, setProfileData, profileData } = props;
-  const [go, setGo] = useState(0);
+  const [go, setGo] = useState(-637.5);
   const [height, setHeight] = useState("0");
   const [validate, setValidate] = useState(false);
+  const inputDiv = useRef(null);
   let arr = [...new Array(MAX_HEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";
@@ -29,23 +30,32 @@ const ChildHeight = (props) => {
     }
     setHeight(e.currentTarget.value);
     // 요소의 크기 고려한 픽셀식 4.25 Y축 방향으로 세로로 가야하기에 음수 값
-    setGo(-4.25 * e.currentTarget.value);
+    setGo(-637.5 + 4.25 * e.currentTarget.value);
     // .replace(/(\..*)\./g, "$1");
   };
-
   let onNextStep = () => {
     let temp = Object.assign({}, profileData);
-    temp.height = Number.parseInt(height);
+    temp.height = height;
     setProfileData(temp);
     setCurrent(1);
   };
+  useEffect(() => {
+    if (profileData.height && inputDiv) {
+      inputDiv.current.value = profileData.height;
+      setHeight("" + profileData.height);
+      setGo(-637.5 + 4.25 * profileData.height);
+    }
+  }, [profileData, inputDiv]);
 
   useEffect(() => {
     let timer;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
-        setStep(4);
+        setStep((prev) => {
+          if (prev === 1) return 0;
+          return 4;
+        });
       }, 500);
     }
     return () => {
@@ -55,7 +65,7 @@ const ChildHeight = (props) => {
 
   useEffect(() => {
     let heightValdate = () => {
-      if (height !== "0" && height !== "") {
+      if (height !== "0" && height !== "" && !height.startsWith(".")) {
         setValidate(true);
       } else {
         setValidate(false);
@@ -78,7 +88,7 @@ const ChildHeight = (props) => {
           style={{ transform: `translateY(${go}px)` }}
           className={classes.ruler}>
           {arr.map((content, idx) => {
-            if (idx == Math.round(height)) {
+            if (idx == Math.round(150 - height)) {
               return (
                 <div key={idx} className={classes[content + "Color"]}></div>
               );
@@ -94,6 +104,7 @@ const ChildHeight = (props) => {
             onChange={(e) => {
               onChangeIt(e);
             }}
+            ref={inputDiv}
           />
           <p className={classes.cm}>(CM)</p>
         </div>

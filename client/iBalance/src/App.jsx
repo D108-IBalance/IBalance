@@ -1,6 +1,6 @@
 // 외부 모듈
-import { Route, Routes } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Route, Routes } from "react-router";
 import { useEffect } from "react";
 
 // 내부 모듈
@@ -19,6 +19,9 @@ import Profile from "./routes/Profile/Profile.jsx";
 import DietSummary from "./routes/DietDetail/DietSummary.jsx";
 import DietDetail from "./routes/DietDetail/DietDetail.jsx";
 import EditProfile from "./routes/Profile/EditProfile.jsx";
+import RecipeDetail from "./routes/Recipe/RecipeDetail.jsx";
+import RecipeMore from "./routes/Recipe/RecipeMore.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
 
 const App = () => {
   const setScreenSize = () => {
@@ -32,6 +35,7 @@ const App = () => {
       window.removeEventListener("resize", setScreenSize);
     };
   }, []);
+
   return (
     <>
       <Routes>
@@ -41,32 +45,39 @@ const App = () => {
         <Route path="/enter" element={<EnterPage></EnterPage>}>
           <Route path="login" element={<LoginForm></LoginForm>}></Route>
         </Route>
-        {/* 프로필 페이지 */}
-        <Route path="/enter" element={<EnterPage></EnterPage>}>
-          <Route path="profile" element={<Profile />} />
-        </Route>
-        <Route path="/profile/add" element={<AddProfile></AddProfile>}></Route>
-        <Route
-          path="/profile/edit"
-          element={<EditProfile></EditProfile>}></Route>
-        {/* 홈페이지 */}
-        <Route path="/home" element={<HomePage />}></Route>
-        {/* 레시피페이지 */}
-        <Route path="/recipe" element={<RecipePage />}></Route>
-        {/* 식단페이지 */}
-        <Route path="/diet" element={<DietPage />}></Route>
-        {/* 식단상세페이지 */}
-        <Route path="/detail" element={<DietSummary></DietSummary>}>
-          <Route path="menu" element={<DietDetail></DietDetail>}></Route>
-        </Route>
-        {/* 일기장페이지 */}
-        <Route path="/diary" element={<DiaryPage />}></Route>
         {/* 소셜 로그인 페이지 */}
         <Route
           path="/auth/social/:provider"
           element={<SocialLogin></SocialLogin>}></Route>
+
+        <Route element={<PrivateRoute />}>
+          {/* 프로필 페이지 */}
+          <Route path="/enter" element={<EnterPage></EnterPage>}>
+            <Route path="profile" element={<Profile />} />
+          </Route>
+          <Route
+            path="/profile/add"
+            element={<AddProfile></AddProfile>}></Route>
+          <Route
+            path="/profile/edit"
+            element={<EditProfile></EditProfile>}></Route>
+          {/* 홈페이지 */}
+          <Route path="/home" element={<HomePage />}></Route>
+          {/* 레시피페이지 */}
+          <Route path="/recipe" element={<RecipePage />}>
+            {/* 레시피상세페이지 */}
+            <Route path="more" element={<RecipeMore></RecipeMore>}></Route>
+            <Route path="item" element={<RecipeDetail></RecipeDetail>}></Route>
+          </Route>
+          {/* 식단페이지 */}
+          <Route path="/diet" element={<DietPage />}></Route>
+
+          {/* 일기장페이지 */}
+          <Route path="/diary" element={<DiaryPage />}></Route>
+        </Route>
+
         {/* 오류 페이지 */}
-        <Route path="*" element={<Error />} />
+        {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </>
   );
