@@ -36,7 +36,7 @@ public class DietMaterialCustomRepositoryImpl implements DietMaterialCustomRepos
                         groupBy(child).as(list(dietMaterial.material))
                 );
 
-        Child child = pickyResult.keySet().stream().findFirst().orElseGet(null);
+        Child child = pickyResult.keySet().stream().findFirst().orElse(null);
 
         if(child == null) {
             return getPickyResultResponse(startDate, new ArrayList<>());
