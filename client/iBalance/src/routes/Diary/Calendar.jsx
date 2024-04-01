@@ -1,10 +1,12 @@
 // 외부 모듈
-import React from "react";
-import { useCallback, useMemo, useState } from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 //내부 모듈
 import classes from "./Calendar.module.css";
 import selectImg from "../../assets/diary/img/select.svg";
+import { getDietDates } from "./ServerConnect";
 
 const Calendar = (props) => {
   const MONTHS = [
@@ -26,11 +28,14 @@ const Calendar = (props) => {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
+  const [weekArr, setWeekArr] = useState([]);
+  const [currentClick, setCurrentClick] = useState(-1);
   const LAST_MONTH_IDX = 11;
   const FIRST_MONTH_IDX = 0;
   const IS_NEXT =
     month === LAST_MONTH_IDX && year === today.getFullYear() ? false : true;
   const IS_PREV = month === FIRST_MONTH_IDX && year === 2024 ? false : true;
+  const CHILD_ID = useSelector((state) => state.childId);
   const movePrev = () => {
     if (month === FIRST_MONTH_IDX) {
       setYear(year - 1);
@@ -48,49 +53,69 @@ const Calendar = (props) => {
     setMonth(month + 1);
   };
 
-  const onClickDay = (dateInfo) => {
+  const onClickDay = (dateInfo, id) => {
     setSelectedDate(dateInfo);
     setPageStep(0);
+    setCurrentClick(id);
   };
 
-  const createPrevMonthDays = useCallback(
-    (days, firstWeekDay) => {
+  useEffect(() => {
+    const createPrevMonthDays = (days, firstWeekDay) => {
       for (let noDay = 0; noDay < firstWeekDay; noDay++) {
         let day = new Date(year, month, noDay - firstWeekDay + 1).getDate();
         let weekDay = new Date(year, month, noDay - firstWeekDay + 1).getDay();
-        days.push({ 날짜: day, 요일: weekDay, style: "disable" });
+        days.push({
+          날짜: day,
+          요일: weekDay,
+          style: "disable",
+          haveDiets: false,
+        });
       }
-    },
-    [year, month],
-  );
-  const createCurrentMonthDays = useCallback(
-    (days, lastDay) => {
+    };
+    const createCurrentMonthDays = (days, lastDay, dietDays) => {
+      const dietDaysSet = new Set(dietDays);
       for (let day = 1; day <= lastDay; day++) {
         let weekDay = new Date(year, month, day).getDay();
-        days.push({ 날짜: day, 요일: weekDay, style: "able" });
+        days.push({
+          날짜: day,
+          요일: weekDay,
+          style: "able",
+          haveDiets: dietDaysSet.has(day),
+        });
       }
-    },
-    [year, month],
-  );
-
-  const dayArr = useMemo(() => {
-    let days = [];
-    const firstWeekDay = new Date(year, month, 1).getDay();
-    const lastDay = new Date(year, month + 1, 0).getDate();
-    // 이전 달 정보
-    createPrevMonthDays(days, firstWeekDay);
-    // 이번 달 정보
-    createCurrentMonthDays(days, lastDay);
-    return days;
-  }, [month, year, createCurrentMonthDays, createPrevMonthDays]);
-
-  const weekArr = useMemo(() => {
-    const weeks = [];
-    for (let i = 0; i < dayArr.length; i += 7) {
-      weeks.push(dayArr.slice(i, i + 7));
-    }
-    return weeks;
-  }, [dayArr]);
+    };
+    const getDayArr = (dietDays) => {
+      let days = [];
+      const firstWeekDay = new Date(year, month, 1).getDay();
+      const lastDay = new Date(year, month + 1, 0).getDate();
+      // 이전 달 정보
+      createPrevMonthDays(days, firstWeekDay);
+      // 이번 달 정보
+      createCurrentMonthDays(days, lastDay, dietDays);
+      return days;
+    };
+    const getWeekArr = (dayArr) => {
+      const weeks = [];
+      for (let i = 0; i < dayArr.length; i += 7) {
+        weeks.push(dayArr.slice(i, i + 7));
+      }
+      return weeks;
+    };
+    const getDietInfo = async () => {
+      let dietDays = [];
+      const res = await getDietDates(CHILD_ID, year, month);
+      if (res.data.status === 200) {
+        dietDays = res.data.data.map((dietDate) => {
+          const tempDate = new Date(dietDate[dietDate]);
+          return tempDate.getDate();
+        });
+      }
+      let dayArr = getDayArr([1, 2, 20, 30]);
+      const weeks = getWeekArr(dayArr);
+      setWeekArr(weeks);
+    };
+    getDietInfo();
+  }, [year, month, CHILD_ID]);
   return (
     <div className={classes.container}>
       <header className={classes.controller}>
@@ -131,13 +156,25 @@ const Calendar = (props) => {
                     return (
                       <td
                         key={id}
-                        className={classes[day["style"]]}
+                        className={`${classes[day["style"]]}`}
                         onClick={() => {
-                          onClickDay(
-                            `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
-                          );
+                          day["haveDiets"]
+                            ? onClickDay(
+                                `${year}년 ${MONTHS[month]} ${day["날짜"]}일 식단`,
+                                day["날짜"],
+                              )
+                            : null;
                         }}>
-                        {day["날짜"]}
+                        <span
+                          className={
+                            day["haveDiets"]
+                              ? currentClick === day["날짜"]
+                                ? classes.currentClick
+                                : classes.canClick
+                              : ""
+                          }>
+                          {day["날짜"]}
+                        </span>
                       </td>
                     );
                   })}

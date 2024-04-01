@@ -14,6 +14,7 @@ const AddProfile = () => {
   const [profileData, setProfileData] = useState({});
   const [step, setStep] = useState(0);
   const sendProps = {
+    step,
     setStep,
     setProfileData,
     profileData,
