@@ -74,7 +74,7 @@ public class ChildDocument {
             parameterWithName("size").attributes(required()).description("조회할 데이터 수 (4)")
     );
 
-    public static final Snippet getGrowthListResponseField = responseFields(
+    public static final Snippet getHeightListResponseField = responseFields(
             fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
             fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
             fieldWithPath("data.growthList[].gender").type(JsonFieldType.STRING).description("자녀 성별"),
@@ -84,6 +84,21 @@ public class ChildDocument {
             fieldWithPath("data.growthList[].startDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 일요일"),
             fieldWithPath("data.growthList[].endDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 토요일"),
             fieldWithPath("data.growthList[].height").type(JsonFieldType.NUMBER).description("자녀 키"),
+            fieldWithPath("data.averageList").type(JsonFieldType.ARRAY).description("평균 성장 데이터"),
+            fieldWithPath("data.averageList[].month").type(JsonFieldType.NUMBER).description("개월 수").optional(),
+            fieldWithPath("data.averageList[].averageHeight").type(JsonFieldType.NUMBER).description("평균 키").optional(),
+            fieldWithPath("data.averageList[].averageWeight").type(JsonFieldType.NUMBER).description("평균 몸무게").optional()
+    );
+
+    public static final Snippet getWeightListResponseField = responseFields(
+            fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+            fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지 여부"),
+            fieldWithPath("data.growthList[].gender").type(JsonFieldType.STRING).description("자녀 성별"),
+            fieldWithPath("data.growthList[].birthDate").type(JsonFieldType.STRING).description("자녀 생년월일"),
+            fieldWithPath("data.growthList[].month").type(JsonFieldType.NUMBER).description("자녀 개월 수"),
+            fieldWithPath("data.growthList[].recordDate").type(JsonFieldType.STRING).description("자녀 정보 기록일"),
+            fieldWithPath("data.growthList[].startDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 일요일"),
+            fieldWithPath("data.growthList[].endDate").type(JsonFieldType.STRING).description("기록일 기준 일주일의 토요일"),
             fieldWithPath("data.growthList[].weight").type(JsonFieldType.NUMBER).description("자녀 몸무게"),
             fieldWithPath("data.averageList").type(JsonFieldType.ARRAY).description("평균 성장 데이터"),
             fieldWithPath("data.averageList[].month").type(JsonFieldType.NUMBER).description("개월 수").optional(),

@@ -241,7 +241,8 @@ public class PickyApiTest extends ApiTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value(401))
                 .andDo(this::print)
-                .andDo(document(DEFAULT_RESTDOC_PATH, PickyDocument.onePickyRecipePathParam));
+                .andDo(document(DEFAULT_RESTDOC_PATH,
+                        PickyDocument.onePickyRecipePathParam));
     }
 
 //    @Test
