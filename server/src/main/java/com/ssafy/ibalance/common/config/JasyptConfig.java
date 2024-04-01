@@ -9,16 +9,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("")
+@PropertySource("classpath:jasypt.properties")
 public class JasyptConfig {
 
-    @Value("${JASYPT_KEY}")
+    @Value("${jasypt.key}")
     private String key;
 
     private static final String ALGORITHM = "PBEWithMD5AndDES";
 
     @Bean(name = "jasyptStringEncryptor")
-    public StringEncryptor stringEncryptor(){
+    public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
 

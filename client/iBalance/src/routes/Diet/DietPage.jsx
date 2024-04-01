@@ -16,6 +16,7 @@ const DietPage = () => {
   const [userDiet, setUserDiet] = useState([]);
   const [summaryInfo, setSummaryInfo] = useState({});
   const [selectDate, setSelectDate] = useState("");
+  const [dietId, setDietId] = useState();
   const [isSave, setIsSave] = useState(false);
   // false : 초기 식단 조회 상태 ( 식단 저장 버튼 O )
   // true : 최종 식단 조회 상태 ( 식단 저장 버튼 X )
@@ -50,9 +51,10 @@ const DietPage = () => {
         <div className={classes.dietContentBox}>
           {Object.keys(summaryInfo).length === 0 ? (
             userDiet.length === 0 ? (
-              <EmptyDiet setUserDiet={setUserDiet}></EmptyDiet>
+              <EmptyDiet setUserDiet={setUserDiet} isSave={isSave}></EmptyDiet>
             ) : (
               <DietListPage
+                setDietId={setDietId}
                 weekListKo={weekListKo}
                 setSelectDate={setSelectDate}
                 userDiet={userDiet}
@@ -63,6 +65,7 @@ const DietPage = () => {
             )
           ) : (
             <DietSummary
+              dietId={dietId}
               weekListKo={weekListKo}
               selectDate={selectDate}
               setSelectDate={setSelectDate}

@@ -5,12 +5,21 @@ import { useSelector } from "react-redux";
 // 내부 모듈
 import classes from "./DietSummary.module.css";
 import DietDetail from "./DietDetail";
-import { dummyDetail, dummyRefresh } from "../Diet/dummy";
-import { getInitDietDetail, changeMenuOfTempDiet } from "../Diet/ServerConnect";
+import {
+  getInitDietDetail,
+  changeMenuOfTempDiet,
+  getDietDetail,
+} from "../Diet/ServerConnect";
 
 const DietSummary = (props) => {
-  const { setSummaryInfo, summaryInfo, selectDate, isSave, setUserDiet } =
-    props;
+  const {
+    setSummaryInfo,
+    summaryInfo,
+    selectDate,
+    isSave,
+    setUserDiet,
+    dietId,
+  } = props;
   const [isOpen, setIsOpen] = useState(false);
   const childId = useSelector((state) => state.childId);
   const [dietSummary, setDietSummary] = useState();
@@ -26,7 +35,20 @@ const DietSummary = (props) => {
       // const res = dummyDetail.data;
       setDietSummary(res.data.data);
     };
-    getDietDetailData();
+    const getDetailData = async () => {
+      try {
+        const res = await getDietDetail(dietId);
+        console.log(res);
+        setDietSummary(res.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (isSave === false) {
+      getDietDetailData();
+    } else {
+      getDetailData();
+    }
   }, []);
 
   const refreshMenu = async (prevMenuId) => {

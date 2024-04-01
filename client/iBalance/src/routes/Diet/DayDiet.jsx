@@ -1,7 +1,4 @@
 // 외부 모듈
-import { useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
-import { add } from "./dummy.js";
 import { useSelector } from "react-redux";
 
 import { addTempDiet } from "./ServerConnect";
@@ -19,12 +16,11 @@ const DayDiet = (props) => {
     setSummaryInfo,
     setSelectDate,
     isSave,
+    setDietId,
   } = props;
 
   const addDietCard = async () => {
-    console.log(childId, diets.dietDay);
     const res = await addTempDiet(childId, diets.dietDay);
-    console.log(res);
     setUserDiet((prev) => {
       let nextDiets = JSON.parse(JSON.stringify(prev));
       let nextDiet = nextDiets;
@@ -38,7 +34,12 @@ const DayDiet = (props) => {
     });
   };
   const goSummary = (sequence) => {
-    setSummaryInfo({ dietDay: diets.dietDay, sequence: sequence });
+    if (isSave === false) {
+      setSummaryInfo({ dietDay: diets.dietDay, sequence: sequence });
+    } else {
+      setDietId(diets.dietId);
+      setSummaryInfo({ dietDay: "", sequence: "" });
+    }
     setSelectDate(day);
   };
 

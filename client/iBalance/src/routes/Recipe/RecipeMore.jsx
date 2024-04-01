@@ -1,6 +1,7 @@
 // 내부 모듈
 import { useNavigate } from "react-router-dom";
 import classes from "./RecipeMore.module.css";
+import sample1 from "../../assets/recipe/sample1.png";
 
 const RecipeMore = () => {
   const navigate = useNavigate();
@@ -20,17 +21,27 @@ const RecipeMore = () => {
       </div>
       <div className={classes.cardBox}>
         <div
-          className={classes.card}
+          className={classes.recipeImgBox}
           onClick={() => {
             navigate("/recipe/item");
-          }}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
-        <div className={classes.card}></div>
+          }}>
+          <img src={sample1} alt="" className={classes.recipeImg} />
+          <div className={classes.imgTextBox}>
+            <div className={classes.recipeName}>당근전</div>
+          </div>
+        </div>
+        <div className={classes.recipeImgBox}>
+          <img src={sample1} alt="" className={classes.recipeImg} />
+          <div className={classes.imgTextBox}>
+            <div className={classes.recipeName}>당근전</div>
+          </div>
+        </div>
+        <div className={classes.recipeImgBox}>
+          <img src={sample1} alt="" className={classes.recipeImg} />
+          <div className={classes.imgTextBox}>
+            <div className={classes.recipeName}>당근전</div>
+          </div>
+        </div>
       </div>
     </div>
   );
