@@ -1,9 +1,28 @@
 // 내부 모듈
+import { useEffect, useState } from "react";
 import classes from "./DietDetail.module.css";
 
 const DietDetail = (props) => {
   const { setIsOpen, dietDetail } = props;
-
+  const [gramCount, setGramCount] = useState(null);
+  useEffect(() => {
+    if (dietDetail && Object.keys(dietDetail).length > 0) {
+      switch (dietDetail.menuType) {
+        case "RICE":
+          setGramCount("100g");
+          break;
+        case "SIDE":
+          setGramCount("50g");
+          break;
+        case "SOUP":
+          setGramCount("100mL");
+          break;
+        default:
+          setGramCount(null);
+          break;
+      }
+    }
+  }, [dietDetail]);
   return (
     <>
       <div className={classes.ModalBack}>
@@ -31,7 +50,7 @@ const DietDetail = (props) => {
             <div className={classes.orangeText}>영양 정보</div>
             <div>
               <div className={classes.flexRow}>
-                <p>총 칼로리</p>
+                <p>총 칼로리{gramCount ? <span> ({gramCount})</span> : null}</p>
                 <p className={classes.orangeText}>
                   {dietDetail.calorie}
                   <span className={classes.grayText}>kcal</span>

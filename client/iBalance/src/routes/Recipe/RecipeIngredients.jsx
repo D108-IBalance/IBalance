@@ -1,6 +1,6 @@
 import classes from "./RecipeIngredients.module.css";
-const RecipeIngredients = () => {
-  const ingreList = ["당근", "시금치", "양파"];
+const RecipeIngredients = (props) => {
+  const { recipeIngre } = props;
   return (
     <div className={classes.container}>
       <div className={classes.titleBox}>
@@ -8,10 +8,10 @@ const RecipeIngredients = () => {
         <p>우리아이 편식 재료</p>
       </div>
       <div className={classes.contentBox}>
-        {ingreList.map((item, idx) => {
+        {recipeIngre.map((item, idx) => {
           return (
             <div className={classes.itemType} key={idx}>
-              {item}
+              {item.pickyMaterialName}
             </div>
           );
         })}
