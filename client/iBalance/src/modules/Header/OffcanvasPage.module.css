@@ -23,7 +23,6 @@
     margin-bottom: 10px;
   }
   .img {
-    background: url("../../assets/auth/img/default_profile1.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -158,7 +157,6 @@
     margin-bottom: 10px;
   }
   .img {
-    background: url("../../assets/auth/img/default_profile1.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

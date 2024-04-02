@@ -3,8 +3,10 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 
 // 내부 모듈
 import classes from "./OffcanvasPage.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getChildProfile } from "../../routes/Profile/ServerConnect";
+import { useSelector } from "react-redux";
 
 const OffcanvasPage = ({ ...props }) => {
   const navigate = useNavigate();
@@ -12,6 +14,16 @@ const OffcanvasPage = ({ ...props }) => {
   const [fcmAni, setFcmAni] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [childInfo, setChildInfo] = useState(null);
+  const childId = useSelector((state) => state.childId);
+  useEffect(() => {
+    const getInfo = async () => {
+      let value = await getChildProfile(childId);
+      setChildInfo(value.data.data);
+      console.log(value);
+    };
+    getInfo();
+  }, []);
   const fcmDown = () => {
     setFcmAni("fcmDown");
   };
@@ -24,7 +36,7 @@ const OffcanvasPage = ({ ...props }) => {
       <div
         onClick={() => {
           handleShow();
-          fcmDown();
+          // fcmDown();
         }}
         className={classes.toggleBtn}></div>
       <div className={`${classes.fcmContainer} ${classes[fcmAni]}`}>
@@ -46,10 +58,13 @@ const OffcanvasPage = ({ ...props }) => {
         <Offcanvas.Body>
           <div className={classes.profileBox}>
             <div className={classes.imgBox}>
-              <div className={classes.img}></div>
+              <img
+                className={classes.img}
+                src={childInfo && childInfo.imageUrl}
+              />
             </div>
-            <p className={classes.name}>박서준</p>
-            <p className={classes.loginForm}>카카오 로그인</p>
+            <p className={classes.name}>{childInfo && childInfo.name}</p>
+            <p className={classes.loginForm}>{childInfo && childInfo.gender}</p>
           </div>
           <div className={classes.contentBox}>
             <div>

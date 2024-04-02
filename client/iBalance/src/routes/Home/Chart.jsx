@@ -110,7 +110,7 @@ const Chart = (props) => {
             x2={MAX_HEIGHT + Y_START}
             y2={DIVIDE_MAX + Y_START}
             stroke="gray"
-            opacity={0.5}
+            opacity={0.2}
           />
           <line
             x1={0}

@@ -41,11 +41,12 @@
   }
   .nameBox {
     display: flex;
+    padding-left: 15px;
+    padding-right: 15px;
     flex-direction: column;
     align-items: start;
     justify-content: flex-end;
     width: auto;
-    margin-left: 2%;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -90,8 +91,10 @@
   .contentBox {
     width: 100%;
     height: auto;
-    padding: 5px 10px;
+    margin-top: 20px;
     padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .menuName {
     font-size: 2rem;
@@ -102,6 +105,7 @@
     color: #8c8a9d;
     font-weight: 300;
     font-size: 1rem;
+    margin-left: 3px;
   }
   .nutriBox {
     padding: 0px 5px;
@@ -115,6 +119,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 3px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -168,7 +173,8 @@
     border-radius: 30px;
     padding: 5px 10px;
     background: #fff;
-    margin: 5px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .recipeBox {
     display: flex;
@@ -230,7 +236,8 @@
     align-items: start;
     justify-content: flex-end;
     width: auto;
-    margin-left: 2%;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -270,8 +277,10 @@
   .contentBox {
     width: 100%;
     height: auto;
-    padding: 5px 10px;
+    margin-top: 20px;
     padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .menuName {
     font-size: 1.5rem;
@@ -282,6 +291,7 @@
     color: #8c8a9d;
     font-weight: 300;
     font-size: 1rem;
+    margin-left: 3px;
   }
   .nutriBox {
     padding: 0px 5px;
@@ -295,6 +305,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 3px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -348,7 +359,8 @@
     border-radius: 30px;
     padding: 5px 10px;
     background: #fff;
-    margin: 5px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .recipeBox {
     display: flex;

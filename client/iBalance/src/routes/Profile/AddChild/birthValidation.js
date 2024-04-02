@@ -19,7 +19,7 @@ const birthValidation = (year, month, day) => {
   if (age === 0 && currentMonth - month < 6) {
     return false;
   } else {
-    return 0 <= age && age <= 6 ? true : false;
+    return 2 <= age && age <= 6 ? true : false;
   }
 };
 
