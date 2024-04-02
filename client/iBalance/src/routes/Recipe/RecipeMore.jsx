@@ -1,17 +1,36 @@
-// 내부 모듈
-import { useNavigate } from "react-router-dom";
-import classes from "./RecipeMore.module.css";
-import sample1 from "../../assets/recipe/sample1.png";
+// 외부 모듈
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
-const RecipeMore = () => {
-  const navigate = useNavigate();
+// 내부 모듈
+import classes from "./RecipeMore.module.css";
+import { getPickyCate, getPickySolutionList } from "./ServerConnect.js";
+
+const RecipeMore = (props) => {
+  const childId = useSelector((state) => state.childId);
+
+  const { setIsOpen, setIsMore } = props;
+  const [recipeList, setRecipeList] = useState(null);
+
+  useEffect(() => {
+    const getPickyData = async () => {
+      const res = await Promise.all([
+        getPickyCate(childId),
+        getPickySolutionList(childId, "당근", 10, ""),
+      ]);
+      setRecipeList(res[1].data.data);
+      // console.log(res[0]);
+      // console.log(res[1]);
+    };
+    getPickyData();
+  }, []);
   return (
     <div className={classes.container}>
       <div className={classes.backBox}>
         <div
           className={classes.backIcon}
           onClick={() => {
-            navigate(-1);
+            setIsMore(false);
           }}></div>
       </div>
       <div className={classes.cardTitleBox}>
@@ -20,28 +39,26 @@ const RecipeMore = () => {
         </p>
       </div>
       <div className={classes.cardBox}>
-        <div
-          className={classes.recipeImgBox}
-          onClick={() => {
-            navigate("/recipe/item");
-          }}>
-          <img src={sample1} alt="" className={classes.recipeImg} />
-          <div className={classes.imgTextBox}>
-            <div className={classes.recipeName}>당근전</div>
-          </div>
-        </div>
-        <div className={classes.recipeImgBox}>
-          <img src={sample1} alt="" className={classes.recipeImg} />
-          <div className={classes.imgTextBox}>
-            <div className={classes.recipeName}>당근전</div>
-          </div>
-        </div>
-        <div className={classes.recipeImgBox}>
-          <img src={sample1} alt="" className={classes.recipeImg} />
-          <div className={classes.imgTextBox}>
-            <div className={classes.recipeName}>당근전</div>
-          </div>
-        </div>
+        {recipeList &&
+          recipeList.map((recipe, idx) => {
+            return (
+              <div
+                key={idx}
+                className={classes.recipeImgBox}
+                onClick={() => {
+                  setIsOpen(true);
+                }}>
+                <img
+                  src={recipe.recipeImgUrl}
+                  alt=""
+                  className={classes.recipeImg}
+                />
+                <div className={classes.imgTextBox}>
+                  <div className={classes.recipeName}>{recipe.recipeTitle}</div>
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

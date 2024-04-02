@@ -1,5 +1,4 @@
 // 외부 모듈
-import { useNavigate, useOutletContext } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./RecipeDetail.module.css";
@@ -8,9 +7,8 @@ import recipe1 from "../../assets/diet/recipe1.png";
 import recipe2 from "../../assets/diet/recipe2.png";
 import recipe3 from "../../assets/diet/recipe3.png";
 
-const RecipeDetail = () => {
-  const { setIsOpen } = useOutletContext();
-  const navigate = useNavigate();
+const RecipeDetail = (props) => {
+  const { setIsOpen } = props;
   const menuList = {
     foodId: 0,
     foodKind: "Main menu",
@@ -54,7 +52,6 @@ const RecipeDetail = () => {
                 <div
                   className={classes.backIcon}
                   onClick={() => {
-                    navigate(-1);
                     setIsOpen(false);
                   }}></div>
               </div>

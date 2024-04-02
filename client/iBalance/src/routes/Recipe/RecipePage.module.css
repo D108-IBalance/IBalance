@@ -6,7 +6,28 @@ body {
   overflow: hidden;
   box-sizing: border-box;
 }
-
+.recipeEmptyBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.recipeEmptyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.recipeEmptyImg {
+  background: url("../../assets/recipe/EmptyIcon.gif");
+  background-position: center;
+  background-size: contain;
+  width: 150px;
+  height: 150px;
+}
+.recipeEmptyTitle {
+  font-size: 1.2rem;
+}
 @media screen and (max-width: 576px) {
   .recipeContentBox {
     width: 100%;
