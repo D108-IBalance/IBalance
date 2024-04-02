@@ -153,8 +153,8 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
                                 diet.dietDate,
                                 diet.dietDate.in(allReviewed).not().as("allReviewed"))
                 )
-                .from(diet).rightJoin(child)
-                .on(diet.child.id.eq(child.id))
+                .from(child).leftJoin(diet)
+                .on(diet.child.id.eq(child.id).and(diet.dietDate.year().eq(year)).and(diet.dietDate.month().eq(month)))
                 .where(child.id.eq(childId))
                 .groupBy(child, diet.dietDate)
                 .fetch();
