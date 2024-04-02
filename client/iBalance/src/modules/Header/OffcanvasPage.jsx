@@ -1,12 +1,13 @@
 // 외부 모듈
 import Offcanvas from "react-bootstrap/Offcanvas";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./OffcanvasPage.module.css";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getChildProfile } from "../../routes/Profile/ServerConnect";
-import { useSelector } from "react-redux";
+import { logout } from "../../routes/Auth/ServerConnect";
 
 const OffcanvasPage = ({ ...props }) => {
   const navigate = useNavigate();
@@ -16,11 +17,15 @@ const OffcanvasPage = ({ ...props }) => {
   const handleShow = () => setShow(true);
   const [childInfo, setChildInfo] = useState(null);
   const childId = useSelector((state) => state.childId);
+  const logOutSite = async () => {
+    await logout();
+    localStorage.removeItem("persist:root");
+    navigate("/");
+  };
   useEffect(() => {
     const getInfo = async () => {
       let value = await getChildProfile(childId);
       setChildInfo(value.data.data);
-      console.log(value);
     };
     getInfo();
   }, []);
@@ -83,7 +88,7 @@ const OffcanvasPage = ({ ...props }) => {
                 <p>프로필 정보 수정</p>
               </div>
             </div>
-            <div className={classes.logout}>
+            <div className={classes.logout} onClick={logOutSite}>
               <div className={classes.logoutIcon}></div>
               <p>Log Out</p>
             </div>

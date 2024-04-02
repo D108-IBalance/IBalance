@@ -13,7 +13,7 @@ const TodayDiet = (props) => {
         navigate("/diet");
       }}>
       <div className={classes.dietTitle}>
-        <div className={classes.dietIcon}></div>
+        <div className={classes.dietIcon} />
         <span>오늘의 식단표</span>
       </div>
 
