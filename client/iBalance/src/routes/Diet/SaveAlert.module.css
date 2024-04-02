@@ -8,8 +8,10 @@
   justify-content: center;
   align-items: center;
 }
-.container {
-  background-color: white;
-  width: 300px;
-  height: 80px;
+h1 {
+  font-family: "Cherry Bomb One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  color: #fe724c;
+  cursor: auto;
 }
