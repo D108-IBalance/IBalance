@@ -23,7 +23,7 @@ const OffcanvasPage = ({ ...props }) => {
     <>
       <div
         onClick={() => {
-          // handleShow();
+          handleShow();
           // fcmDown();
         }}
         className={classes.toggleBtn}></div>
