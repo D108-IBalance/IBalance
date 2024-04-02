@@ -50,10 +50,13 @@ mysql 접속 클라이언트가 유효한지 검사하는 함수
 
 def mysql_validation_check() -> mysql.connector:
     global mysql_client
-    if mysql_client is None:
-        print("mysql_client is None or disconnect, mysql reconnect...")
+    if mysql_client is None or not mysql_client.is_connected():
+        print("mysql_client is None or disconnected, reconnecting to MySQL...")
         mysql_connect()
-    return mysql_client.cursor()
+        if not mysql_client.is_connected():
+            mysql_client.ping(reconnect=True, attempts=3, delay=1)
+        return mysql_client.cursor()
+
 
 
 """
