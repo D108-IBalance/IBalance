@@ -6,6 +6,10 @@ import com.ssafy.ibalance.child.dto.WeightGrowthDto;
 import com.ssafy.ibalance.child.dto.request.ModifyChildRequest;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
+import com.ssafy.ibalance.child.dto.response.heightweight.growth.HeightGrowthResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.growth.WeightGrowthResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.page.HeightPageResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.page.WeightPageResponse;
 import com.ssafy.ibalance.child.entity.*;
 import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
 import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
@@ -152,7 +156,7 @@ public class ChildService {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        Page<HeightGrowthResponse> growthResponsePage = heightPage.map(HeightGrowthResponse::ConvertEntityToDto);
+        Page<HeightGrowthResponse> growthResponsePage = heightPage.map(HeightGrowthResponse::convertEntityToDto);
 
         List<HeightGrowthResponse> heightGrowthResponseList = growthResponsePage.getContent();
         List<Long> monthList = heightGrowthResponseList.stream().map(HeightGrowthResponse::getMonth).toList();
@@ -181,7 +185,7 @@ public class ChildService {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        Page<WeightGrowthResponse> growthResponsePage = weightPage.map(WeightGrowthResponse::ConvertEntityToDto);
+        Page<WeightGrowthResponse> growthResponsePage = weightPage.map(WeightGrowthResponse::convertEntityToDto);
 
         List<WeightGrowthResponse> weightGrowthResponseList = growthResponsePage.getContent();
         List<Long> monthList = weightGrowthResponseList.stream().map(WeightGrowthResponse::getMonth).toList();
