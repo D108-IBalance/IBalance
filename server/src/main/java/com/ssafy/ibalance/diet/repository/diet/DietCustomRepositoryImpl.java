@@ -35,6 +35,7 @@ import static com.ssafy.ibalance.child.entity.QChild.child;
 import static com.ssafy.ibalance.diet.entity.QDiet.diet;
 import static com.ssafy.ibalance.diet.entity.QDietMaterial.dietMaterial;
 import static com.ssafy.ibalance.diet.entity.QDietMenu.dietMenu;
+import static com.ssafy.ibalance.member.entity.QMember.member;
 
 @RequiredArgsConstructor
 public class DietCustomRepositoryImpl implements DietCustomRepository {
@@ -199,6 +200,17 @@ public class DietCustomRepositoryImpl implements DietCustomRepository {
         List<DietMenu> dietMenuList = getDistinctResult(transform, diet, dietMenu);
 
         return new DietTotalInfoDto(diet, dietMaterialList, dietMenuList);
+    }
+
+    @Override
+    public List<Integer> getNotifyTargetList() {
+        return jpaQueryFactory.select(member.id)
+                .from(member)
+                .leftJoin(child).on(member.id.eq(child.member.id))
+                .leftJoin(diet).on(child.id.eq(diet.child.id))
+                .where(diet.dietDate.eq(LocalDate.now()).and(diet.isReviewed.eq(false)))
+                .groupBy(member.id)
+                .fetch();
     }
 
     private <T> List<T> getDistinctResult(Map<Diet, Group> transform, Diet diet, EntityPathBase<T> pathBase) {

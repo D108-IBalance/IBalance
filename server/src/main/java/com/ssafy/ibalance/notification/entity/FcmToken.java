@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@RedisHash(value = "fcm", timeToLive = 2_592_000)
+@RedisHash(value = "fcm", timeToLive = 5_184_000)
 public class FcmToken {
 
     @Id

@@ -19,4 +19,6 @@ public interface DietCustomRepository {
     List<CalendarResponse> getCalendarList(Integer childId, int year, int month, Member member);
 
     DietTotalInfoDto getDietTotalInfo(Long dietId);
+
+    List<Integer> getNotifyTargetList();
 }
