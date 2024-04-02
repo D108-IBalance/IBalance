@@ -28,13 +28,11 @@ public class DietController {
      * 일주일치 확정된 식단 조회
      *
      * @param childId 자녀 아이디
-     * @param today 오늘 날짜
      * @return 일주일 식단 목록
      */
     @GetMapping("/{childId}")
-    public List<RecommendedDietResponse> getRecommendedDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId,
-                                                            @RequestParam LocalDate today) {
-        return dietService.getRecommendedDiet(childId, today);
+    public List<RecommendedDietResponse> getRecommendedDiet(@PathVariable @Min(value = 1, message = "자녀 ID 는 1 이상이어야 합니다.") Integer childId) {
+        return dietService.getRecommendedDiet(childId);
     }
 
     /**
@@ -65,7 +63,6 @@ public class DietController {
 
         List<String> pastMenu = dietService.getPastMenu(childId);
         List<InitDietResponse> initDietResponseList = dietService.getInitDiet(childId, allergyList, pastMenu);
-        cookieUtil.makeCookie(response, pastMenu, "doNotRecommend", "/");
 
         return initDietResponseList;
     }
@@ -91,10 +88,7 @@ public class DietController {
                                               @RequestParam @Range(min = 0, max = 6, message = "식단 일자는 0~6까지 가능합니다.") int dietDay,
                                               HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
-        String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
-        List<DietMenuResponse> menuList = dietService.addTempDiet(childId, dietDay, allergy, doNotRecommend);
-        cookieUtil.addCookieValue(request, response, menuList, "doNotRecommend", "/");
-        return menuList;
+        return dietService.addTempDiet(childId, dietDay, allergy);
     }
 
     /**
@@ -130,10 +124,7 @@ public class DietController {
                                                    @RequestParam String menuId,
                                                    HttpServletRequest request, HttpServletResponse response) {
         String allergy = cookieUtil.getCookie(request, "allergy");
-        String doNotRecommend = cookieUtil.getCookie(request, "doNotRecommend");
-        MenuDetailResponse menu = dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy, doNotRecommend);
-        cookieUtil.addCookieValue(request, response, menu, "doNotRecommend", "/");
-        return menu;
+        return dietService.changeMenuOfTempDiet(childId, dietDay, sequence, menuId, allergy);
     }
 
     /**
