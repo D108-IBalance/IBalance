@@ -67,11 +67,18 @@ select 문과 그 밖의 DML 문에 따라 구분지어 실행시키는 함수�
 """
 
 
-def _execute(query: str):
+def _execute(query: str | list[str]):
+    global mysql_client
     cursor = mysql_validation_check()
     print(f'preparing mysql sql: {query}')
     if query in ["UPDATE", "INSERT", "DELETE"]:
-        _execute_and_commit(query, cursor)
+        if type(query) == str:
+            _execute_and_commit(query, cursor)
+        elif type(query) == list[str]:
+            for sql in query:
+                _execute_and_commit(sql, cursor)
+        mysql_client.commit()
+        cursor.close()
     else:
         return _execute_and_fetchall(query, cursor)
 
@@ -86,8 +93,6 @@ private 함수로 _execute 로 부터 넘겨 받은 쿼리와 커서객체를 �
 def _execute_and_commit(query: str, cursor: mysql.connector):
     global mysql_client
     cursor.execute(query)
-    mysql_client.commit()
-    cursor.close()
 
 
 """
@@ -114,7 +119,7 @@ def _execute_and_fetchall(query: str, cursor: mysql.connector) -> list[tuple]:
 
 
 def find_all_rating(child_id: int, exclude_id_list: list[str] = []) -> list[tuple]:
-    sql_head = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet-menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id '''
+    sql_head = '''SELECT c.id, m.menu_id, round(avg(m.score),1) as score FROM `diet_menu` AS m INNER JOIN diet AS d ON m.diet_id = d.id '''
     sql_middle_option = '''INNER JOIN child AS c ON d.child_id = c.id WHERE 1=1 AND is_reviewed = 1 '''
     sql_for_all_additional_join_condition = 'AND {} '.format("d.diet_date BETWEEN DATE_ADD(NOW(), INTERVAL -2 WEEK) AND NOW()")
     sql_for_not_me = '''AND c.id != '{}' '''.format(child_id)
