@@ -21,6 +21,7 @@ const DietListPage = (props) => {
     setDietId,
     setBgColor,
     setLoadStep,
+    setSaveAlert,
   } = props;
   // 식단 받을 오늘부터 일주일치 날짜리스트 생성
 
@@ -105,7 +106,8 @@ const DietListPage = (props) => {
               <SaveModalPage
                 setSaveModal={setSaveModal}
                 setIsSave={setIsSave}
-                setUserDiet={setUserDiet}></SaveModalPage>
+                setUserDiet={setUserDiet}
+                setSaveAlert={setSaveAlert}></SaveModalPage>
             ) : null}
           </div>
         ) : null}
