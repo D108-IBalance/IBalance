@@ -1,13 +1,9 @@
-// 외부 모듈
-import { useNavigate } from "react-router-dom";
-
 // 내부 모듈
 import classes from "./RecipeSummary.module.css";
 import Carousel from "../../modules/Carousel/Carousel";
 
 const RecipeSummary = (props) => {
-  const navigate = useNavigate();
-  const { setIsOpen } = props;
+  const { setIsOpen, setIsMore } = props;
   return (
     <>
       <div className={classes.container}>
@@ -18,7 +14,7 @@ const RecipeSummary = (props) => {
           <p
             className={classes.moreBtn}
             onClick={() => {
-              navigate("/recipe/more");
+              setIsMore(true);
             }}>
             더 보기
           </p>
