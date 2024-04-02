@@ -46,6 +46,7 @@
     justify-content: flex-end;
     width: auto;
     margin-left: 2%;
+    padding: 10px;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -99,6 +100,7 @@
     color: #fe724c;
     font-weight: bold;
     font-size: 1.5rem;
+    margin-bottom: 5px;
   }
   .flexRow {
     display: flex;
@@ -152,6 +154,11 @@
   }
   .ingreBox {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .ingre {
+    display: flex;
     font-size: 0.8rem;
     border-bottom: 1px #f1f2f3 solid;
     padding: 8px 15px;
@@ -162,6 +169,8 @@
     display: flex;
     flex-direction: row;
     margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: #dddedf solid 1px;
   }
   .recipeBox p {
     color: #9598a0;
@@ -222,6 +231,7 @@
     justify-content: flex-end;
     width: auto;
     margin-left: 2%;
+    padding: 10px;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -328,6 +338,11 @@
   }
   .ingreBox {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .ingre {
+    display: flex;
     font-size: 0.8rem;
     border-bottom: 1px #f1f2f3 solid;
     padding: 8px 15px;
@@ -338,6 +353,8 @@
     display: flex;
     flex-direction: row;
     margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: #dddedf solid 1px;
   }
   .recipeBox p {
     color: #9598a0;

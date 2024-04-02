@@ -10,8 +10,8 @@ const getPickySolutionList = async (childId, material, offset, example) => {
   );
 };
 
-const getPickySolutionDetail = async (childId, menuId) => {
-  return customAxios.get(`picky/${childId}/${menuId}`);
+const getPickySolutionDetail = async (material, recipeId) => {
+  return customAxios.get(`picky/detail/${material}/${recipeId}`);
 };
 
 export { getPickyCate, getPickySolutionList, getPickySolutionDetail };

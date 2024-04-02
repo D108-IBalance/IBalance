@@ -13,22 +13,20 @@ import RecipeSummary from "./RecipeSummary.jsx";
 import RecipeIngredients from "./RecipeIngredients.jsx";
 import RecipeDetail from "./RecipeDetail.jsx";
 import RecipeMore from "./RecipeMore.jsx";
-import { getPickyCate, getPickySolutionList } from "./ServerConnect.js";
+import { getPickyCate } from "./ServerConnect.js";
 
 const RecipePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMore, setIsMore] = useState(false);
+  const [moreRecipe, setMoreRecipe] = useState();
+  const [recipeData, setRecipeData] = useState();
   const childId = useSelector((state) => state.childId);
   const [recipeIngre, setRecipeIngre] = useState();
 
   useEffect(() => {
     const getPickyData = async () => {
-      const res = await Promise.all([
-        getPickyCate(childId),
-        getPickySolutionList(childId, "당근", 5, ""),
-      ]);
+      const res = await Promise.all([getPickyCate(childId)]);
       setRecipeIngre(res[0].data.data);
-      console.log(res[0]);
     };
     getPickyData();
   }, []);
@@ -46,8 +44,11 @@ const RecipePage = () => {
                   ? classes.recipeContentBox
                   : classes.recipeContentBoxOpen
               }>
-              <RecipeIngredients></RecipeIngredients>
+              <RecipeIngredients recipeIngre={recipeIngre}></RecipeIngredients>
               <RecipeSummary
+                setMoreRecipe={setMoreRecipe}
+                setRecipeData={setRecipeData}
+                recipeIngre={recipeIngre}
                 setIsOpen={setIsOpen}
                 setIsMore={setIsMore}></RecipeSummary>
             </div>
@@ -63,10 +64,16 @@ const RecipePage = () => {
           )}
           {isMore ? (
             <RecipeMore
+              moreRecipe={moreRecipe}
+              setRecipeData={setRecipeData}
               setIsOpen={setIsOpen}
               setIsMore={setIsMore}></RecipeMore>
           ) : null}
-          {isOpen ? <RecipeDetail setIsOpen={setIsOpen}></RecipeDetail> : null}
+          {isOpen ? (
+            <RecipeDetail
+              recipeData={{ recipeData }}
+              setIsOpen={setIsOpen}></RecipeDetail>
+          ) : null}
         </div>
       </div>
     </>

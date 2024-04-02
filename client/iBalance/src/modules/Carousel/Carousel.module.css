@@ -71,12 +71,18 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
   }
   .container::-webkit-scrollbar {
     width: 5px; /* 스크롤바의 너비 */
@@ -151,12 +157,18 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
   }
   .container::-webkit-scrollbar {
     width: 5px; /* 스크롤바의 너비 */
@@ -222,7 +234,7 @@
     left: 0;
     width: 200px;
     height: auto;
-    background: linear-gradient(to top, rgba(0, 0, 0, 60%), rgba(0, 0, 0, 0%));
+    background: linear-gradient(to top, rgba(0, 0, 0, 80%), rgba(0, 0, 0, 0%));
     padding: 5px 10px 10px 10px;
     border-radius: 0px 0px 15px 15px;
   }
@@ -233,12 +245,18 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
   }
   .container::-webkit-scrollbar {
     width: 5px; /* 스크롤바의 너비 */

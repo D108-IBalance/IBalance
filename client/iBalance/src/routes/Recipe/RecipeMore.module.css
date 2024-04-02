@@ -46,8 +46,20 @@
     transform: scale(1.2);
   }
   .cardTitleBox {
-    height: 50px;
-    padding: 10px;
+    height: 30px;
+    padding: 0px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .cardTitleIcon {
+    height: 20px;
+    width: 20px;
+    background: url("../../assets/recipe/ingre_icon.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
   }
   .cardTitle {
     font-weight: 500;
@@ -55,13 +67,13 @@
     font-size: 1.2rem;
   }
   .cardBox {
-    display: flex-inline;
+    display: flex;
     flex-wrap: wrap;
-    border: 1px red solid;
+    justify-content: center;
     height: auto;
     width: 100%;
   }
-  .cardTitle spann {
+  .cardTitle span {
     font-weight: 700;
     color: #fe724c;
   }
@@ -94,13 +106,31 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
     text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
+  }
+  .loadingBtn {
+    cursor: pointer;
+    position: absolute;
+    left: 35%;
+    background: url("../../assets/recipe/loading.gif");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 120px;
+    width: 120px;
+    border-radius: 50px;
+    z-index: 5;
   }
 }
 @media (min-width: 576px) and (max-width: 1200px) {
@@ -151,8 +181,22 @@
     transform: scale(1.2);
   }
   .cardTitleBox {
-    height: 50px;
+    height: 30px;
     padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+  .cardTitleIcon {
+    height: 20px;
+    width: 20px;
+    background: url("../../assets/recipe/ingre_icon.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
   }
   .cardTitle {
     font-weight: 500;
@@ -167,7 +211,7 @@
     height: auto;
     width: 100%;
   }
-  .cardTitle spann {
+  .cardTitle span {
     font-weight: 700;
     color: #fe724c;
   }
@@ -200,12 +244,30 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
+  }
+  .loadingBtn {
+    cursor: pointer;
+    position: absolute;
+    left: 45%;
+    background: url("../../assets/recipe/loading.gif");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 120px;
+    width: 120px;
+    border-radius: 50px;
   }
 }
 @media screen and (min-width: 1200px) {
@@ -258,6 +320,20 @@
   .cardTitleBox {
     height: 50px;
     padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+  .cardTitleIcon {
+    height: 20px;
+    width: 20px;
+    background: url("../../assets/recipe/ingre_icon.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
   }
   .cardTitle {
     font-weight: 500;
@@ -272,7 +348,7 @@
     height: auto;
     width: 100%;
   }
-  .cardTitle spann {
+  .cardTitle span {
     font-weight: 700;
     color: #fe724c;
   }
@@ -305,11 +381,28 @@
   }
   .recipeName {
     display: inline;
-    background: white;
+    /* background: white; */
+    color: #fff;
     border-radius: 30px;
     width: 100%;
-    padding: 3px 15px;
-    font-size: 0.8rem;
-    margin: 20px 0px;
+    padding: 3px 5px 0px 5px;
+    font-size: 1rem;
+    margin: 20px 0px 5px 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; /* 블록태그로 만들어준다 */
+    text-overflow: ellipsis; /* 말줄임 css */
+    white-space: nowrap; /*글자를 한줄로 모아준다*/
+  }
+  .loadingBtn {
+    cursor: pointer;
+    position: absolute;
+    left: 45%;
+    background: url("../../assets/recipe/loading.gif");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 120px;
+    width: 120px;
   }
 }
