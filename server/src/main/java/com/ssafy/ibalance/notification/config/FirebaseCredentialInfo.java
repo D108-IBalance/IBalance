@@ -62,13 +62,11 @@ public class FirebaseCredentialInfo {
 
     private JsonGenerator getJsonGenerator(OutputStream out) {
         try {
-            new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
+            return new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
         } catch (IOException e) {
             log.warn("Json Generator 만드는 것 실패");
             throw new RuntimeException(e.getMessage());
         }
-
-        return null;
     }
 
     private void writeOnJson(JsonGenerator json) {
