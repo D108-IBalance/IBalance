@@ -36,13 +36,8 @@ const DietSummary = (props) => {
       setDietSummary(res.data.data);
     };
     const getDetailData = async () => {
-      try {
-        const res = await getDietDetail(dietId);
-        console.log(res);
-        setDietSummary(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
+      const res = await getDietDetail(dietId);
+      setDietSummary(res.data.data);
     };
     if (Object.keys(summaryInfo).length > 0 && isSave === false) {
       getDietDetailData();

@@ -100,7 +100,8 @@ const DietListPage = (props) => {
             {saveModal === true && isSave === false ? (
               <SaveModalPage
                 setSaveModal={setSaveModal}
-                setIsSave={setIsSave}></SaveModalPage>
+                setIsSave={setIsSave}
+                setUserDiet={setUserDiet}></SaveModalPage>
             ) : null}
           </div>
         ) : null}

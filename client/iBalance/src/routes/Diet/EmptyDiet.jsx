@@ -6,7 +6,7 @@ import classes from "./EmptyDiet.module.css";
 import EmptyModal from "./EmptyModal";
 
 const EmptyDiet = (props) => {
-  const { setUserDiet, isSave, setDietId } = props;
+  const { setUserDiet, isSave, setDietId, setLoadStep } = props;
   const [isModal, setIsModal] = useState(false);
   return (
     <>
@@ -25,7 +25,8 @@ const EmptyDiet = (props) => {
           setDietId={setDietId}
           isSave={isSave}
           setIsModal={setIsModal}
-          setUserDiet={setUserDiet}></EmptyModal>
+          setUserDiet={setUserDiet}
+          setLoadStep={setLoadStep}></EmptyModal>
       )}
     </>
   );

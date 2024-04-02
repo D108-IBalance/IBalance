@@ -3,18 +3,20 @@ import { useSelector } from "react-redux";
 
 //내부 모듈
 import classes from "./SaveModalPage.module.css";
-import { insertTempDiet } from "../Diet/ServerConnect";
+import { insertTempDiet, getRecommendedDiet } from "../Diet/ServerConnect";
 
 const SaveModalPage = (props) => {
   const childId = useSelector((state) => state.childId);
 
-  const { setSaveModal, setIsSave } = props;
+  const { setSaveModal, setIsSave, setUserDiet } = props;
   const closeModal = () => {
     setSaveModal(false);
   };
 
   const confirmAndCloseModal = async () => {
     await insertTempDiet(childId);
+    const res = await getRecommendedDiet(childId);
+    setUserDiet(res.data.data);
     setIsSave(true);
     setSaveModal(false);
   };
