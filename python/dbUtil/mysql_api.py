@@ -55,7 +55,7 @@ def mysql_validation_check() -> mysql.connector:
         mysql_connect()
         if not mysql_client.is_connected():
             mysql_client.ping(reconnect=True, attempts=3, delay=1)
-        return mysql_client.cursor()
+    return mysql_client.cursor()
 
 
 
