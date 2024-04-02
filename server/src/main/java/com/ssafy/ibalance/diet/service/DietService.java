@@ -1,12 +1,15 @@
 package com.ssafy.ibalance.diet.service;
 
-import com.ssafy.ibalance.child.entity.*;
+import com.ssafy.ibalance.child.entity.Allergy;
+import com.ssafy.ibalance.child.entity.Child;
+import com.ssafy.ibalance.child.entity.ChildAllergy;
+import com.ssafy.ibalance.child.entity.RedisChildAllergy;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.AllergyRepository;
+import com.ssafy.ibalance.child.repository.BmiConditionRepository;
 import com.ssafy.ibalance.child.repository.ChildRepository;
 import com.ssafy.ibalance.child.repository.RedisChildAllergyRepository;
 import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
-import com.ssafy.ibalance.child.repository.*;
 import com.ssafy.ibalance.child.type.WeightCondition;
 import com.ssafy.ibalance.common.util.FastAPIConnectionUtil;
 import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
@@ -53,26 +56,24 @@ public class DietService {
     public List<RecommendedDietResponse> getRecommendedDiet(Integer childId) {
         LocalDate today = LocalDate.now();
         LocalDate endday = today.plusDays(6);
-        List<DietByDateResponse> dietList =  dietRepository.getDietByDateBetween(childId, today, endday);
+        List<DietByDateResponse> dietList = dietRepository.getDietByDateBetween(childId, today, endday);
 
         List<RecommendedDietResponse> recommendedDiet = new ArrayList<>();
-        for(int day = 0; day < 7; day++) {
+        for (int day = 0; day < 7; day++) {
             recommendedDiet.add(RecommendedDietResponse.builder()
                     .dietDate(today.plusDays(day))
-                    .dietList(new ArrayList<RecommendedMenuResponse>())
+                    .dietList(new ArrayList<>())
                     .build());
         }
 
-        dietList.forEach(diet -> {
-            recommendedDiet.stream()
-                    .filter(recommendedDietResponse -> recommendedDietResponse.getDietDate().equals(diet.getDietDate()))
-                    .forEach(recommendedDietResponse -> recommendedDietResponse.getDietList().add(
-                            RecommendedMenuResponse.builder()
-                                    .dietId(diet.getDietId())
-                                    .menuList(diet.getMenuList())
-                                    .build()
-                    ));
-        });
+        dietList.forEach(diet -> recommendedDiet.stream()
+                .filter(recommendedDietResponse -> recommendedDietResponse.getDietDate().equals(diet.getDietDate()))
+                .forEach(recommendedDietResponse -> recommendedDietResponse.getDietList().add(
+                        RecommendedMenuResponse.builder()
+                                .dietId(diet.getDietId())
+                                .menuList(diet.getMenuList())
+                                .build()
+                )));
         return recommendedDiet;
     }
 
@@ -227,7 +228,7 @@ public class DietService {
             redisInitDietRepository.delete(diet);
         }
 
-        List<MenuDetailResponse> menuDetailResponseList  = new ArrayList<>();
+        List<MenuDetailResponse> menuDetailResponseList = new ArrayList<>();
 
         menuIdList.forEach(list -> menuDetailResponseList.addAll(convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", list, new ArrayList<>()))));
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 자녀를 찾을 수 없습니다."));
