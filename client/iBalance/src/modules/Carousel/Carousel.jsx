@@ -51,7 +51,6 @@ const Carousel = (props) => {
   };
   const onTest = () => {
     setIsOpen(true);
-    naviate("/recipe/item");
   };
   useEffect(() => {
     const changePressed = () => {
