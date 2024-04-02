@@ -85,7 +85,7 @@ public class FcmService {
                     .build();
 
             try {
-                FirebaseMessaging.getInstance().sendMulticast(message);
+                FirebaseMessaging.getInstance().sendEachForMulticast(message);
             } catch (FirebaseMessagingException e) {
                 log.warn("리뷰 작성 알림 보내기 실패 : {}", e.getMessage());
             }
@@ -98,25 +98,27 @@ public class FcmService {
                 .map(NotifyTargetDto::getId)
                 .toList();
 
-        List<FcmToken> fcmTokens = (List<FcmToken>) fcmTokenRedisRepository.findAllById(memberIdList);
+        if(!memberIdList.isEmpty()) {
+            List<FcmToken> fcmTokens = (List<FcmToken>) fcmTokenRedisRepository.findAllById(memberIdList);
 
-        List<String> tokens = fcmTokens.stream()
-                .map(FcmToken::getFcmToken)
-                .toList();
+            List<String> tokens = fcmTokens.stream()
+                    .map(FcmToken::getFcmToken)
+                    .toList();
 
-        MulticastMessage message = MulticastMessage.builder()
-                .setNotification(Notification.builder()
-                        .setTitle("iBalance")
-                        .setBody("정보를 업데이트 한 지 일주일이 지났어요!\n그 동안 얼마나 자랐는지 확인 해볼까요?👉👉")
-                        .setImage(logo)
-                        .build())
-                .addAllTokens(tokens)
-                .build();
+            MulticastMessage message = MulticastMessage.builder()
+                    .setNotification(Notification.builder()
+                            .setTitle("iBalance")
+                            .setBody("정보를 업데이트 한 지 일주일이 지났어요!\n그 동안 얼마나 자랐는지 확인 해볼까요?👉👉")
+                            .setImage(logo)
+                            .build())
+                    .addAllTokens(tokens)
+                    .build();
 
-        try {
-            FirebaseMessaging.getInstance().sendMulticast(message);
-        } catch (FirebaseMessagingException e) {
-            log.warn("정보 업데이트 알림 보내기 실패 : {}", e.getMessage());
+            try {
+                FirebaseMessaging.getInstance().sendEachForMulticast(message);
+            } catch (FirebaseMessagingException e) {
+                log.warn("정보 업데이트 알림 보내기 실패 : {}", e.getMessage());
+            }
         }
     }
 }
