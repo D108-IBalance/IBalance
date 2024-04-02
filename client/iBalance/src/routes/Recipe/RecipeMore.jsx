@@ -12,12 +12,35 @@ import {
 
 const RecipeMore = (props) => {
   const childId = useSelector((state) => state.childId);
-  const parentRef = useRef(null);
+  const targetRef = useRef(null);
   const [isLoading, setIsloading] = useState(true);
 
   const { setIsOpen, setIsMore, moreRecipe, setRecipeData } = props;
   const [recipeList, setRecipeList] = useState(null);
-
+  const updateList = async () => {
+    setIsloading(true);
+    const value = await getPickySolutionList(
+      childId,
+      moreRecipe,
+      8,
+      recipeList[recipeList.length - 1].recipeId,
+    );
+    if (value.data.status === 200) {
+      setRecipeList((prev) => [...prev, ...value.data.data]);
+      setIsloading(false);
+    }
+  };
+  const io = new IntersectionObserver(
+    (entris) => {
+      entris.forEach((entry) => {
+        if (entry.isIntersecting && !isLoading) {
+          io.unobserve(entry.target);
+          updateList();
+        }
+      });
+    },
+    { threshold: 0.9 },
+  );
   useEffect(() => {
     const getPickyData = async () => {
       const res = await Promise.all([
@@ -28,6 +51,11 @@ const RecipeMore = (props) => {
       setIsloading(false);
     };
     getPickyData();
+    return () => {
+      if (targetRef.current) {
+        io.unobserve(targetRef.current);
+      }
+    };
   }, []);
 
   const onTest = async (recipeId) => {
@@ -35,41 +63,11 @@ const RecipeMore = (props) => {
     setRecipeData(res.data.data);
     setIsOpen(true);
   };
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          console.log(entry.target);
-          if (entry.isIntersecting && !isLoading) {
-            console.log("hi");
-            //호출
-            const getData = async () => {
-              setIsloading(true);
-              const res = await getPickySolutionList(
-                childId,
-                moreRecipe,
-                8,
-                recipeList[`${recipeList.length - 1}`].recipeId,
-              );
-              setRecipeList((prev) => [...prev, ...res.data.data]);
-              setIsloading(false);
-            };
-            getData();
-          }
-        });
-      },
-      { threshold: 0.1 },
-    );
-    if (parentRef.current) {
-      observer.observe(parentRef.current);
+    if (isLoading === false) {
+      io.observe(targetRef.current);
     }
-    return () => {
-      if (parentRef.current) {
-        observer.unobserve(parentRef.current);
-      }
-    };
-  }, [parentRef, isLoading]);
+  }, [isLoading]);
 
   return (
     <div className={classes.container}>
@@ -86,13 +84,14 @@ const RecipeMore = (props) => {
           <span>{moreRecipe}</span> 레시피
         </p>
       </div>
-      <div className={classes.cardBox} ref={parentRef}>
+      <div className={classes.cardBox}>
         {recipeList &&
           recipeList.map((recipe, idx) => {
             return (
               <div
                 key={idx}
                 className={classes.recipeImgBox}
+                ref={idx === recipeList.length - 1 ? targetRef : null}
                 onClick={() => {
                   setIsOpen(true);
                   onTest(recipe.recipeId);
@@ -109,7 +108,6 @@ const RecipeMore = (props) => {
             );
           })}
       </div>
-      <div className={classes.loadingBtn}></div>
     </div>
   );
 };
