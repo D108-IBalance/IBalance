@@ -11,10 +11,12 @@ import Header from "../../modules/Header/Header";
 import DietSummary from "../DietDetail/DietSummary";
 import DietComplete from "./DietComplete";
 import { getRecommendedDiet } from "./ServerConnect";
+import Load from "../../modules/Load/Load";
 
 const DietPage = () => {
   const childId = useSelector((state) => state.childId);
   const [userDiet, setUserDiet] = useState([]);
+  const [loadStep, setLoadStep] = useState(2);
   const [summaryInfo, setSummaryInfo] = useState({});
   const [selectDate, setSelectDate] = useState("");
   const [dietId, setDietId] = useState();
@@ -37,6 +39,7 @@ const DietPage = () => {
   useEffect(() => {
     const getDietData = async () => {
       const res = await getRecommendedDiet(childId);
+      setLoadStep(1);
       if (res.data.data[0].dietList.length === 0) {
         setIsSave(false);
         setUserDiet([]);
@@ -49,6 +52,7 @@ const DietPage = () => {
   }, [childId]);
   return (
     <>
+      <Load step={loadStep} />
       <div className={classes.gridSet}>
         <Header />
         <NavbarModule isClick={2} />
@@ -63,6 +67,7 @@ const DietPage = () => {
               setSummaryInfo={setSummaryInfo}
               isSave={isSave}
               setIsSave={setIsSave}
+              setLoadStep={setLoadStep}
             />
           ) : (
             <DietSummary
@@ -127,11 +132,15 @@ const EmptyOrList = (props) => {
     setSummaryInfo,
     isSave,
     setIsSave,
+    setLoadStep,
   } = props;
   return (
     <>
       {userDiet.length === 0 ? (
-        <EmptyDiet setUserDiet={setUserDiet} isSave={isSave}></EmptyDiet>
+        <EmptyDiet
+          setUserDiet={setUserDiet}
+          isSave={isSave}
+          setLoadStep={setLoadStep}></EmptyDiet>
       ) : (
         <ListComponent
           setDietId={setDietId}

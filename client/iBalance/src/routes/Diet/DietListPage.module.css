@@ -8,7 +8,7 @@
     width: 100vw;
     height: 100vh;
     overflow: scroll;
-    padding-bottom: 30px;
+    padding-bottom: 300px;
   }
   .DietListBack::-webkit-scrollbar {
     width: 10px; /* 스크롤바의 너비 */
@@ -48,7 +48,7 @@
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     overflow: scroll;
-    padding-bottom: 15%;
+    padding-bottom: 20%;
   }
   .DietListBack::-webkit-scrollbar {
     width: 10px; /* 스크롤바의 너비 */

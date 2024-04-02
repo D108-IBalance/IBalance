@@ -16,7 +16,7 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState({});
   const [weightChartInfo, setWeightChartInfo] = useState({});
   const [heightChartInfo, setHeightChartInfo] = useState({});
-  const [userDiet, setUserDiet] = useState({});
+  const [userDiet, setUserDiet] = useState([]);
   const [loadStep, setLoadStep] = useState(2);
   const childId = useSelector((state) => state.childId);
   useEffect(() => {

@@ -104,7 +104,7 @@ const Calendar = (props) => {
     };
     const getDietInfo = async () => {
       let dietDays = [];
-      const res = await getDietDates(CHILD_ID, year, month);
+      const res = await getDietDates(CHILD_ID, year, month + 1);
       if (res.data.status === 200) {
         dietDays = res.data.data.map((dietDate) => {
           const tempDate = new Date(dietDate["dietDate"]);

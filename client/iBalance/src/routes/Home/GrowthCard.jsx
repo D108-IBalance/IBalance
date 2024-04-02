@@ -133,11 +133,11 @@ const GrowthCard = (props) => {
                 <div className={classes.legends}>
                   <div className={classes.legend}>
                     <div className={classes.selectIcon} />
-                    <p>선택된 요소</p>
+                    <p>우리 아이 성장 곡선</p>
                   </div>
                   <div className={classes.legend}>
                     <div className={classes.notSelectIcon} />
-                    <p>선택되지 않은 요소</p>
+                    <p>평균 성장 곡선</p>
                   </div>
                 </div>
                 <div className={classes.controller}>

@@ -9,19 +9,21 @@ const DietComplete = (props) => {
   const [isClick, setIsClick] = useState(0);
   const [weekDiets, setWeekDiets] = useState([]);
   const weekList = useMemo(() => {
-    if (userDiet.length > 0) {
+    if (weekDiets.length > 0) {
       const WEEKDAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      return [...new Array(userDiet.length)].map((_, idx) => {
+      return [...new Array(weekDiets.length)].map((_, idx) => {
         const newDate = new Date();
         newDate.setDate(newDate.getDate() + idx);
         return { date: newDate.getDate(), day: WEEKDAY[newDate.getDay()] };
       });
     }
-  }, [userDiet]); // 초기 마운트 시에만 실행
+  }, [weekDiets]); // 초기 마운트 시에만 실행
   useEffect(() => {
     if (userDiet.length > 0) {
-      const tempWeekDiets = userDiet.map((dayDiet) => {
-        return { ...dayDiet, dietDate: dayDiet.dietDate };
+      const tempWeekDiets = userDiet.filter((dayDiet) => {
+        if (dayDiet.dietList.length > 0) {
+          return { ...dayDiet, dietDate: dayDiet.dietDate };
+        }
       });
       setWeekDiets(tempWeekDiets);
     }
