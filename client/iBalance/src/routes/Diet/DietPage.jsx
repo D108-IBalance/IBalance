@@ -33,7 +33,7 @@ const DietPage = () => {
       timer = setTimeout(() => {
         console.log(saveAlert);
         setSaveAlert(false);
-      }, 1000);
+      }, 2500);
     }
     return () => {
       clearTimeout(timer);
