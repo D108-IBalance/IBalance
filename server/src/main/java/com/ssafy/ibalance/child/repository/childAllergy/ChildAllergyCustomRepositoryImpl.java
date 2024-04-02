@@ -15,6 +15,10 @@ public class ChildAllergyCustomRepositoryImpl implements ChildAllergyCustomRepos
 
     @Override
     public List<String> getChildAllergyName(List<Long> childAllergyList) {
+        if(childAllergyList == null) {
+            childAllergyList = List.of();
+        }
+
         return jpaQueryFactory.select(allergy.allergyName)
                 .from(childAllergy)
                 .join(allergy).on(childAllergy.allergy.eq(allergy))
