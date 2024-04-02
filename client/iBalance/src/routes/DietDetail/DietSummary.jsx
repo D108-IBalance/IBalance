@@ -24,8 +24,8 @@ const DietSummary = (props) => {
   } = props;
   const [isOpen, setIsOpen] = useState(false);
   const childId = useSelector((state) => state.childId);
-  const [dietSummary, setDietSummary] = useState();
-  const [dietDetail, setDietDetail] = useState();
+  const [dietSummary, setDietSummary] = useState(null);
+  const [dietDetail, setDietDetail] = useState(null);
 
   useEffect(() => {
     const getDietDetailData = async () => {
