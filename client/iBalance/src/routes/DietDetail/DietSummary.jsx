@@ -58,18 +58,20 @@ const DietSummary = (props) => {
       prevMenuId,
     );
     // const res = dummyRefresh.data;
-    const nextDietSummary = dietSummary.map((menu) => {
-      if (menu.menuId == prevMenuId) return res.data.data;
-      return menu;
-    });
-    setDietSummary(nextDietSummary);
-    setUserDiet((prev) => {
-      let prevTemp = JSON.parse(JSON.stringify(prev));
-      prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
-        nextDietSummary;
+    if (res.data.status === 200) {
+      const nextDietSummary = dietSummary.map((menu) => {
+        if (menu.menuId == prevMenuId) return res.data.data;
+        return menu;
+      });
+      setDietSummary(nextDietSummary);
+      setUserDiet((prev) => {
+        let prevTemp = JSON.parse(JSON.stringify(prev));
+        prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
+          nextDietSummary;
 
-      return prevTemp;
-    });
+        return prevTemp;
+      });
+    }
     setLoadStep(1);
     setBgColor("#fff");
   };
