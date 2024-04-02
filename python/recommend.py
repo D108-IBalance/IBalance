@@ -1,9 +1,10 @@
 import pandas as pd
-from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_all_attr, find_data_by_attr_condition
+from dbUtil.mongodb_api import find_by_object_id, find_all_data, find_data_by_attr_condition
 from dbUtil.mysql_api import find_all_rating
 from request.request_dto import ChildInfo
 from pre.data_preprocess import diet_converter, parse_matrl_name, menu_converter
 from datetime import datetime
+from custom_exception.exception.recommend_exception import RecommendExceedException
 from custom_exception.exception.custom_http_exception import NotFoundException
 """
 @Author: 김회창
@@ -21,6 +22,10 @@ side_ratings = []  # 반찬류 평점 모+++아놓은 리스트
 soup_ratings = []  # 국류 평점 모아놓은 리스트
 
 cached_black_list = []  # 식단 추천시 임시로 검색되지 않게 도와주는 리스트
+
+origin_rice_ratings = []
+origin_side_ratings = []
+origin_soup_ratings = []
 """
 전역변수 초기화
 """
@@ -57,9 +62,11 @@ def read_ratings(child_id: int, exclude_id_list: list):
     global side_ratings
     global soup_ratings
     global hazard
+
     rice_ratings = []
     side_ratings = []
     soup_ratings = []
+
     mysql_result = find_all_rating(child_id, exclude_id_list)
     for rating in mysql_result:
         if rating[1] not in menu_objs.keys():
@@ -210,9 +217,9 @@ def gen_condition(menu_obj, condition_obj):
 
 def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     global menu_objs
+
     rating_pd = pd.DataFrame(data=cur_ratings, columns=['user_id', 'menu_id', 'rating'])
     rating_pd = rating_pd.pivot(index='user_id', columns='menu_id', values='rating')
-
     if user_id not in rating_pd.index:
         rating_pd.loc[user_id] = None
 
@@ -238,8 +245,8 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     recomms.u_index.apply(lambda d: some_list.append(unrated_items[int(d)]))
     filtered_recomms = list(filter(lambda x: gen_condition(menu_objs[x], condition_obj), some_list))
     if len(filtered_recomms) == 0:
-        data = some_list[:n_recomm]
-        filtered_recomms.append(data[0])
+        raise RecommendExceedException()
+
     return filtered_recomms[:n_recomm]
 
 

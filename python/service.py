@@ -3,7 +3,8 @@ from request.request_dto import ChildInfo, DietOfMenuId, PickyWithAllergy
 from dbUtil.mongodb_api import find_by_object_id, find_data_by_attr_condition, find_picky_recipes
 from static.mongo_statics import MENU_COLLECTION_NAME, ALLERGY_COLLECTION_NAME
 from pre.data_preprocess import menu_info_converter
-from custom_exception.exception.custom_http_exception import NotFoundException
+from custom_exception.exception.custom_http_exception import NotFoundException, CacheExceedException
+from custom_exception.exception.recommend_exception import RecommendExceedException
 
 """
 @Author: 김회창
@@ -17,7 +18,11 @@ from custom_exception.exception.custom_http_exception import NotFoundException
 
 
 def diet_init(request: ChildInfo) -> list[list[dict]]:
-    return init_recommendations(request)
+    try:
+        result = init_recommendations(request)
+    except RecommendExceedException:
+        raise CacheExceedException("더 이상 추천해줄 수 없습니다. 캐시를 비우세요")
+    return result
 
 
 """
@@ -42,7 +47,11 @@ def menu_info(menu_id: str) -> dict:
 
 
 def one_diet_recommend(request: ChildInfo) -> list[dict]:
-    return one_recommend(request)
+    try:
+        result = one_recommend(request)
+    except RecommendExceedException:
+        raise CacheExceedException("더 이상 추천해줄 수 없습니다. 캐시를 비우세요")
+    return result
 
 
 """
@@ -53,7 +62,11 @@ def one_diet_recommend(request: ChildInfo) -> list[dict]:
 
 
 def new_menu_recommend(request: ChildInfo) -> dict:
-    return menu_recommend(request)
+    try:
+        result = menu_recommend(request)
+    except RecommendExceedException:
+        raise CacheExceedException("더 이상 추천해줄 수 없습니다. 캐시를 비우세요")
+    return result
 
 
 """
