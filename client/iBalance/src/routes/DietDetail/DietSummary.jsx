@@ -24,8 +24,8 @@ const DietSummary = (props) => {
   } = props;
   const [isOpen, setIsOpen] = useState(false);
   const childId = useSelector((state) => state.childId);
-  const [dietSummary, setDietSummary] = useState();
-  const [dietDetail, setDietDetail] = useState();
+  const [dietSummary, setDietSummary] = useState(null);
+  const [dietDetail, setDietDetail] = useState(null);
 
   useEffect(() => {
     const getDietDetailData = async () => {
@@ -58,18 +58,20 @@ const DietSummary = (props) => {
       prevMenuId,
     );
     // const res = dummyRefresh.data;
-    const nextDietSummary = dietSummary.map((menu) => {
-      if (menu.menuId == prevMenuId) return res.data.data;
-      return menu;
-    });
-    setDietSummary(nextDietSummary);
-    setUserDiet((prev) => {
-      let prevTemp = JSON.parse(JSON.stringify(prev));
-      prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
-        nextDietSummary;
+    if (res.data.status === 200) {
+      const nextDietSummary = dietSummary.map((menu) => {
+        if (menu.menuId == prevMenuId) return res.data.data;
+        return menu;
+      });
+      setDietSummary(nextDietSummary);
+      setUserDiet((prev) => {
+        let prevTemp = JSON.parse(JSON.stringify(prev));
+        prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
+          nextDietSummary;
 
-      return prevTemp;
-    });
+        return prevTemp;
+      });
+    }
     setLoadStep(1);
     setBgColor("#fff");
   };
