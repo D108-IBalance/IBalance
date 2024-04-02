@@ -8,7 +8,7 @@ import { insertTempDiet, getRecommendedDiet } from "../Diet/ServerConnect";
 const SaveModalPage = (props) => {
   const childId = useSelector((state) => state.childId);
 
-  const { setSaveModal, setIsSave, setUserDiet } = props;
+  const { setSaveModal, setIsSave, setUserDiet, setSaveAlert } = props;
   const closeModal = () => {
     setSaveModal(false);
   };
@@ -19,6 +19,7 @@ const SaveModalPage = (props) => {
     setUserDiet(res.data.data);
     setIsSave(true);
     setSaveModal(false);
+    setSaveAlert(true);
   };
 
   return (

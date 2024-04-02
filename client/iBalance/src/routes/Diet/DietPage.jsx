@@ -12,9 +12,11 @@ import DietSummary from "../DietDetail/DietSummary";
 import DietComplete from "./DietComplete";
 import { getRecommendedDiet } from "./ServerConnect";
 import Load from "../../modules/Load/Load";
+import SaveAlert from "./SaveAlert";
 
 const DietPage = () => {
   const childId = useSelector((state) => state.childId);
+  const [saveAlert, setSaveAlert] = useState(null);
   const [isCreate, setIsCreate] = useState(false);
   const [bgColor, setBgColor] = useState("#fff");
   const [userDiet, setUserDiet] = useState([]);
@@ -25,7 +27,17 @@ const DietPage = () => {
   const [isSave, setIsSave] = useState(false);
   // false : 초기 식단 조회 상태 ( 식단 저장 버튼 O )
   // true : 최종 식단 조회 상태 ( 식단 저장 버튼 X )
-
+  useEffect(() => {
+    let timer = null;
+    if (saveAlert === true) {
+      timer = setTimeout(() => {
+        setSaveAlert(false);
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [saveAlert]);
   const weekListKo = useMemo(() => {
     const arrDayStr = ["일", "월", "화", "수", "목", "금", "토"];
     return [...new Array(7)].map((_, idx) => {
@@ -54,6 +66,7 @@ const DietPage = () => {
   }, [childId]);
   return (
     <>
+      {saveAlert ? <SaveAlert /> : null}
       <Load step={loadStep} bgColor={bgColor} isCreate={isCreate} />
       <div className={classes.gridSet}>
         <Header />
@@ -72,6 +85,7 @@ const DietPage = () => {
               setLoadStep={setLoadStep}
               setBgColor={setBgColor}
               setIsCreate={setIsCreate}
+              setSaveAlert={setSaveAlert}
             />
           ) : (
             <DietSummary
@@ -103,6 +117,7 @@ const ListComponent = (props) => {
     setIsSave,
     setLoadStep,
     setBgColor,
+    setSaveAlert,
   } = props;
   return (
     <>
@@ -124,7 +139,8 @@ const ListComponent = (props) => {
           isSave={isSave}
           setIsSave={setIsSave}
           setBgColor={setBgColor}
-          setLoadStep={setLoadStep}></DietListPage>
+          setLoadStep={setLoadStep}
+          setSaveAlert={setSaveAlert}></DietListPage>
       )}
     </>
   );
@@ -143,6 +159,7 @@ const EmptyOrList = (props) => {
     setLoadStep,
     setBgColor,
     setIsCreate,
+    setSaveAlert,
   } = props;
   return (
     <>
@@ -164,6 +181,7 @@ const EmptyOrList = (props) => {
           setIsSave={setIsSave}
           setLoadStep={setLoadStep}
           setBgColor={setBgColor}
+          setSaveAlert={setSaveAlert}
         />
       )}
     </>
