@@ -21,7 +21,6 @@ const DietDetail = (props) => {
               style={{
                 backgroundImage: `url(${dietDetail.menuImgUrl})`,
               }}></div>
-            {/* <img src={dietDetail.menuImgUrl} className={classes.menuImg}></img> */}
           </div>
           <div className={classes.nameBox}>
             <div className={classes.menuName}>{dietDetail.menuName}</div>
