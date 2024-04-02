@@ -1,18 +1,13 @@
 // 외부 모듈
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 // 내부 모듈
 import classes from "./Carousel.module.css";
-import sample1 from "../../assets/recipe/sample1.png";
-import sample2 from "../../assets/recipe/sample2.png";
-import sample3 from "../../assets/recipe/sample3.png";
-import sample4 from "../../assets/recipe/sample4.png";
-import sample5 from "../../assets/recipe/sample5.png";
+import { getPickySolutionDetail } from "../../routes/Recipe/ServerConnect";
 
 const Carousel = (props) => {
-  const { setIsOpen } = props;
-  const naviate = useNavigate();
+  const { setIsOpen, recipeList, pickyMaterialName, setRecipeData } = props;
+
   const slider = useRef(null);
   const inner = useRef(null);
   let pressed = false;
@@ -49,9 +44,14 @@ const Carousel = (props) => {
       inner.current.style.left = `-${inSide.width - outSide.width}px`;
     }
   };
-  const onTest = () => {
+
+  const onTest = async (recipeId) => {
+    console.log(pickyMaterialName, recipeId);
+    const res = await getPickySolutionDetail(pickyMaterialName, recipeId);
+    setRecipeData(res.data.data);
     setIsOpen(true);
   };
+
   useEffect(() => {
     const changePressed = () => {
       pressed = false;
@@ -71,42 +71,30 @@ const Carousel = (props) => {
         onMouseUp={onSliderUp}
         onMouseMove={onSliderMove}>
         <div className={classes.inner} ref={inner}>
-          <div
-            className={classes.item}
-            onMouseUp={() => {
-              onTest();
-            }}>
-            <div className={classes.recipeImgBox}>
-              <img src={sample1} alt="" className={classes.recipeImg} />
-              <div className={classes.imgTextBox}>
-                <div className={classes.recipeName}>당근전</div>
-              </div>
-            </div>
-          </div>
-          <div className={classes.item}>
-            <div className={classes.recipeImgBox}>
-              <img src={sample2} alt="" className={classes.recipeImg} />
-            </div>
-            <div className={classes.imgText}></div>
-          </div>
-          <div className={classes.item}>
-            <div className={classes.recipeImgBox}>
-              <img src={sample3} alt="" className={classes.recipeImg} />
-            </div>
-            <div className={classes.imgText}></div>
-          </div>
-          <div className={classes.item}>
-            <div className={classes.recipeImgBox}>
-              <img src={sample4} alt="" className={classes.recipeImg} />
-            </div>
-            <div className={classes.imgText}></div>
-          </div>
-          <div className={classes.item}>
-            <div className={classes.recipeImgBox}>
-              <img src={sample5} alt="" className={classes.recipeImg} />
-            </div>
-            <div className={classes.imgText}></div>
-          </div>
+          {recipeList &&
+            recipeList.map((item, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className={classes.item}
+                  onMouseUp={() => {
+                    onTest(item.recipeId);
+                  }}>
+                  <div className={classes.recipeImgBox}>
+                    <img
+                      src={item.recipeImgUrl}
+                      alt=""
+                      className={classes.recipeImg}
+                    />
+                    <div className={classes.imgTextBox}>
+                      <div className={classes.recipeName}>
+                        {item.recipeTitle}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
       <div></div>
