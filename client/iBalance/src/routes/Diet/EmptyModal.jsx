@@ -5,7 +5,7 @@ import { getUserInfo, getInitDiet } from "./ServerConnect";
 import { useSelector } from "react-redux";
 
 const EmptyModal = (props) => {
-  const { setIsModal, setUserDiet, setLoadStep } = props;
+  const { setIsModal, setUserDiet, setLoadStep, setIsCreate } = props;
   const [userProfile, setUserProfile] = useState({});
   const childId = useSelector((state) => state.childId);
   useEffect(() => {
@@ -17,10 +17,12 @@ const EmptyModal = (props) => {
   }, []);
 
   const dietHandler = async () => {
+    setIsCreate(true);
     setLoadStep(2);
     const res = await getInitDiet(childId);
     setUserDiet(res.data.data);
     setLoadStep(1);
+    setIsCreate(false);
   };
   return (
     <div
