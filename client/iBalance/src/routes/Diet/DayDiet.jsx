@@ -17,9 +17,13 @@ const DayDiet = (props) => {
     setSelectDate,
     isSave,
     setDietId,
+    setBgColor,
+    setLoadStep,
   } = props;
 
   const addDietCard = async () => {
+    setBgColor("rgba(0,0,0,0.7)");
+    setLoadStep(2);
     const res = await addTempDiet(childId, diets.dietDay);
     setUserDiet((prev) => {
       let nextDiets = JSON.parse(JSON.stringify(prev));
@@ -32,6 +36,8 @@ const DayDiet = (props) => {
       });
       return nextDiets;
     });
+    setLoadStep(1);
+    setBgColor("#fff");
   };
   const goSummary = (sequence) => {
     if (isSave === false) {

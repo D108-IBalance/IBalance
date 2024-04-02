@@ -15,6 +15,8 @@ import Load from "../../modules/Load/Load";
 
 const DietPage = () => {
   const childId = useSelector((state) => state.childId);
+  const [isCreate, setIsCreate] = useState(false);
+  const [bgColor, setBgColor] = useState("#fff");
   const [userDiet, setUserDiet] = useState([]);
   const [loadStep, setLoadStep] = useState(2);
   const [summaryInfo, setSummaryInfo] = useState({});
@@ -52,7 +54,7 @@ const DietPage = () => {
   }, [childId]);
   return (
     <>
-      <Load step={loadStep} />
+      <Load step={loadStep} bgColor={bgColor} isCreate={isCreate} />
       <div className={classes.gridSet}>
         <Header />
         <NavbarModule isClick={2} />
@@ -68,6 +70,8 @@ const DietPage = () => {
               isSave={isSave}
               setIsSave={setIsSave}
               setLoadStep={setLoadStep}
+              setBgColor={setBgColor}
+              setIsCreate={setIsCreate}
             />
           ) : (
             <DietSummary
@@ -97,6 +101,8 @@ const ListComponent = (props) => {
     setSummaryInfo,
     isSave,
     setIsSave,
+    setLoadStep,
+    setBgColor,
   } = props;
   return (
     <>
@@ -116,7 +122,9 @@ const ListComponent = (props) => {
           setUserDiet={setUserDiet}
           setSummaryInfo={setSummaryInfo}
           isSave={isSave}
-          setIsSave={setIsSave}></DietListPage>
+          setIsSave={setIsSave}
+          setBgColor={setBgColor}
+          setLoadStep={setLoadStep}></DietListPage>
       )}
     </>
   );
@@ -133,6 +141,8 @@ const EmptyOrList = (props) => {
     isSave,
     setIsSave,
     setLoadStep,
+    setBgColor,
+    setIsCreate,
   } = props;
   return (
     <>
@@ -140,7 +150,8 @@ const EmptyOrList = (props) => {
         <EmptyDiet
           setUserDiet={setUserDiet}
           isSave={isSave}
-          setLoadStep={setLoadStep}></EmptyDiet>
+          setLoadStep={setLoadStep}
+          setIsCreate={setIsCreate}></EmptyDiet>
       ) : (
         <ListComponent
           setDietId={setDietId}
@@ -151,6 +162,8 @@ const EmptyOrList = (props) => {
           setSummaryInfo={setSummaryInfo}
           isSave={isSave}
           setIsSave={setIsSave}
+          setLoadStep={setLoadStep}
+          setBgColor={setBgColor}
         />
       )}
     </>
