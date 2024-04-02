@@ -4,8 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,14 +15,15 @@ import java.io.InputStream;
 @Slf4j
 public class FcmInitailizer {
 
-    @Value("${fcm.google.application.credentials}")
-    private String googleCredential;
+    private final InputStream firebaseInfoStream;
+
+    public FcmInitailizer(@Qualifier("firebaseInfoStream") InputStream stream) {
+        this.firebaseInfoStream = stream;
+    }
 
     @PostConstruct
     public void initialize() {
-        ClassPathResource resource = new ClassPathResource(googleCredential);
-
-        try (InputStream is = resource.getInputStream()){
+        try (InputStream is = firebaseInfoStream) {
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(is))
                     .build();
