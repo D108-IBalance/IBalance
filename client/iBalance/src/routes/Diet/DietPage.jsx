@@ -31,6 +31,7 @@ const DietPage = () => {
     let timer = null;
     if (saveAlert === true) {
       timer = setTimeout(() => {
+        console.log(saveAlert);
         setSaveAlert(false);
       }, 1000);
     }
