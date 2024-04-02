@@ -18,6 +18,7 @@ import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
 import com.ssafy.ibalance.diet.dto.response.*;
 import com.ssafy.ibalance.diet.entity.*;
 import com.ssafy.ibalance.diet.exception.CannotAddDietException;
+import com.ssafy.ibalance.diet.exception.NoMoreExistMenuException;
 import com.ssafy.ibalance.diet.exception.RedisWrongDataException;
 import com.ssafy.ibalance.diet.exception.WrongCookieDataException;
 import com.ssafy.ibalance.diet.repository.DietMenuRepository;
@@ -35,6 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -152,7 +155,7 @@ public class DietService {
 
         List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
 
-        List<DietMenuResponse> tempDiet = getTempRecommend(childId, allergyList, doNotRecommend.getMenuList());
+        List<DietMenuResponse> tempDiet = getTempRecommend(childId, allergyList, doNotRecommend);
         List<String> menuList = tempDiet.stream().map(DietMenuResponse::getMenuId).toList();
 
         dietList.add(RedisDietDto.builder().menuList(menuList).build());
@@ -203,7 +206,7 @@ public class DietService {
 
         List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
 
-        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommend.getMenuList(), dietList, menuId);
+        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommend, dietList, menuId);
 
         dietList.add(menu.getMenuId());
         doNotRecommend.getMenuList().add(menu.getMenuId());
@@ -329,21 +332,34 @@ public class DietService {
         return initDietResponseList;
     }
 
-    private List<DietMenuResponse> getTempRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend) {
+    private List<DietMenuResponse> getTempRecommend(Integer childId, List<Integer> allergyList, RedisDoNotRecommendMenuId doNotRecommend) {
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 ID의 자녀를 찾을 수 없습니다."));
 
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
 
-        RecommendRequest recommendRequest = RecommendRequest.builder()
-                .childId(childId)
-                .allergyList(allergyName)
-                .cacheList(doNotRecommend)
-                .need(getChildNeed(child))
-                .needType(null)
-                .currentMenuIdOfDiet(null)
-                .build();
+        List<LinkedHashMap<String, Object>> recommendResult;
+        try {
+            recommendResult = fastAPIConnectionUtil.postApiConnectionResult("", RecommendRequest.builder()
+                    .childId(childId)
+                    .allergyList(allergyName)
+                    .cacheList(doNotRecommend.getMenuList())
+                    .need(getChildNeed(child))
+                    .needType(null)
+                    .currentMenuIdOfDiet(null)
+                    .build(), new ArrayList<>());
+        } catch (NoMoreExistMenuException e) {
+            resetRedisDoNotRecommend(childId, doNotRecommend);
 
-        List<LinkedHashMap<String, Object>> recommendResult = fastAPIConnectionUtil.postApiConnectionResult("", recommendRequest, new ArrayList<>());
+            recommendResult = fastAPIConnectionUtil.postApiConnectionResult("", RecommendRequest.builder()
+                    .childId(childId)
+                    .allergyList(allergyName)
+                    .cacheList(doNotRecommend.getMenuList())
+                    .need(getChildNeed(child))
+                    .needType(null)
+                    .currentMenuIdOfDiet(null)
+                    .build(), new ArrayList<>());
+        }
+
         return convertTempRecommend(recommendResult);
     }
 
@@ -361,24 +377,37 @@ public class DietService {
         ).toList();
     }
 
-    private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, List<String> doNotRecommend, List<String> menuList, String refreshMenuId) {
+    private MenuDetailResponse getMenuRecommend(Integer childId, List<Integer> allergyList, RedisDoNotRecommendMenuId doNotRecommend, List<String> menuList, String refreshMenuId) {
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 ID의 자녀를 찾을 수 없습니다."));
 
         List<String> allergyName = allergyRepository.findAllergyNameByIdIn(allergyList).stream().map(Allergy::getAllergyName).toList();
 
         MenuType needType = fastAPIConnectionUtil.getApiConnectionResult("/info/" + refreshMenuId, DietMenuResponse.builder().build()).getMenuType();
 
-        return convertPythonRecommendAPIToResponse(
-                fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
-                        .childId(childId)
-                        .allergyList(allergyName)
-                        .cacheList(doNotRecommend)
-                        .need(getChildNeed(child))
-                        .needType(needType)
-                        .currentMenuIdOfDiet(menuList)
-                        .build(), new LinkedHashMap<>()
-                )
-        );
+        LinkedHashMap<String, Object> recommendResult;
+        try {
+            recommendResult = fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
+                    .childId(childId)
+                    .allergyList(allergyName)
+                    .cacheList(doNotRecommend.getMenuList())
+                    .need(getChildNeed(child))
+                    .needType(needType)
+                    .currentMenuIdOfDiet(menuList)
+                    .build(), new LinkedHashMap<>());
+        } catch (NoMoreExistMenuException e) {
+            resetRedisDoNotRecommend(childId, doNotRecommend);
+
+            recommendResult = fastAPIConnectionUtil.postApiConnectionResult("/menu", RecommendRequest.builder()
+                    .childId(childId)
+                    .allergyList(allergyName)
+                    .cacheList(doNotRecommend.getMenuList())
+                    .need(getChildNeed(child))
+                    .needType(needType)
+                    .currentMenuIdOfDiet(menuList)
+                    .build(), new LinkedHashMap<>());
+        }
+
+        return convertPythonRecommendAPIToResponse(recommendResult);
     }
 
     private RecommendNeedDto getChildNeed(Child child) {
@@ -398,6 +427,22 @@ public class DietService {
                 .build();
     }
 
+    private List<String> resetRedisDoNotRecommend(Integer childId, RedisDoNotRecommendMenuId doNotRecommend) {
+        List<RedisRecommendDiet> recommendDiets = (List<RedisRecommendDiet>) redisInitDietRepository.findAllById(IntStream.range(0, 7)
+                .mapToObj(day -> childId + "_" + day).toList());
+
+        List<String> menuIds = new ArrayList<>();
+        recommendDiets.forEach(dayDiets -> dayDiets.getDietList()
+                .forEach(diet -> menuIds.addAll(diet.getMenuList())));
+
+        redisDoNotRecommendRepository.save(RedisDoNotRecommendMenuId.builder()
+                .Id(childId)
+                .menuList(menuIds)
+                .build());
+
+        return menuIds;
+    }
+
     private List<Integer> convertCookieStringToIntegerList(String cookie) {
         List<Integer> result = new ArrayList<>();
         if(!cookie.isEmpty()) {
@@ -412,17 +457,6 @@ public class DietService {
 
         return result;
 
-    }
-
-    private List<String> convertCookieStringToStringList(String cookie) {
-        List<String> result;
-        String[] cookieSplit = cookie.split("\\|");
-        try {
-            result = new ArrayList<>(Arrays.asList(cookieSplit));
-        } catch (Exception e) {
-            throw new WrongCookieDataException("쿠키에 잘못된 값이 입력되었습니다.");
-        }
-        return result;
     }
 
     private MenuDetailResponse convertPythonRecommendAPIToResponse(LinkedHashMap<String, Object> recommendResult) {
