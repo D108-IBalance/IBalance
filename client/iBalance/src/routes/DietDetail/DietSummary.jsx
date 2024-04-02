@@ -19,6 +19,8 @@ const DietSummary = (props) => {
     isSave,
     setUserDiet,
     dietId,
+    setLoadStep,
+    setBgColor,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
   const childId = useSelector((state) => state.childId);
@@ -47,6 +49,8 @@ const DietSummary = (props) => {
   }, [summaryInfo, isSave, dietId]);
 
   const refreshMenu = async (prevMenuId) => {
+    setBgColor("rgba(0,0,0,0.7)");
+    setLoadStep(2);
     const res = await changeMenuOfTempDiet(
       childId,
       summaryInfo.dietDay,
@@ -66,6 +70,8 @@ const DietSummary = (props) => {
 
       return prevTemp;
     });
+    setLoadStep(1);
+    setBgColor("#fff");
   };
 
   return (

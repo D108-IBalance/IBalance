@@ -98,6 +98,8 @@ const DietPage = () => {
               summaryInfo={summaryInfo}
               isSave={isSave}
               setUserDiet={setUserDiet}
+              setBgColor={setBgColor}
+              setLoadStep={setLoadStep}
             />
           )}
         </div>
