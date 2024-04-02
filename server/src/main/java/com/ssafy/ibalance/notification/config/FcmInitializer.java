@@ -13,11 +13,11 @@ import java.io.InputStream;
 
 @Component
 @Slf4j
-public class FcmInitailizer {
+public class FcmInitializer {
 
     private final InputStream firebaseInfoStream;
 
-    public FcmInitailizer(@Qualifier("firebaseInfoStream") InputStream stream) {
+    public FcmInitializer(@Qualifier("firebaseInfoStream") InputStream stream) {
         this.firebaseInfoStream = stream;
     }
 
