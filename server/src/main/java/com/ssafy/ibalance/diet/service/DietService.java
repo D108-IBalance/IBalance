@@ -13,16 +13,14 @@ import com.ssafy.ibalance.diet.dto.RecommendNeedDto;
 import com.ssafy.ibalance.diet.dto.RedisDietDto;
 import com.ssafy.ibalance.diet.dto.request.RecommendRequest;
 import com.ssafy.ibalance.diet.dto.response.*;
-import com.ssafy.ibalance.diet.entity.Diet;
-import com.ssafy.ibalance.diet.entity.DietMaterial;
-import com.ssafy.ibalance.diet.entity.DietMenu;
-import com.ssafy.ibalance.diet.entity.RedisRecommendDiet;
+import com.ssafy.ibalance.diet.entity.*;
 import com.ssafy.ibalance.diet.exception.CannotAddDietException;
 import com.ssafy.ibalance.diet.exception.RedisWrongDataException;
 import com.ssafy.ibalance.diet.exception.WrongCookieDataException;
 import com.ssafy.ibalance.diet.repository.DietMenuRepository;
 import com.ssafy.ibalance.diet.repository.RedisInitDietRepository;
 import com.ssafy.ibalance.diet.repository.diet.DietRepository;
+import com.ssafy.ibalance.diet.repository.diet.RedisDoNotRecommendRepository;
 import com.ssafy.ibalance.diet.repository.dietmaterial.DietMaterialRepository;
 import com.ssafy.ibalance.diet.type.DietNutrition;
 import com.ssafy.ibalance.diet.type.MealTime;
@@ -48,17 +46,19 @@ public class DietService {
     private final BmiConditionRepository bmiConditionRepository;
     private final RedisChildAllergyRepository redisChildAllergyRepository;
     private final RedisInitDietRepository redisInitDietRepository;
+    private final RedisDoNotRecommendRepository redisDoNotRecommendRepository;
     private final FastAPIConnectionUtil fastAPIConnectionUtil;
 
 
-    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId, LocalDate today) {
+    public List<RecommendedDietResponse> getRecommendedDiet(Integer childId) {
+        LocalDate today = LocalDate.now();
         LocalDate endday = today.plusDays(6);
         List<DietByDateResponse> dietList =  dietRepository.getDietByDateBetween(childId, today, endday);
 
         List<RecommendedDietResponse> recommendedDiet = new ArrayList<>();
         for(int day = 0; day < 7; day++) {
             recommendedDiet.add(RecommendedDietResponse.builder()
-                    .dietDate(LocalDate.now().plusDays(day))
+                    .dietDate(today.plusDays(day))
                     .dietList(new ArrayList<RecommendedMenuResponse>())
                     .build());
         }
@@ -123,6 +123,10 @@ public class DietService {
         }
 
         redisInitDietRepository.saveAll(redisRecommendDietList);
+        redisDoNotRecommendRepository.save(RedisDoNotRecommendMenuId.builder()
+                .Id(childId)
+                .menuList(pastMenu)
+                .build());
 
         return initDietResponseList;
     }
@@ -136,8 +140,9 @@ public class DietService {
         return convertPythonInfoAPIToResponse(menuDetailList);
     }
 
-    public List<DietMenuResponse> addTempDiet(Integer childId, int dietDay, String allergy, String doNotRecommend) {
+    public List<DietMenuResponse> addTempDiet(Integer childId, int dietDay, String allergy) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
+        RedisDoNotRecommendMenuId doNotRecommend = redisDoNotRecommendRepository.findById(childId).orElseThrow(() -> new RedisWrongDataException("Redis에 이전 추천 식단 데이터가 없습니다."));
         List<RedisDietDto> dietList = dayDiet.getDietList();
 
         if(dietList.size() >= 3) {
@@ -145,16 +150,18 @@ public class DietService {
         }
 
         List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
-        List<String> doNotRecommendList = convertCookieStringToStringList(doNotRecommend);
 
-        List<DietMenuResponse> tempDiet = getTempRecommend(childId, allergyList, doNotRecommendList);
+        List<DietMenuResponse> tempDiet = getTempRecommend(childId, allergyList, doNotRecommend.getMenuList());
         List<String> menuList = tempDiet.stream().map(DietMenuResponse::getMenuId).toList();
 
         dietList.add(RedisDietDto.builder().menuList(menuList).build());
+        doNotRecommend.getMenuList().addAll(menuList);
+
         redisInitDietRepository.save(RedisRecommendDiet.builder()
                 .id(childId + "_" + dietDay)
                 .dietList(dietList)
                 .build());
+        redisDoNotRecommendRepository.save(doNotRecommend);
 
         return tempDiet;
     }
@@ -173,8 +180,9 @@ public class DietService {
         return menuList;
     }
 
-    public MenuDetailResponse changeMenuOfTempDiet(Integer childId, int dietDay, int sequence, String menuId, String allergy, String doNotRecommend) {
+    public MenuDetailResponse changeMenuOfTempDiet(Integer childId, int dietDay, int sequence, String menuId, String allergy) {
         RedisRecommendDiet dayDiet = redisInitDietRepository.findById(childId + "_" + dietDay).orElseThrow(() -> new RedisWrongDataException("Redis에 해당 날짜의 식단 데이터가 없습니다."));
+        RedisDoNotRecommendMenuId doNotRecommend = redisDoNotRecommendRepository.findById(childId).orElseThrow(() -> new RedisWrongDataException("Redis에 이전 추천 식단 데이터가 없습니다."));
         List<String> dietList = dayDiet.getDietList().get(sequence).getMenuList();
 
         if(dietList.size() != 4) {
@@ -193,12 +201,14 @@ public class DietService {
         }
 
         List<Integer> allergyList = convertCookieStringToIntegerList(allergy);
-        List<String> doNotRecommendList = convertCookieStringToStringList(doNotRecommend);
 
-        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommendList, dietList, menuId);
+        MenuDetailResponse menu = getMenuRecommend(childId, allergyList, doNotRecommend.getMenuList(), dietList, menuId);
 
         dietList.add(menu.getMenuId());
+        doNotRecommend.getMenuList().add(menu.getMenuId());
+
         redisInitDietRepository.save(dayDiet);
+        redisDoNotRecommendRepository.save(doNotRecommend);
 
         return menu;
     }
@@ -266,6 +276,7 @@ public class DietService {
 
         // redis 데이터 삭제
         redisInitDietRepository.deleteAll(redisRecommendDietList);
+        redisDoNotRecommendRepository.deleteById(childId);
 
         List<Long> dietIds = new ArrayList<>();
         diets.forEach(diet -> dietIds.add(diet.getId()));

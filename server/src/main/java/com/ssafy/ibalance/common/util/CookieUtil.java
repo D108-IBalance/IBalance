@@ -19,7 +19,7 @@ public class CookieUtil {
             return;
         }
         Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("allergy") || cookie.getName().equals("doNotRecommend"))
+                .filter(cookie -> cookie.getName().equals("allergy"))
                 .forEach(cookie -> {
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);
