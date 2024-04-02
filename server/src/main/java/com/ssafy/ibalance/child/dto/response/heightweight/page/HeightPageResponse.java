@@ -1,5 +1,7 @@
-package com.ssafy.ibalance.child.dto.response;
+package com.ssafy.ibalance.child.dto.response.heightweight.page;
 
+import com.ssafy.ibalance.child.dto.response.AverageGrowthResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.growth.HeightGrowthResponse;
 import lombok.Builder;
 import lombok.Getter;
 

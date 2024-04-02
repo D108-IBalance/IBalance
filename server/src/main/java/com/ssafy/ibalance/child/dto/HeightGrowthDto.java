@@ -1,21 +1,15 @@
 package com.ssafy.ibalance.child.dto;
 
-import com.ssafy.ibalance.child.entity.Child;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class HeightGrowthDto {
+public class HeightGrowthDto extends GrowthDto {
 
-    private Integer weekCreatedTime;
-    private LocalDateTime createdTime;
     private double height;
-    private Child child;
 }

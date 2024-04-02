@@ -1,22 +1,21 @@
-package com.ssafy.ibalance.child.dto.response;
+package com.ssafy.ibalance.child.dto.response.heightweight.growth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.ibalance.child.dto.HeightGrowthDto;
+import com.ssafy.ibalance.child.dto.GrowthDto;
 import com.ssafy.ibalance.child.type.Gender;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 
-@Builder
 @Getter
 @Setter
-public class HeightGrowthResponse {
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class GrowthResponse {
     private Gender gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -31,24 +30,21 @@ public class HeightGrowthResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    private double height;
 
-    public static HeightGrowthResponse ConvertEntityToDto(HeightGrowthDto heightGrowth) {
-        LocalDate recordDate = heightGrowth.getCreatedTime().toLocalDate();
+    public static <T extends GrowthResponse> T convertEntityToDto(GrowthDto growth, T target) {
+        LocalDate recordDate = growth.getCreatedTime().toLocalDate();
 
         LocalDate endDate = recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
         if(recordDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
             endDate = recordDate;
         }
 
-        return builder()
-                .gender(heightGrowth.getChild().getGender())
-                .birthDate(heightGrowth.getChild().getBirthDate())
-                .month(ChronoUnit.MONTHS.between(heightGrowth.getChild().getBirthDate(), recordDate))
-                .recordDate(recordDate)
-                .startDate(recordDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)))
-                .endDate(endDate)
-                .height(heightGrowth.getHeight())
-                .build();
+        target.setGender(growth.getChild().getGender());
+        target.setBirthDate(growth.getChild().getBirthDate());
+        target.setMonth(ChronoUnit.MONTHS.between(growth.getChild().getBirthDate(), recordDate));
+        target.setRecordDate(recordDate);
+        target.setStartDate(recordDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)));
+        target.setEndDate(endDate);
+        return target;
     }
 }
