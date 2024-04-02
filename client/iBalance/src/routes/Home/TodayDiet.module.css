@@ -84,6 +84,7 @@
   .dietBox {
     width: 280px;
     height: 100%;
+    cursor: pointer;
   }
   .dietTitle {
     display: flex;
