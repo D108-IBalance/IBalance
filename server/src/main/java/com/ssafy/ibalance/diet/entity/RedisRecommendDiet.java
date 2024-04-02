@@ -10,7 +10,7 @@ import java.util.List;
 
 @Builder
 @Getter
-@RedisHash(value = "recommendDiet")
+@RedisHash(value = "recommendDiet", timeToLive = 1800)
 public class RedisRecommendDiet {
 
     @Id

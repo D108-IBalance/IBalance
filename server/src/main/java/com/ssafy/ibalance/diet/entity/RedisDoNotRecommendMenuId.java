@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Getter
-@RedisHash(value = "doNotRecommend")
+@RedisHash(value = "doNotRecommend", timeToLive = 1800)
 public class RedisDoNotRecommendMenuId {
 
     @Id
