@@ -35,13 +35,19 @@ public class WeightGrowthResponse {
 
     public static WeightGrowthResponse ConvertEntityToDto(WeightGrowthDto weightGrowth) {
         LocalDate recordDate = weightGrowth.getCreatedTime().toLocalDate();
+
+        LocalDate endDate = recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
+        if(recordDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            endDate = recordDate;
+        }
+
         return builder()
                 .gender(weightGrowth.getChild().getGender())
                 .birthDate(weightGrowth.getChild().getBirthDate())
                 .month(ChronoUnit.MONTHS.between(weightGrowth.getChild().getBirthDate(), recordDate))
                 .recordDate(recordDate)
                 .startDate(recordDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)))
-                .endDate(recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY)))
+                .endDate(endDate)
                 .weight(weightGrowth.getWeight())
                 .build();
     }

@@ -35,13 +35,19 @@ public class HeightGrowthResponse {
 
     public static HeightGrowthResponse ConvertEntityToDto(HeightGrowthDto heightGrowth) {
         LocalDate recordDate = heightGrowth.getCreatedTime().toLocalDate();
+
+        LocalDate endDate = recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
+        if(recordDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            endDate = recordDate;
+        }
+
         return builder()
                 .gender(heightGrowth.getChild().getGender())
                 .birthDate(heightGrowth.getChild().getBirthDate())
                 .month(ChronoUnit.MONTHS.between(heightGrowth.getChild().getBirthDate(), recordDate))
                 .recordDate(recordDate)
                 .startDate(recordDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)))
-                .endDate(recordDate.plusDays(7).with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY)))
+                .endDate(endDate)
                 .height(heightGrowth.getHeight())
                 .build();
     }
