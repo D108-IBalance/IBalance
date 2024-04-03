@@ -37,10 +37,8 @@ const Profile = () => {
   const messaging = getMessaging();
 
   function requestPermission() {
-    console.log('Requesting permission...');
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-        console.log('Notification permission granted.');
         getToken(messaging, { vapidKey: import.meta.env.VITE_APP_FCM_VAPID_KEY })
         .then((currentToken) => {
           if (currentToken) {
@@ -52,9 +50,6 @@ const Profile = () => {
           }
         }).catch((err) => {
           console.log('An error occurred while retrieving token. ', err);
-        });
-        onMessage(messaging, (payload) => {
-          console.log('Message received. ', payload);
         });
       }
       else {
