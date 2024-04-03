@@ -5,6 +5,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.snippet.Snippet;
 
 import static com.ssafy.ibalance.common.DocumentFormatProvider.required;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -18,6 +20,10 @@ public class MemberDocument {
     public static final Snippet loginRequestField = requestFields(
             fieldWithPath("code").type(JsonFieldType.STRING).attributes(required()).description("OAuth 공급자로부터 오는 code"),
             fieldWithPath("url").type(JsonFieldType.STRING).attributes(required()).description("redirect url")
+    );
+
+    public static final Snippet refreshTokenCookieRequestField = requestCookies(
+            cookieWithName("refreshToken").attributes(required()).description("refresh token 이 담긴 cookie")
     );
 
     public static final Snippet loginResultResponseField = responseFields(
