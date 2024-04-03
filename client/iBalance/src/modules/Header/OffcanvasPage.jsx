@@ -59,7 +59,7 @@ const OffcanvasPage = ({ ...props }) => {
       const arr = payload.notification.body.split("\n")
       setNotification(arr);
       fcmDown();
-      let tempTimer = setTimeout(() => fcmUp(), 2000);
+      let tempTimer = setTimeout(() => fcmUp(), 3000);
       setTimer(tempTimer);
     }
   });
