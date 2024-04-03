@@ -80,12 +80,14 @@ public class FcmService {
                     .map(FcmToken::getFcmToken)
                     .toList();
 
-            MulticastMessage message = MulticastMessage.builder()
-                    .setNotification(firebaseNotification(messageBody))
-                    .addAllTokens(tokens)
-                    .build();
+            if(!tokens.isEmpty()) {
+                MulticastMessage message = MulticastMessage.builder()
+                        .setNotification(firebaseNotification(messageBody))
+                        .addAllTokens(tokens)
+                        .build();
 
-            sendByFirebase(firebase -> firebase.sendEachForMulticast(message), alarmName);
+                sendByFirebase(firebase -> firebase.sendEachForMulticast(message), alarmName);
+            }
         }
     }
 
