@@ -1,9 +1,12 @@
-/* eslint-disable */
+import { useEffect, useState } from "react";
 import classes from "./LoginForm.module.css";
 import { Container, Row } from "react-bootstrap";
 
+import { logout } from "./ServerConnect";
+import { useSelector } from "react-redux";
+
 const LoginForm = () => {
-  const SocialLogin = (num) => {
+  const SocialLogin = async (num) => {
     let server = "";
     if (num == 0) {
       // 구글 로그인

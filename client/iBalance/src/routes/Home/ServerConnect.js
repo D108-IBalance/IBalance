@@ -1,20 +1,11 @@
-import axios from "axios";
+import customAxios from "../../axiosController";
 
-const getUserChart = async (TOKEN, page, CHILDID) => {
+const getUserChart = async (page, CHILDID) => {
   const SIZE = 4;
-  const headers = {
-    Authorization: `${TOKEN}`,
-  };
-  return axios.get(
-    `https://j10d108.p.ssafy.io/api/child/growth/${CHILDID}?page=${page}&size=${SIZE}`,
-    { headers },
-  );
+  return customAxios.get(`child/growth/${CHILDID}?page=${page}&size=${SIZE}`);
 };
 
-const getUserInfo = async (TOKEN, idx) => {
-  const headers = {
-    Authorization: `${TOKEN}`,
-  };
+const getUserInfo = async (idx) => {
   const date = new Date();
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -22,10 +13,17 @@ const getUserInfo = async (TOKEN, idx) => {
   const formMonth = month.toString().padStart(2, "0");
   const formDay = day.toString().padStart(2, "0");
   const form = `${year}-${formMonth}-${formDay}`;
-  return axios.get(
-    `https://j10d108.p.ssafy.io/api/child/main/${idx}?date=${form}`,
-    { headers },
-  );
+  return customAxios.get(`child/main/${idx}?date=${form}`);
 };
 
-export { getUserChart, getUserInfo };
+const getWeightChart = async (page, CHILDID) => {
+  const SIZE = 4;
+  return customAxios.get(`child/weight/${CHILDID}?page=${page}&size=${SIZE}`);
+};
+
+const getHeightChart = async (page, CHILDID) => {
+  const SIZE = 4;
+  return customAxios.get(`child/height/${CHILDID}?page=${page}&size=${SIZE}`);
+};
+
+export { getUserChart, getUserInfo, getWeightChart, getHeightChart };
