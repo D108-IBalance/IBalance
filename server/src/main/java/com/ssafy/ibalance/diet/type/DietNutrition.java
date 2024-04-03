@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum DietNutrition {
 
-    AGE_TWO(270, 39, 6, 5),
+    AGE_TWO(360, 39, 7, 5),
     AGE_TWO_OBESITY(obesityCalorie(AGE_TWO),
             AGE_TWO.carbonHydrate, AGE_TWO.protein, AGE_TWO.dietFiber),
     AGE_THREE_TO_FIVE(420, 39, 8, 6),
