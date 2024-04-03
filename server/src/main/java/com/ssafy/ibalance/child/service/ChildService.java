@@ -1,24 +1,36 @@
 package com.ssafy.ibalance.child.service;
 
+import com.ssafy.ibalance.child.dto.ChildDetailDto;
+import com.ssafy.ibalance.child.dto.HeightGrowthDto;
+import com.ssafy.ibalance.child.dto.WeightGrowthDto;
+import com.ssafy.ibalance.child.dto.request.ModifyChildRequest;
 import com.ssafy.ibalance.child.dto.request.RegistChildRequest;
 import com.ssafy.ibalance.child.dto.response.*;
+import com.ssafy.ibalance.child.dto.response.heightweight.growth.HeightGrowthResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.growth.WeightGrowthResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.page.HeightPageResponse;
+import com.ssafy.ibalance.child.dto.response.heightweight.page.WeightPageResponse;
 import com.ssafy.ibalance.child.entity.*;
-import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.AllergyNotFoundException;
+import com.ssafy.ibalance.child.exception.ChildAccessDeniedException;
 import com.ssafy.ibalance.child.exception.ChildNotFoundException;
 import com.ssafy.ibalance.child.repository.*;
-import com.ssafy.ibalance.diet.repository.DietRepository;
-import com.ssafy.ibalance.child.dto.response.ChildDietResponse;
+import com.ssafy.ibalance.child.repository.childAllergy.ChildAllergyRepository;
+import com.ssafy.ibalance.child.type.Gender;
+import com.ssafy.ibalance.common.util.S3Util;
+import com.ssafy.ibalance.diet.repository.diet.DietRepository;
 import com.ssafy.ibalance.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 @Transactional
@@ -32,6 +44,13 @@ public class ChildService {
     private final DietRepository dietRepository;
     private final AverageGrowthRepository averageGrowthRepository;
     private final RedisChildAllergyRepository redisChildAllergyRepository;
+    private final S3Util s3Util;
+
+    @Value("${default.img.boy}")
+    private String defaultBoy;
+
+    @Value("${default.img.girl}")
+    private String defaultGirl;
 
     public List<ChildInfoResponse> getChildList(Integer memberId) {
 
@@ -46,6 +65,7 @@ public class ChildService {
         List<Long> childAllergyList = saveChildAllergy(registChildRequest, child);
         redisChildAllergyRepository.save(RedisChildAllergy.builder()
                 .childId(child.getId())
+                .memberId(member.getId())
                 .childAllergyId(childAllergyList)
                 .build());
         return RegistChildResponse.convertEntityToDto(child);
@@ -65,6 +85,13 @@ public class ChildService {
     }
 
     private Child saveChild(RegistChildRequest registChildRequest, Member member) {
+        Gender gender = Gender.valueOf(registChildRequest.getGender());
+
+        if(gender.equals(Gender.MALE)) {
+            registChildRequest.setImageUrl(defaultBoy);
+        } else {
+            registChildRequest.setImageUrl(defaultGirl);
+        }
 
         return childRepository.save(Child.ConvertDtoToEntity(registChildRequest, member));
     }
@@ -91,22 +118,22 @@ public class ChildService {
 
         List<ChildAllergy> allergiesHave = allergies.stream().map(
                 allergy -> ChildAllergy.builder()
-                .child(child)
-                .allergy(allergy)
-                .build()).toList();
+                        .child(child)
+                        .allergy(allergy)
+                        .build()).toList();
 
         List<ChildAllergy> savedAllergies = childAllergyRepository.saveAll(allergiesHave);
 
         return savedAllergies.stream().map(ChildAllergy::getId).toList();
     }
 
-    public ChildDietResponse getMain(Integer childId, LocalDate date, Member member) {
+    public ChildDietResponse getMain(Integer childId, Member member) {
         return ChildDietResponse.builder()
-                .childDetailResponse(getChildDetail(childId, member))
-                .dietList(dietRepository.getDietByDate(childId, date, member)).build();
+                .childMainResponse(getChildMain(childId, member))
+                .dietList(dietRepository.getDietByDate(childId, LocalDate.now(), member)).build();
     }
 
-    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
+    private ChildMainResponse getChildMain(Integer childId, Member member) {
         Growth growth = growthRepository
                 .findTopByChildIdOrderByCreatedTimeDesc(childId)
                 .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
@@ -115,31 +142,165 @@ public class ChildService {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        return ChildDetailResponse.convertEntityToDto(growth);
+        return ChildMainResponse.convertEntityToDto(growth);
     }
 
-    public GrowthPageResponse getGrowthList(Integer childId, Pageable pageable, Member member) {
-        Page<Growth> growthPage = growthRepository.findByChildIdOrderByIdDesc(childId, pageable);
+    public HeightPageResponse getHeightList(Integer childId, Pageable pageable, Member member) {
+        Page<HeightGrowthDto> heightPage = growthRepository.getHeightList(childId, pageable);
 
-        if(!member.equals(growthPage.getContent().getFirst().getChild().getMember())) {
+        if(heightPage.isEmpty()) {
+            throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
+        }
+
+        if(!member.equals(heightPage.getContent().getFirst().getChild().getMember())) {
             throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
         }
 
-        Page<GrowthResponse> growthResponsePage = growthPage.map(GrowthResponse::ConvertEntityToDto);
+        Page<HeightGrowthResponse> growthResponsePage = heightPage.map(HeightGrowthResponse::convertEntityToDto);
 
-        List<GrowthResponse> growthResponseList = growthResponsePage.getContent();
-        List<Long> monthList = growthResponseList.stream().map(GrowthResponse::getMonth).toList();
+        List<HeightGrowthResponse> heightGrowthResponseList = growthResponsePage.getContent();
+        List<Long> monthList = heightGrowthResponseList.stream().map(HeightGrowthResponse::getMonth).toList();
 
         // 평균 성장 데이터 조회
-        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(growthResponseList.getFirst().getGender(), monthList)
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(heightGrowthResponseList.getFirst().getGender(), monthList)
                 .stream()
                 .map(AverageGrowthResponse::ConvertEntityToDto)
                 .toList();
 
-        return GrowthPageResponse.builder()
+        return HeightPageResponse.builder()
                 .last(growthResponsePage.isLast())
-                .growthList(growthResponseList)
+                .growthList(heightGrowthResponseList)
                 .averageList(averageGrowthList)
                 .build();
+    }
+
+    public WeightPageResponse getWeightList(Integer childId, Pageable pageable, Member member) {
+        Page<WeightGrowthDto> weightPage = growthRepository.getWeightList(childId, pageable);
+
+        if(weightPage.isEmpty()) {
+            throw new ChildNotFoundException("해당하는 자녀가 없습니다.");
+        }
+
+        if(!member.equals(weightPage.getContent().getFirst().getChild().getMember())) {
+            throw new ChildAccessDeniedException("아이 조회 권한이 없습니다.");
+        }
+
+        Page<WeightGrowthResponse> growthResponsePage = weightPage.map(WeightGrowthResponse::convertEntityToDto);
+
+        List<WeightGrowthResponse> weightGrowthResponseList = growthResponsePage.getContent();
+        List<Long> monthList = weightGrowthResponseList.stream().map(WeightGrowthResponse::getMonth).toList();
+
+        // 평균 성장 데이터 조회
+        List<AverageGrowthResponse> averageGrowthList = averageGrowthRepository.findByGenderAndGrowMonthIn(weightGrowthResponseList.getFirst().getGender(), monthList)
+                .stream()
+                .map(AverageGrowthResponse::ConvertEntityToDto)
+                .toList();
+
+        return WeightPageResponse.builder()
+                .last(growthResponsePage.isLast())
+                .growthList(weightGrowthResponseList)
+                .averageList(averageGrowthList)
+                .build();
+    }
+
+    public ChildDetailResponse getChildDetail(Integer childId, Member member) {
+        ChildDetailDto dto = childRepository.getChildDetail(childId, member, getRedisAllergy(childId).getChildAllergyId());
+        return ChildDetailResponse.convertEntityToDto(dto);
+    }
+
+    private RedisChildAllergy getRedisAllergy(Integer childId) {
+        return redisChildAllergyRepository.findById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+    }
+
+    public ChildDetailResponse modifyChild(Integer childId, ModifyChildRequest modifyChildRequest, Member member) {
+        RedisChildAllergy redisChildAllergy = getRedisAllergy(childId);
+        ChildDetailDto childDetailDto = childRepository.getChildDetail(childId, member, redisChildAllergy.getChildAllergyId());
+
+        Child child = childDetailDto.getChild();
+
+        child.setHeight(modifyChildRequest.getHeight());
+        child.setWeight(modifyChildRequest.getWeight());
+
+        List<Integer> originalAllergies = childDetailDto.getAllergies().stream()
+                .map(allergy -> allergy.getAllergy().getId())
+                .toList();
+
+        List<Integer> modifyAllergies = modifyChildRequest.getHaveAllergies();
+
+        List<Integer> deleteAllergies = originalAllergies.stream()
+                .filter(origin -> modifyAllergies.stream()
+                        .noneMatch(Predicate.isEqual(origin)))
+                .toList();
+
+        List<Integer> updateAllergies = modifyAllergies.stream()
+                .filter(modify -> originalAllergies.stream()
+                        .noneMatch(Predicate.isEqual(modify)))
+                .toList();
+
+        redisChildAllergy.setChildAllergyId(modifyChildAllergy(deleteAllergies, updateAllergies, child));
+
+        redisChildAllergyRepository.save(redisChildAllergy);
+
+        saveGrowth(child);
+
+        return ChildDetailResponse.builder()
+                .childId(child.getId())
+                .imageUrl(child.getImageUrl())
+                .name(child.getName())
+                .birthDate(child.getBirthDate())
+                .gender(child.getGender())
+                .height(child.getHeight())
+                .weight(child.getWeight())
+                .allergies(modifyChildRequest.getHaveAllergies())
+                .build();
+    }
+
+    private List<Long> modifyChildAllergy(List<Integer> deleteAllergies, List<Integer> updateAllergies, Child child) {
+        childAllergyRepository.deleteByAllergyIdIn(deleteAllergies);
+
+        List<Allergy> allergies = allergyRepository.findAllById(updateAllergies);
+        List<ChildAllergy> updateChildAllergy = allergies.stream()
+                .map(allergy -> ChildAllergy.builder()
+                        .child(child)
+                        .allergy(allergy)
+                        .build())
+                .toList();
+
+        childAllergyRepository.saveAll(updateChildAllergy);
+
+        return childAllergyRepository.findByChild_id(child.getId()).stream()
+                .map(ChildAllergy::getId)
+                .toList();
+    }
+
+    public ChildInfoResponse saveProfileImage(Integer childId, MultipartFile file, Member member) {
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+
+        if(!member.equals(child.getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        child.setImageUrl(s3Util.uploadImage(file));
+
+        return ChildInfoResponse.ConvertEntityToDto(child);
+    }
+
+    public ChildInfoResponse deleteProfileImage(Integer childId, Member member) {
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new ChildNotFoundException("해당하는 자녀가 없습니다."));
+
+        if(!member.equals(child.getMember())) {
+            throw new ChildAccessDeniedException("조회 권한이 없습니다.");
+        }
+
+        if(child.getGender().equals(Gender.MALE)) {
+            child.setImageUrl(defaultBoy);
+        } else {
+            child.setImageUrl(defaultGirl);
+        }
+
+        return ChildInfoResponse.ConvertEntityToDto(child);
     }
 }

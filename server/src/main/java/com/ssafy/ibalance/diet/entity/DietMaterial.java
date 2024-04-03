@@ -1,8 +1,9 @@
 package com.ssafy.ibalance.diet.entity;
 
-import com.ssafy.ibalance.material.entity.Material;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Builder
@@ -12,15 +13,17 @@ import lombok.*;
 @Setter
 public class DietMaterial {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "boolean default false")
     private boolean picky;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Diet diet;
+    @Column(length = 50, nullable = false)
+    private String material;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Material material;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Diet diet;
 }
