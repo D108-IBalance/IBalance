@@ -51,29 +51,31 @@ const DietSummary = (props) => {
   const refreshMenu = async (prevMenuId) => {
     setBgColor("rgba(0,0,0,0.7)");
     setLoadStep(2);
-    const res = await changeMenuOfTempDiet(
-      childId,
-      summaryInfo.dietDay,
-      summaryInfo.sequence,
-      prevMenuId,
-    );
-    // const res = dummyRefresh.data;
-    if (res.data.status === 200) {
-      const nextDietSummary = dietSummary.map((menu) => {
-        if (menu.menuId == prevMenuId) return res.data.data;
-        return menu;
-      });
-      setDietSummary(nextDietSummary);
-      setUserDiet((prev) => {
-        let prevTemp = JSON.parse(JSON.stringify(prev));
-        prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
-          nextDietSummary;
+    try {
+      const res = await changeMenuOfTempDiet(
+        childId,
+        summaryInfo.dietDay,
+        summaryInfo.sequence,
+        prevMenuId,
+      );
+      if (res.data.status === 200) {
+        const nextDietSummary = dietSummary.map((menu) => {
+          if (menu.menuId == prevMenuId) return res.data.data;
+          return menu;
+        });
+        setDietSummary(nextDietSummary);
+        setUserDiet((prev) => {
+          let prevTemp = JSON.parse(JSON.stringify(prev));
+          prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
+            nextDietSummary;
 
-        return prevTemp;
-      });
+          return prevTemp;
+        });
+      }
+    } finally {
+      setLoadStep(1);
+      setBgColor("#fff");
     }
-    setLoadStep(1);
-    setBgColor("#fff");
   };
 
   return (
