@@ -6,9 +6,13 @@ from pre.data_preprocess import diet_converter, parse_matrl_name, menu_converter
 from datetime import datetime
 from custom_exception.exception.recommend_exception import RecommendExceedException
 from custom_exception.exception.custom_http_exception import NotFoundException
+
+
 """
 @Author: 김회창
 """
+
+
 last_access_time = None  # 마지막으로 레이팅 데이터에 접근한 시간
 CACHE_LIMIT = 30  # 레이팅 데이터 캐싱시간(sec)
 N_NEIGHBORS = 10  # 유저의 이웃들의 수
