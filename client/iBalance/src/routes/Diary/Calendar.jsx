@@ -54,7 +54,6 @@ const Calendar = (props) => {
   };
 
   const onClickDay = (dateInfo, id) => {
-    console.log(dateInfo, id);
     setSelectedDate(dateInfo);
     setPageStep(0);
     setCurrentClick(id);
@@ -110,7 +109,6 @@ const Calendar = (props) => {
     const getDietInfo = async () => {
       let dietDays = [];
       const res = await getDietDates(CHILD_ID, year, month + 1);
-      console.log(res.data.data);
       if (res.data.status === 200) {
         dietDays = res.data.data.map((dietDate) => {
           const tempDate = new Date(dietDate["dietDate"]);

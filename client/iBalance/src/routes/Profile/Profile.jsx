@@ -5,8 +5,8 @@ import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initializeApp } from "firebase/app"
-import { getMessaging, getToken, onMessage } from "firebase/messaging"
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // 내부 모듈
 import classes from "./Profile.module.css";
@@ -31,31 +31,23 @@ const Profile = () => {
     storageBucket: import.meta.env.VITE_APP_FCM_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_APP_FCM_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_APP_FCM_APP_ID,
-    measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID
+    measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID,
   });
 
   const messaging = getMessaging();
 
   function requestPermission() {
     Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        getToken(messaging, { vapidKey: import.meta.env.VITE_APP_FCM_VAPID_KEY })
-        .then((currentToken) => {
+      if (permission === "granted") {
+        getToken(messaging, {
+          vapidKey: import.meta.env.VITE_APP_FCM_VAPID_KEY,
+        }).then((currentToken) => {
           if (currentToken) {
-            customAxios.post('fcm',{token : currentToken})
-            .then(res => {})
-            .catch(err => console.log(err));
-          } else {
-            console.log('No registration token available. Request permission to generate one.');
+            customAxios.post("fcm", { token: currentToken }).then((res) => {});
           }
-        }).catch((err) => {
-          console.log('An error occurred while retrieving token. ', err);
         });
       }
-      else {
-        console.log('Notification permission not granted.');
-      }
-    })
+    });
   }
 
   const goToHome = (idx) => {

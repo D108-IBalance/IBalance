@@ -33,19 +33,15 @@ const EditProfile = () => {
   ];
   useEffect(() => {
     const getUserData = async () => {
-      try {
-        const res = await getChildProfile(childId);
-        setUserProfile(res.data.data);
-        let tempProfile = {};
-        tempProfile["name"] = res.data.data.name;
-        tempProfile["height"] = res.data.data.height;
-        tempProfile["weight"] = res.data.data.weight;
-        tempProfile["haveAllergies"] = res.data.data.allergies;
-        setProfileData(tempProfile);
-        setUploadedImage(res.data.data.imageUrl);
-      } catch (err) {
-        console.log(err);
-      }
+      const res = await getChildProfile(childId);
+      setUserProfile(res.data.data);
+      let tempProfile = {};
+      tempProfile["name"] = res.data.data.name;
+      tempProfile["height"] = res.data.data.height;
+      tempProfile["weight"] = res.data.data.weight;
+      tempProfile["haveAllergies"] = res.data.data.allergies;
+      setProfileData(tempProfile);
+      setUploadedImage(res.data.data.imageUrl);
     };
     getUserData();
   }, [childId]);
@@ -82,12 +78,8 @@ const EditProfile = () => {
     }
   };
   const changeProfile = async () => {
-    try {
-      await editProfile(childId, profileData);
-      navigate(-1);
-    } catch (err) {
-      console.log(err);
-    }
+    await editProfile(childId, profileData);
+    navigate(-1);
   };
   return (
     <main className={classes.container}>

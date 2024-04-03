@@ -46,7 +46,6 @@ const Carousel = (props) => {
   };
 
   const onTest = async (recipeId) => {
-    console.log(pickyMaterialName, recipeId);
     const res = await getPickySolutionDetail(pickyMaterialName, recipeId);
     setRecipeData(res.data.data);
     setIsOpen(true);
