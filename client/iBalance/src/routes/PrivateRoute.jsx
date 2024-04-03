@@ -11,7 +11,6 @@ const PrivateRoute = () => {
       if (persist) {
         const state = JSON.parse(persist);
         const token = state.token;
-        console.log(token);
         if (token && token !== '""') {
           setValide(true);
           return;
