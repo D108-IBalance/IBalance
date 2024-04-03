@@ -33,11 +33,8 @@ def mongodb_connect():
     if client is None:
         client = MongoClient(settings.MONGO_HOST, server_api=ServerApi('1'))
         collection_name_list = client[DATABASE_NAME].list_collection_names()
-    else:
-        print("already connected")
     try:
         client.admin.command('ping')
-        print("Pinged your deployment. You successfully connected to MongoDB!")
     except Exception as e:
         print(e)
 
@@ -49,17 +46,14 @@ def mongodb_connect():
 """
 
 
-def validation_check(collection_name: str | None):
+def _validation_check(collection_name: str | None):
     global client
     global collection_name_list
     if collection_name is None:
-        print("collection_name is empty")
         return False
     if client is None:
-        print("mongodb_client is empty, reconnect mongodb...")
         mongodb_connect()
     if collection_name not in collection_name_list:
-        print(f'no collection Error: parameter = {collection_name}')
         return False
     return True
 
@@ -80,9 +74,8 @@ def _execute(collection_name, query: dict, project: dict, id_alias: str, is_mult
     dict]:
     result = list()
     global client
-    if not validation_check(collection_name):
+    if not _validation_check(collection_name):
         return result
-    print(f'preparing mongo: collection_name: {collection_name}, query: {query}, project: {project}')
     collection = client[DATABASE_NAME][collection_name]
     if project is None:
         if limit is not None:
