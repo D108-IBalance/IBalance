@@ -236,54 +236,48 @@ public class DietService {
         menuIdList.forEach(list -> menuDetailResponseList.addAll(convertPythonInfoAPIToResponse(fastAPIConnectionUtil.postApiConnectionResult("/info", list, new ArrayList<>()))));
         Child child = childRepository.findById(childId).orElseThrow(() -> new ChildNotFoundException("해당 자녀를 찾을 수 없습니다."));
 
-        List<Diet> dietList = new ArrayList<>();
-        List<DietMaterial> dietMaterialList = new ArrayList<>();
-        List<DietMenu> dietMenuList = new ArrayList<>();
+        List<Long> dietIds = new ArrayList<>();
 
         for (int day = 0; day < 7; day++) {
             RedisRecommendDiet recommendDiet = redisRecommendDietList.get(day);
             for (int sequence = 0; sequence < recommendDiet.getDietList().size(); sequence++) {
                 // Diet DB 추가
-                Diet diet = Diet.builder()
+                Diet diet = dietRepository.save(Diet.builder()
                         .dietDate(startDate.plusDays(day))
                         .mealTime(MealTime.NONE)
                         .diary(null)
                         .child(child)
-                        .build();
-                dietList.add(diet);
+                        .build());
 
-                recommendDiet.getDietList().get(sequence).getMenuList().forEach(id -> {
+                dietIds.add(diet.getId());
+
+                Set<String> materials = new HashSet<>();
+                recommendDiet.getDietList().get(sequence).getMenuList().forEach(menuId -> {
                     // DietMenu DB 추가
-                    dietMenuList.add(DietMenu.builder()
-                            .menuId(id)
+                    dietMenuRepository.save(DietMenu.builder()
+                            .menuId(menuId)
                             .diet(diet)
                             .score(null)
-                            .build());
+                            .build()
+                    );
 
-                    // DietMaterial DB 추가
-                    Set<String> materials = new HashSet<>();
                     menuDetailResponseList.stream()
-                            .filter(menuDetail -> menuDetail.getMenuId().equals(id))
+                            .filter(menuDetail -> menuDetail.getMenuId().equals(menuId))
                             .forEach(menuDetail -> materials.addAll(menuDetail.getMaterials()));
-
-                    materials.forEach(material -> dietMaterialList.add(DietMaterial.builder()
-                            .material(material)
-                            .diet(diet)
-                            .build()));
                 });
+
+                // DietMaterial DB 추가
+                dietMaterialRepository.saveAll(materials.stream().map(material -> DietMaterial.builder()
+                        .material(material)
+                        .diet(diet)
+                        .build()).toList());
             }
         }
-        // repository로 db 세종류 저장
-        List<Diet> diets = dietRepository.saveAll(dietList);
-        dietMenuRepository.saveAll(dietMenuList);
-        dietMaterialRepository.saveAll(dietMaterialList);
 
         // redis 데이터 삭제
         redisInitDietRepository.deleteAll(redisRecommendDietList);
         redisDoNotRecommendRepository.deleteById(childId);
 
-        List<Long> dietIds = new ArrayList<>();
-        diets.forEach(diet -> dietIds.add(diet.getId()));
         return dietIds;
     }
 
