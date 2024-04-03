@@ -17,8 +17,6 @@ class Settings(BaseSettings):
 client = None  # pymongo 클라이언트 접속 객체
 
 settings = Settings()
-collection_name_list = []  # 현재 mongodb 내 컬렌션 이름들
-# last_uri = None  # 마지막 접속 uri를 캐싱해놓는 전역변수
 
 """
 mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기 위해 사용
@@ -29,10 +27,8 @@ mongodb에 접속하는 함수, 단일 클라이언트 객체를 유지시키기
 def mongodb_connect():
     global client
     global settings
-    global collection_name_list
     if client is None:
         client = MongoClient(settings.MONGO_HOST, server_api=ServerApi('1'))
-        collection_name_list = client[DATABASE_NAME].list_collection_names()
     try:
         client.admin.command('ping')
     except Exception as e:
@@ -53,7 +49,7 @@ def _validation_check(collection_name: str | None):
         return False
     if client is None:
         mongodb_connect()
-    if collection_name not in collection_name_list:
+    if collection_name not in client[DATABASE_NAME].list_collection_names():
         return False
     return True
 
