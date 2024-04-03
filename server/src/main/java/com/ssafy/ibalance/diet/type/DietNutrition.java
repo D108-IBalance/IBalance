@@ -7,9 +7,6 @@ import lombok.Getter;
 @Getter
 public enum DietNutrition {
 
-    AGE_TWO(360, 39, 7, 5),
-    AGE_TWO_OBESITY(obesityCalorie(AGE_TWO),
-            AGE_TWO.carbonHydrate, AGE_TWO.protein, AGE_TWO.dietFiber),
     AGE_THREE_TO_FIVE(420, 39, 8, 6),
     AGE_THREE_TO_FIVE_OBESITY(obesityCalorie(AGE_THREE_TO_FIVE),
             AGE_THREE_TO_FIVE.carbonHydrate, AGE_THREE_TO_FIVE.protein, AGE_THREE_TO_FIVE.dietFiber),
@@ -43,7 +40,6 @@ public enum DietNutrition {
 
     private static DietNutrition getNormalNutrition(int age, Gender gender) {
         return switch (age) {
-            case 2 -> AGE_TWO;
             case 3, 4, 5 -> AGE_THREE_TO_FIVE;
             case 6, 7, 8 -> {
                 if(Gender.MALE.equals(gender)) {
