@@ -27,7 +27,7 @@ const RecipePage = () => {
     const getPickyData = async () => {
       const res = await Promise.all([getPickyCate(childId)]);
       const tempRecipes = res[0].data.data.filter(
-        (ing) => ing.recipes !== null,
+        (ing) => ing.recipes.length > 0,
       );
       setRecipeIngre(tempRecipes);
     };
