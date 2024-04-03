@@ -24,20 +24,25 @@ const DayDiet = (props) => {
   const addDietCard = async () => {
     setBgColor("rgba(0,0,0,0.7)");
     setLoadStep(2);
-    const res = await addTempDiet(childId, diets.dietDay);
-    setUserDiet((prev) => {
-      let nextDiets = JSON.parse(JSON.stringify(prev));
-      let nextDiet = nextDiets;
-      nextDiet.map((data, idx) => {
-        if (idx === dayIdx) {
-          data.menuList.push(res.data.data);
-        }
-        return data;
-      });
-      return nextDiets;
-    });
-    setLoadStep(1);
-    setBgColor("#fff");
+    try {
+      const res = await addTempDiet(childId, diets.dietDay);
+      if (res.data.status === 200) {
+        setUserDiet((prev) => {
+          let nextDiets = JSON.parse(JSON.stringify(prev));
+          let nextDiet = nextDiets;
+          nextDiet.map((data, idx) => {
+            if (idx === dayIdx) {
+              data.menuList.push(res.data.data);
+            }
+            return data;
+          });
+          return nextDiets;
+        });
+      }
+    } finally {
+      setLoadStep(1);
+      setBgColor("#fff");
+    }
   };
   const goSummary = (sequence) => {
     if (isSave === false) {
