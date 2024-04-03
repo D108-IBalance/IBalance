@@ -1,5 +1,5 @@
 const birthValidation = (year, month, day) => {
-  // 년 월 일로 만나이 계산해서 0~6세까지만 통과
+  // 년 월 일로 만나이 계산해서 3~8세까지만 통과
   let today = new Date();
   let currentYear = today.getFullYear();
   let currentMonth = today.getMonth() + 1;
@@ -19,7 +19,7 @@ const birthValidation = (year, month, day) => {
   if (age === 0 && currentMonth - month < 6) {
     return false;
   } else {
-    return 2 <= age && age <= 6 ? true : false;
+    return 3 <= age && age <= 8 ? true : false;
   }
 };
 
