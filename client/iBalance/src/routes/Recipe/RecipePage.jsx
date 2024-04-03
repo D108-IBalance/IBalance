@@ -26,7 +26,10 @@ const RecipePage = () => {
   useEffect(() => {
     const getPickyData = async () => {
       const res = await Promise.all([getPickyCate(childId)]);
-      setRecipeIngre(res[0].data.data);
+      const tempRecipes = res[0].data.data.filter(
+        (ing) => ing.recipes !== null,
+      );
+      setRecipeIngre(tempRecipes);
     };
     getPickyData();
   }, []);
