@@ -303,7 +303,7 @@
 
 .fcmContainer {
   position: fixed;
-  z-index: 9;
+  z-index: 999;
   top: -300px;
   left: 0;
   width: 100%;
@@ -346,6 +346,24 @@
   background-repeat: no-repeat;
 }
 .fcmContent {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
+}
+
+@keyframes fcmDown {
+  0% {
+    top: -300px;
+  }
+  100% {
+    top: 0px;
+  }
+}
+
+@keyframes fcmUp {
+  0% {
+    top: 0px;
+  }
+  100% {
+    top: -300px;
+  }
 }

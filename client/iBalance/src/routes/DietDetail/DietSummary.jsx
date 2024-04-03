@@ -90,7 +90,7 @@ const DietSummary = (props) => {
       fcmDown();
       let tempTimer = setTimeout(() => {
         fcmUp();
-      }, 2000);
+      }, 3500);
       setTimer(tempTimer);
     } finally {
       setLoadStep(1);
@@ -104,13 +104,12 @@ const DietSummary = (props) => {
         <div className={classes.fcmMsg}>
           <div className={classes.fcmIcon} />
           <p className={classes.fcmContent}>
-            <span style={{ fontWeight: "bold" }}>
-              구성된 식단에 칼로리가 초과하여, 다른 메뉴를 추천할 수 없습니다.
-            </span>
-            <span style={{ fontWeight: "bold" }}>
-              높은 칼로리를 차지하는 메뉴를 변경하여 해당 메뉴를 변경
-              가능합니다.
-            </span>
+            <p style={{ fontWeight: "bold" }}>
+              현 식단과 자녀 데이터를 고려할 시 메뉴를 대체할 수 없습니다.
+            </p>
+            <p style={{ fontWeight: "bold", textAlign: "center" }}>
+              다른 메뉴를 먼저 변경해주세요.
+            </p>
           </p>
         </div>
       </div>
