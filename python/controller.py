@@ -35,7 +35,7 @@ mysql_connect()  # MySQL 연결
 
 
 @app.post("/recomm/init")
-def init_recommend(request: ChildInfo) -> list[list[dict]]:
+async def init_recommend(request: ChildInfo) -> list[list[dict]]:
     child_info_request_validation_checker(request)
     return diet_init(request)
 
@@ -46,7 +46,7 @@ def init_recommend(request: ChildInfo) -> list[list[dict]]:
 
 
 @app.get("/recomm/info/{menu_id}")
-def get_menu_info(menu_id: str = Path(description="메뉴 고유 id")) -> dict:
+async def get_menu_info(menu_id: str = Path(description="메뉴 고유 id")) -> dict:
     wrap = dict()
     wrap["msgList"] = list()
     object_id_validation_checker(menu_id, "menu_id", msg_dict=wrap)
@@ -59,7 +59,7 @@ def get_menu_info(menu_id: str = Path(description="메뉴 고유 id")) -> dict:
 
 
 @app.post("/recomm")
-def refresh_recommend(request: ChildInfo) -> list[dict]:
+async def refresh_recommend(request: ChildInfo) -> list[dict]:
     child_info_request_validation_checker(request)
     return one_diet_recommend(request)
 
@@ -70,7 +70,7 @@ def refresh_recommend(request: ChildInfo) -> list[dict]:
 
 
 @app.post("/recomm/menu")
-def refresh_menu(request: ChildInfo) -> dict:
+async def refresh_menu(request: ChildInfo) -> dict:
     child_info_request_validation_checker(request)
     return new_menu_recommend(request)
 
@@ -81,7 +81,7 @@ def refresh_menu(request: ChildInfo) -> dict:
 
 
 @app.post("/recomm/info/diet")
-def get_menu_names(request: list[DietOfMenuId] = Body(description="각 식단별 고유 dietId와 그에 대응되는 menuId 리스트")) -> list[dict]:
+async def get_menu_names(request: list[DietOfMenuId] = Body(description="각 식단별 고유 dietId와 그에 대응되는 menuId 리스트")) -> list[dict]:
     diet_of_menu_id_validation_checker(request)
     return get_menu_names_by_ids(request)
 
@@ -92,7 +92,7 @@ def get_menu_names(request: list[DietOfMenuId] = Body(description="각 식단별
 
 
 @app.post("/recomm/info")
-def get_menu_infos(request: list[str] = Body(description="식단 내 4개의 메뉴 id 리스트를 받아서 해당 메뉴의 이름, 식재료 리스트, 이미지를 조회")) -> \
+async def get_menu_infos(request: list[str] = Body(description="식단 내 4개의 메뉴 id 리스트를 받아서 해당 메뉴의 이름, 식재료 리스트, 이미지를 조회")) -> \
 list[dict]:
     menu_id_list_validation_checker(request)
     return menu_infos(request)
@@ -104,7 +104,7 @@ list[dict]:
 
 
 @app.post("/recomm/picky")
-def get_picky_recipes(
+async def get_picky_recipes(
         lastid: str = Query(default=None, description="마지막으로 받았던 레시피의 recipeId"),
         offset: int = Query(10, description="페이지 당 보여줄 개수", gt=0),
         matrl: str = Query(description="편식 식재료 명"),
@@ -123,7 +123,7 @@ def get_picky_recipes(
 
 
 @app.get("/recomm/picky/{matrl_name}/{recipe_id}")
-def get_picky_recipe_detail(
+async def get_picky_recipe_detail(
         matrl_name: str = Path(description="편식 식재료 명"),
         recipe_id: str = Path(description="편식 레시피 고유 id")
 ) -> dict:
@@ -137,6 +137,6 @@ def get_picky_recipe_detail(
 
 
 @app.post("/recomm/picky/main")
-def get_picky_recipes_main(request: PickyWithAllergy) -> list[dict]:
+async def get_picky_recipes_main(request: PickyWithAllergy) -> list[dict]:
     picky_with_allergy_validation_check(request)
     return picky_main(request)
