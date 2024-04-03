@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 
 // 내부 모듈
 import classes from "./DiaryReview.module.css";
-import example1 from "../../assets/diet/recipe1.png";
-import example2 from "../../assets/diet/recipe2.png";
-import example3 from "../../assets/diet/recipe3.png";
 import { readDiary } from "./ServerConnect";
 import { useSelector } from "react-redux";
 
@@ -61,8 +58,6 @@ const DiaryReview = (props) => {
               return (
                 <section key={id} className={classes.menuContainer}>
                   <div
-                    src={example1}
-                    alt="menuImg"
                     className={classes.menuImg}
                     style={{
                       backgroundImage: `url(${diet.menuImgUrl})`,
