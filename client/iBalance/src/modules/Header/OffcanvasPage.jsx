@@ -3,6 +3,8 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { initializeApp } from "firebase/app";
+import { getMessaging, onMessage } from "firebase/messaging";
 
 // 내부 모듈
 import classes from "./OffcanvasPage.module.css";
@@ -29,6 +31,7 @@ const OffcanvasPage = ({ ...props }) => {
     };
     getInfo();
   }, []);
+  const [notification, setNotification] = useState();
   const fcmDown = () => {
     setFcmAni("fcmDown");
   };
@@ -36,20 +39,40 @@ const OffcanvasPage = ({ ...props }) => {
     setFcmAni("fcmUp");
   };
 
+  const app = initializeApp({
+    apiKey: import.meta.env.VITE_APP_FCM_API_KEY,
+    authDomain: import.meta.env.VITE_APP_FCM_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_APP_FCM_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_APP_FCM_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_APP_FCM_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_FCM_APP_ID,
+    measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID,
+  });
+
+  const messaging = getMessaging();
+
+  onMessage(messaging, (payload) => {
+    let notificationPermission = Notification.permission;
+
+    if (notificationPermission === "granted") {
+      setNotification(payload.notification);
+      fcmDown();
+      setTimeout(() => fcmUp(), 2000);
+    }
+  });
+
   return (
     <>
       <div
         onClick={() => {
           handleShow();
-          // fcmDown();
         }}
         className={classes.toggleBtn}></div>
       <div className={`${classes.fcmContainer} ${classes[fcmAni]}`}>
         <div className={classes.fcmMsg}>
           <div className={classes.fcmIcon} />
           <p className={classes.fcmContent}>
-            <span style={{ fontWeight: "bold" }}>부수환</span> 님에 대한 식단
-            업데이트가 필요합니다.
+            <span style={{ fontWeight: "bold" }}>{notification?.body}</span>
           </p>
         </div>
       </div>
