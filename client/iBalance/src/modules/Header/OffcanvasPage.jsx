@@ -13,6 +13,7 @@ import { logout } from "../../routes/Auth/ServerConnect";
 
 const OffcanvasPage = ({ ...props }) => {
   const navigate = useNavigate();
+  const [timer, setTimer] = useState(null);
   const [show, setShow] = useState(false);
   const [fcmAni, setFcmAni] = useState("");
   const handleClose = () => setShow(false);
@@ -57,9 +58,17 @@ const OffcanvasPage = ({ ...props }) => {
     if (notificationPermission === "granted") {
       setNotification(payload.notification);
       fcmDown();
-      setTimeout(() => fcmUp(), 2000);
+      let tempTimer = setTimeout(() => fcmUp(), 2000);
+      setTimer(tempTimer);
     }
   });
+  useEffect(() => {
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
 
   return (
     <>
