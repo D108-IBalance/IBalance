@@ -1,128 +1,187 @@
 // 외부 모듈
-import { useNavigate, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // 내부 모듈
 import classes from "./DietSummary.module.css";
-import NavbarModule from "../../modules/Navbar/NavbarModule";
-import sample1 from "../../assets/diet/sample1.png";
-import sample2 from "../../assets/diet/sample2.png";
-import sample3 from "../../assets/diet/sample3.png";
-import sample4 from "../../assets/diet/sample4.png";
+import DietDetail from "./DietDetail";
+import {
+  getInitDietDetail,
+  changeMenuOfTempDiet,
+  getDietDetail,
+} from "../Diet/ServerConnect";
 
-const DietSummary = () => {
+const DietSummary = (props) => {
+  const {
+    setSummaryInfo,
+    summaryInfo,
+    selectDate,
+    isSave,
+    setUserDiet,
+    dietId,
+    setLoadStep,
+    setBgColor,
+  } = props;
+  const [timer, setTimer] = useState(null);
+  const [fcmAni, setFcmAni] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
-  const dietList = [
-    {
-      foodId: 0,
-      name: "현미밥",
-      kcal: "321kcal",
-      ingredient: ["현미", "흰쌀"],
-      img: sample1,
-    },
-    {
-      foodId: 1,
+  const childId = useSelector((state) => state.childId);
+  const [dietSummary, setDietSummary] = useState(null);
+  const [dietDetail, setDietDetail] = useState(null);
+  const fcmDown = () => {
+    setFcmAni("fcmDown");
+  };
+  const fcmUp = () => {
+    setFcmAni("fcmUp");
+  };
+  useEffect(() => {
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    const getDietDetailData = async () => {
+      const res = await getInitDietDetail(
+        childId,
+        summaryInfo.dietDay,
+        summaryInfo.sequence,
+      );
+      // const res = dummyDetail.data;
+      setDietSummary(res.data.data);
+    };
+    const getDetailData = async () => {
+      const res = await getDietDetail(dietId);
+      setDietSummary(res.data.data);
+    };
+    if (Object.keys(summaryInfo).length > 0 && isSave === false) {
+      getDietDetailData();
+    } else if (dietId && isSave === true) {
+      getDetailData();
+    }
+  }, [summaryInfo, isSave, dietId]);
 
-      name: "수제함박 스테이크",
-      kcal: "561kcal",
-      ingredient: [
-        "돼지고기",
-        "빵가루",
-        "우스터소스",
-        "후추가루",
-        "토마토케찹",
-        "버터",
-      ],
-      img: sample2,
-    },
-    {
-      foodId: 2,
+  const refreshMenu = async (prevMenuId) => {
+    setBgColor("rgba(0,0,0,0.7)");
+    setLoadStep(2);
+    try {
+      const res = await changeMenuOfTempDiet(
+        childId,
+        summaryInfo.dietDay,
+        summaryInfo.sequence,
+        prevMenuId,
+      );
+      if (res.data.status === 200) {
+        const nextDietSummary = dietSummary.map((menu) => {
+          if (menu.menuId == prevMenuId) return res.data.data;
+          return menu;
+        });
+        setDietSummary(nextDietSummary);
+        setUserDiet((prev) => {
+          let prevTemp = JSON.parse(JSON.stringify(prev));
+          prevTemp[summaryInfo.dietDay].menuList[summaryInfo.sequence] =
+            nextDietSummary;
 
-      name: "어묵볶음",
-      kcal: "137kcal",
-      ingredient: [
-        "어묵",
-        "양파",
-        "당근",
-        "간장",
-        "대파",
-        "고추가루",
-        "다진마늘",
-        "설탕",
-      ],
-      img: sample3,
-    },
-    {
-      foodId: 3,
+          return prevTemp;
+        });
+      }
+    } catch (err) {
+      fcmDown();
+      let tempTimer = setTimeout(() => {
+        fcmUp();
+      }, 3500);
+      setTimer(tempTimer);
+    } finally {
+      setLoadStep(1);
+      setBgColor("#fff");
+    }
+  };
 
-      name: "두부 계란탕",
-      kcal: "83kcal",
-      ingredient: [
-        "두부",
-        "계란",
-        "감자",
-        "대파",
-        "소금",
-        "멸치",
-        "간장",
-        "소금",
-      ],
-      img: sample4,
-    },
-  ];
   return (
     <div className={classes.gridSet}>
-      <NavbarModule isClick={2}></NavbarModule>
-
+      <div className={`${classes.fcmContainer} ${classes[fcmAni]}`}>
+        <div className={classes.fcmMsg}>
+          <div className={classes.fcmIcon} />
+          <p className={classes.fcmContent}>
+            <p style={{ fontWeight: "bold" }}>
+              현 식단과 자녀 데이터를 고려할 시 메뉴를 대체할 수 없습니다.
+            </p>
+            <p style={{ fontWeight: "bold", textAlign: "center" }}>
+              다른 메뉴를 먼저 변경해주세요.
+            </p>
+          </p>
+        </div>
+      </div>
       <div className={classes.container}>
         <div className={classes.leftBox}>
           <div className={classes.titleBox}>
             <div
               className={classes.backIcon}
               onClick={() => {
-                navigate("/diet");
+                setSummaryInfo({});
               }}></div>
             <div className={classes.titleTextBox}>
               <div className={classes.titleIcon}></div>
-              <div className={classes.titleText}>2024.03.04 (월)</div>
+              <div className={classes.titleText}>{selectDate}</div>
             </div>
             <div className={classes.tempIcon}></div>
           </div>
           <div className={classes.contentBox}>
-            {dietList.map((menu, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className={classes.card}
-                  style={{ zIndex: idx }}
-                  onClick={() => {
-                    setIsOpen(true);
-                    navigate(`/detail/menu`);
-                  }}>
-                  <div className={classes.leftCard}>
-                    <img src={menu.img} className={classes.cardImg}></img>
-                    <div className={classes.cardContent}>
-                      <p className={classes.menuName}>{menu.name}</p>
-                      <p className={classes.menuKcal}>{menu.kcal}</p>
-                      <p className={classes.menuIngre}>
-                        {menu.ingredient.map((food, idx) => {
-                          return idx === menu.ingredient.length - 1
-                            ? `${food}`
-                            : `${food}, `;
-                        })}
-                      </p>
+            {dietSummary &&
+              dietSummary.map((menu, idx) => {
+                return (
+                  <div
+                    key={idx}
+                    className={classes.card}
+                    style={{ zIndex: idx }}
+                    onClick={(e) => {
+                      if (e.currentTarget !== e.target) return;
+                      setIsOpen(true);
+                      setDietDetail(menu);
+                      // setSelectDate("");
+                    }}>
+                    {!isSave ? (
+                      <div
+                        className={classes.settingIcon}
+                        onClick={() => {
+                          refreshMenu(menu.menuId);
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={classes.leftCard}
+                      onClick={() => {
+                        setIsOpen(true);
+                        setDietDetail(menu);
+                      }}>
+                      <div className={classes.cardImgBox}>
+                        <div
+                          style={{ backgroundImage: `url(${menu.menuImgUrl})` }}
+                          className={classes.cardImg}></div>
+                      </div>
+
+                      <div className={classes.cardContent}>
+                        <p className={classes.menuName}>{menu.menuName}</p>
+                        <p className={classes.menuKcal}>{menu.calorie}kcal</p>
+                        <p className={classes.menuIngre}>
+                          {menu.materials.map((food, idx) => {
+                            return idx === menu.materials.length - 1
+                              ? `${food}`
+                              : `${food}, `;
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className={classes.resetIcon}></div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
-
-        <Outlet context={{ isOpen, setIsOpen }}></Outlet>
       </div>
+      {isOpen ? (
+        <DietDetail setIsOpen={setIsOpen} dietDetail={dietDetail}></DietDetail>
+      ) : null}
     </div>
   );
 };

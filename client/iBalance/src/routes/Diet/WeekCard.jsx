@@ -24,22 +24,25 @@ const WeekCard = (props) => {
           <p className={classes.dateFont}>Day</p>
         </div>
       </div>
-      {weekList.map((data, idx) => {
-        return (
-          <div key={idx} className={classes.weekCardBox}>
-            <div
-              onClick={() => {
-                handleCardClick(idx);
-              }}
-              className={
-                isClick === idx + 1 ? classes.weekCardClicked : classes.weekCard
-              }>
-              <p className={classes.dayFont}>{data.day}</p>
-              <p className={classes.dateFont}>{data.date}</p>
+      {weekList &&
+        weekList.map((data, idx) => {
+          return (
+            <div key={idx} className={classes.weekCardBox}>
+              <div
+                onClick={() => {
+                  handleCardClick(idx);
+                }}
+                className={
+                  isClick === idx + 1
+                    ? classes.weekCardClicked
+                    : classes.weekCard
+                }>
+                <p className={classes.dayFont}>{data.day}</p>
+                <p className={classes.dateFont}>{data.date}</p>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 };

@@ -142,7 +142,7 @@
   }
   @media screen and (min-width: 700px) {
     .dayFont {
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-weight: 600;
     }
 

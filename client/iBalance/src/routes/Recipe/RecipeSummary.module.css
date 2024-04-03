@@ -1,0 +1,105 @@
+@media screen and (max-width: 576px) {
+  .container {
+    height: auto;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .cardTitleBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding-right: 15px;
+  }
+  .cardTitleBox p {
+    color: #434e58;
+  }
+  .cardTitle {
+    font-weight: 600;
+    font-size: 1rem;
+    color: black;
+  }
+  .cardTitle span {
+    color: #fe724c;
+    font-weight: 700;
+  }
+  .cardContent {
+    overflow-x: scroll;
+  }
+  .cardContent::-webkit-scrollbar {
+    width: 5px; /* 스크롤바의 너비 */
+  }
+
+  .cardContent::-webkit-scrollbar-thumb {
+    height: 10%; /* 스크롤바의 길이 */
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .cardContent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .cardBox {
+    height: 220px;
+    width: 880px;
+  }
+  .card {
+    border: 1px solid cornflowerblue;
+    height: 200px;
+    width: 45%;
+    margin-right: 20px;
+  }
+  .moreBtn {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .moreBtn:hover {
+    transform: scale(1.02);
+  }
+}
+@media screen and (min-width: 576px) {
+  .container {
+    width: 100%;
+    margin-bottom: 20px;
+    height: auto;
+  }
+  .cardTitleBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding-right: 15px;
+  }
+  .cardTitleBox p {
+    color: #434e58;
+  }
+  .cardTitle {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: black;
+  }
+  .cardTitle span {
+    color: #fe724c;
+    font-weight: 700;
+  }
+  .cardBox {
+    height: 200px;
+    width: 99%;
+  }
+  .card {
+    border: 1px solid cornflowerblue;
+    height: 200px;
+    width: 200px;
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+  .moreBtn {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  .moreBtn:hover {
+    transform: scale(1.02);
+  }
+}
