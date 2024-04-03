@@ -43,7 +43,7 @@ public class FcmService {
                 .build();
     }
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 30 16 * * *")
     public void sendCheckDiet() {
         Message message = Message.builder()
                 .setNotification(firebaseNotification("오늘의 식단을 확인해 보세요!😋"))
@@ -53,7 +53,7 @@ public class FcmService {
         sendByFirebase(firebase -> firebase.send(message), "식단 확인");
     }
 
-    @Scheduled(cron = "0 0 20 * * *")
+    @Scheduled(cron = "30 30 16 * * *")
     public void sendReview() {
         List<Integer> memberIdList = dietRepository.getNotifyTargetList();
 
@@ -61,7 +61,7 @@ public class FcmService {
                 "오늘 식단은 어떠셨나요?\n리뷰를 남겨주세요!🧡", "리뷰 작성");
     }
 
-    @Scheduled(cron = "0 0 21 * * *")
+    @Scheduled(cron = "0 31 16 * * *")
     public void sendUpdate() {
         List<Integer> memberIdList = growthRepository.getNotifyTargetList().stream()
                 .map(NotifyTargetDto::getId)
