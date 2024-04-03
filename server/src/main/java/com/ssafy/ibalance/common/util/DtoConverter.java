@@ -101,7 +101,7 @@ public class DtoConverter {
     private boolean isSufficientToSimpleConvert(LinkedHashMap<String, Object> resultMap, String callerName) {
         Object o = resultMap.get(callerName);
         if(o instanceof List<?> list) {
-            return !(list.isEmpty() && list.getFirst() instanceof LinkedHashMap<?, ?>);
+            return !(!list.isEmpty() && list.getFirst() instanceof LinkedHashMap<?, ?>);
         }
         return resultMap.get(callerName) instanceof Serializable;
     }
