@@ -3,9 +3,30 @@
     display: flex;
     flex-direction: row;
     margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
   }
   .dietTitle span {
     font-weight: 600;
+  }
+  .direction {
+    display: flex;
+    align-items: flex-start;
+  }
+  .prev {
+    width: 25px;
+    height: 25px;
+    background-image: url(../../assets/home/prevArrow.svg);
+    background-size: cover;
+    cursor: pointer;
+  }
+  .next {
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+    background-image: url(../../assets/home/nextArrow.svg);
+    cursor: pointer;
   }
   .dietIcon {
     width: 20px;
@@ -32,6 +53,7 @@
     padding-top: 20px;
     padding-bottom: 20px;
     color: #fe724c;
+    cursor: pointer;
   }
   .todayDietBox {
     flex: none;
@@ -50,6 +72,7 @@
     padding-bottom: 20px;
     width: 100%;
     height: 100%;
+    cursor: pointer;
   }
   .spoonIcon {
     width: 30px;
@@ -84,15 +107,35 @@
   .dietBox {
     width: 280px;
     height: 100%;
-    cursor: pointer;
   }
   .dietTitle {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     /* margin-top: 20px; */
   }
   .dietTitle span {
     font-weight: 600;
+  }
+  .direction {
+    display: flex;
+    align-items: flex-start;
+  }
+  .prev {
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+    background-image: url(../../assets/home/prevArrow.svg);
+    cursor: pointer;
+  }
+  .next {
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+
+    background-image: url(../../assets/home/nextArrow.svg);
+    cursor: pointer;
   }
   .dietIcon {
     width: 20px;
@@ -119,6 +162,7 @@
     padding-bottom: 20px;
     width: 100%;
     height: 100%;
+    cursor: pointer;
   }
   .todayDietBox {
     flex: none;
@@ -135,6 +179,7 @@
     padding-bottom: 20px;
     width: 100%;
     height: 100%;
+    cursor: pointer;
   }
   .spoonIcon {
     width: 30px;
