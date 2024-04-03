@@ -1,7 +1,10 @@
 package com.ssafy.ibalance.common.util;
 
+import com.ssafy.ibalance.diet.exception.NoMoreExistMenuException;
 import com.ssafy.ibalance.common.exception.NotValidInfoOnFastAPIException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -43,7 +46,13 @@ public class FastAPIConnectionUtil {
     }
 
     private Mono<?> checkNegativeCodeOnWebClient(WebClientResponseException e) {
-        if(e.getStatusCode().is4xxClientError()) {
+        HttpStatusCode statusCode = e.getStatusCode();
+
+        if(statusCode.isSameCodeAs(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE)) {
+            throw new NoMoreExistMenuException("Redis 추천 금지 메뉴 데이터 초기화 필요");
+        }
+
+        if(statusCode.is4xxClientError()) {
             throw new NotValidInfoOnFastAPIException("WebClient 에 잘못된 값이 입력되었습니다.");
         }
 
