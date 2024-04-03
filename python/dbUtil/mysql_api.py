@@ -37,8 +37,6 @@ def mysql_connect():
         database=settings.MYSQL_DATABASE,
         port=settings.MYSQL_PORT,
     )
-    if mysql_client.is_connected():
-        print("mysql connected!!!")
 
 
 """
@@ -51,7 +49,6 @@ mysql 접속 클라이언트가 유효한지 검사하는 함수
 def mysql_validation_check() -> mysql.connector:
     global mysql_client
     if mysql_client is None or not mysql_client.is_connected():
-        print("mysql_client is None or disconnected, reconnecting to MySQL...")
         mysql_connect()
         if not mysql_client.is_connected():
             mysql_client.ping(reconnect=True, attempts=3, delay=1)
@@ -70,7 +67,6 @@ select 문과 그 밖의 DML 문에 따라 구분지어 실행시키는 함수�
 def _execute(query: str | list[str]):
     global mysql_client
     cursor = mysql_validation_check()
-    print(f'preparing mysql sql: {query}')
     if query in ["UPDATE", "INSERT", "DELETE"]:
         if type(query) == str:
             _execute_and_commit(query, cursor)
@@ -133,8 +129,4 @@ def find_all_rating(child_id: int, exclude_id_list: list[str] = []) -> list[tupl
     prepared_sql = sql_head + sql_for_all_additional_join_condition + sql_middle_option + sql_for_me + aditional_sql + group_by
     result_me = _execute(prepared_sql)
     result = result_all + result_me
-    for (user_id, menu_id, rating) in result:
-        if user_id == 1:
-            print("레이팅 데이타에 user_id 가 1인게 있어요!")
-            break
     return result_all + result_me

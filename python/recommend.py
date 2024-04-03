@@ -23,11 +23,8 @@ soup_ratings = []  # 국류 평점 모아놓은 리스트
 
 cached_black_list = []  # 식단 추천시 임시로 검색되지 않게 도와주는 리스트
 
-origin_rice_ratings = []
-origin_side_ratings = []
-origin_soup_ratings = []
 """
-전역변수 초기화
+전역변수 user_id 초기화
 """
 
 
@@ -41,7 +38,7 @@ def _init():
 """
 
 
-def read_menu():
+def _read_menu():
     global menu_objs
     mongo_result = find_all_data("menu")
     for mongo_data in mongo_result:
@@ -56,7 +53,7 @@ def read_menu():
 """
 
 
-def read_ratings(child_id: int, exclude_id_list: list):
+def _read_ratings(child_id: int, exclude_id_list: list):
     global menu_objs
     global rice_ratings
     global side_ratings
@@ -105,7 +102,7 @@ def read_ratings(child_id: int, exclude_id_list: list):
 """
 
 
-def read_allergy(allergy_name_list):
+def _read_allergy(allergy_name_list):
     global hazard
     hazard = []
     if len(allergy_name_list) == 0:
@@ -119,17 +116,6 @@ def read_allergy(allergy_name_list):
 
 
 """
-글로벌 변수 child_id 세팅
-:param: id int, 아이의 고유번호
-"""
-
-
-def set_user_id(id):
-    global user_id
-    user_id = id
-
-
-"""
 유저들 사이의 pearson 유사도 측정하기
 :param v1: pd.Series, 한 사람이 레이팅을 매긴 메뉴
 :param v2: ratings vector, 다른 모든 사람이 레이팅을 매긴 메뉴
@@ -137,7 +123,7 @@ def set_user_id(id):
 """
 
 
-def pearson_similarity(v1, v2):
+def _pearson_similarity(v1, v2):
     pearson = v1.corr(v2)
     return pearson
 
@@ -150,10 +136,10 @@ def pearson_similarity(v1, v2):
 """
 
 
-def compute_similarity(user_id, ratings_matrix):
+def _compute_similarity(user_id, ratings_matrix):
     ratings_user = ratings_matrix.loc[user_id, :]
     similarities = ratings_matrix.apply(
-        lambda row: pearson_similarity(ratings_user, row),
+        lambda row: _pearson_similarity(ratings_user, row),
         axis=1
     )
     similarities = similarities.to_frame(name='similarity')
@@ -177,7 +163,7 @@ def compute_similarity(user_id, ratings_matrix):
 """
 
 
-def predict_rating(item_id, ratings, similarities, N=10):
+def _predict_rating(item_id, ratings, similarities, N=10):
     users_ratings = ratings.loc[:, item_id]
 
     most_similar_users_who_rated_item = similarities.loc[~users_ratings.isnull()]
@@ -188,7 +174,7 @@ def predict_rating(item_id, ratings, similarities, N=10):
     return ratings_for_item.mean()
 
 
-def gen_condition(menu_obj, condition_obj):
+def _gen_condition(menu_obj, condition_obj):
     global cached_black_list
     if "CALORIE_QY" in condition_obj:
         if float(menu_obj["CALORIE_QY"]) > float(condition_obj["CALORIE_QY"]):
@@ -215,7 +201,7 @@ def gen_condition(menu_obj, condition_obj):
 """
 
 
-def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
+def _recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
     global menu_objs
 
     rating_pd = pd.DataFrame(data=cur_ratings, columns=['user_id', 'menu_id', 'rating'])
@@ -227,23 +213,18 @@ def recommend(cur_ratings, n_neighbors, n_recomm, condition_obj):
 
     unrated_items = all_items.loc[all_items.isnull()]
     unrated_items = unrated_items.index.to_series(name='item_ids').reset_index(drop=True)
-    sim = compute_similarity(user_id, rating_pd)
+    sim = _compute_similarity(user_id, rating_pd)
 
-    predictions = unrated_items.apply(lambda d: predict_rating(d, rating_pd, sim, N=n_neighbors))
+    predictions = unrated_items.apply(lambda d: _predict_rating(d, rating_pd, sim, N=n_neighbors))
     predictions = predictions.sort_values(ascending=False)
     some_list = list()
-    # recomm_test = predictions
-    # recomm_test = recomm_test.to_frame(name='predicted_rating')
-    # recomm_test = recomm_test.rename_axis('u_index')
-    # recomm_test = recomm_test.reset_index()
-    # recomm_test.u_index.apply(lambda d: some_list.append(menu_objs[unrated_items[int(d)]]))
 
     recomms = predictions.to_frame(name='predicted_rating')
     recomms = recomms.rename_axis('u_index')
     recomms = recomms.reset_index()
-    # recomms = recomms.head(n_recomm)
+
     recomms.u_index.apply(lambda d: some_list.append(unrated_items[int(d)]))
-    filtered_recomms = list(filter(lambda x: gen_condition(menu_objs[x], condition_obj), some_list))
+    filtered_recomms = list(filter(lambda x: _gen_condition(menu_objs[x], condition_obj), some_list))
     if len(filtered_recomms) == 0:
         raise RecommendExceedException()
 
@@ -261,12 +242,12 @@ def _init_process(request: ChildInfo):
     global cached_black_list
     global user_id
     cached_black_list = []
-    read_allergy(request.allergyList)
+    _read_allergy(request.allergyList)
     if (last_access_time is None) or (datetime.now() - last_access_time).total_seconds() >= CACHE_LIMIT:
         _init()
         last_access_time = datetime.now()
-        read_menu()
-    read_ratings(request.childId, request.cacheList)
+        _read_menu()
+    _read_ratings(request.childId, request.cacheList)
     user_id = request.childId
 
 
@@ -279,7 +260,7 @@ def _init_process(request: ChildInfo):
 
 def recommend_rice(condition_obj):
     global rice_ratings
-    return recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    return _recommend(rice_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
 
 
 """
@@ -289,9 +270,9 @@ def recommend_rice(condition_obj):
 """
 
 
-def recommend_soup(condition_obj):
+def _recommend_soup(condition_obj):
     global soup_ratings
-    return recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    return _recommend(soup_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
 
 
 """
@@ -301,9 +282,9 @@ def recommend_soup(condition_obj):
 """
 
 
-def recommend_side(condition_obj):
+def _recommend_side(condition_obj):
     global side_ratings
-    return recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
+    return _recommend(side_ratings, n_neighbors=N_NEIGHBORS, n_recomm=1, condition_obj=condition_obj)
 
 
 
@@ -337,7 +318,7 @@ def one_diet_recommend(request: ChildInfo) -> list[dict]:
         "PROTEIN_QY": require_protein,
         "CELLU_QY": require_cellulose,
     }
-    result = recommend_soup(condition_obj)
+    result = _recommend_soup(condition_obj)
 
     diet.append(menu_objs[result[0]])
     cached_black_list.append(result[0])
@@ -354,7 +335,7 @@ def one_diet_recommend(request: ChildInfo) -> list[dict]:
             "PROTEIN_QY": require_protein,
             "CELLU_QY": require_cellulose,
         }
-        result = recommend_side(condition_obj)
+        result = _recommend_side(condition_obj)
         diet.append(menu_objs[result[0]])
         cached_black_list.append(result[0])
         # for i in reversed(range(len(side_ratings))):
@@ -430,9 +411,9 @@ def menu_recommend(request: ChildInfo) -> dict:
     condition_obj["PROTEIN_QY"] = request.need.protein - sum_of_protein
     condition_obj["CELLU_QY"] = request.need.cellulose - sum_of_cellulose
     if request.needType == "SOUP":
-        new_menu_id = recommend_soup(condition_obj)[0]
+        new_menu_id = _recommend_soup(condition_obj)[0]
         return menu_converter(menu_objs[new_menu_id])
     else:
-        new_menu_id = recommend_side(condition_obj)[0]
+        new_menu_id = _recommend_side(condition_obj)[0]
         return menu_converter(menu_objs[new_menu_id])
 
