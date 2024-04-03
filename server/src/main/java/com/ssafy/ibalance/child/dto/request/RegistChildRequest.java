@@ -2,7 +2,7 @@ package com.ssafy.ibalance.child.dto.request;
 
 import com.ssafy.ibalance.child.dto.annotation.CheckAllergies;
 import com.ssafy.ibalance.child.dto.annotation.CheckDouble;
-import com.ssafy.ibalance.child.dto.annotation.DateFormat;
+import com.ssafy.ibalance.child.dto.annotation.BeforeDateFormat;
 import com.ssafy.ibalance.child.dto.annotation.Gender;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class RegistChildRequest {
     private String name;
 
     @NotNull(message = "생년월일을 입력해주세요")
-    @DateFormat
+    @BeforeDateFormat
     private String birthDate;
 
     @NotNull(message = "성별을 입력해 주세요")

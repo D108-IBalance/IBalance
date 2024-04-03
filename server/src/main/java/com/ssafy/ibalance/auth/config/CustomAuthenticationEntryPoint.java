@@ -6,7 +6,6 @@ import com.ssafy.ibalance.common.dto.response.CommonWrapperResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -31,6 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         JwtCode jwtCode = jwtTokenProvider.validateToken(token);
 
         response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         CommonWrapperResponse errorMsg = getErrorMessageMap(jwtCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorMsg));

@@ -3,8 +3,8 @@ package com.ssafy.ibalance.member.handler;
 import com.ssafy.ibalance.common.type.ErrorResponse;
 import com.ssafy.ibalance.member.exception.OAuthDeniedException;
 import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
-import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
 import com.ssafy.ibalance.member.exception.ProviderNotSupportedException;
+import com.ssafy.ibalance.member.exception.TokenInvalidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,8 +15,8 @@ import static com.ssafy.ibalance.common.hadler.ExceptionHandlerTool.makeErrorRes
 @RestControllerAdvice
 public class AuthExceptionHandler {
 
-    @ExceptionHandler(KakaoTokenIsNullException.class)
-    public List<ErrorResponse> kakaoTokenExceptionHandler(KakaoTokenIsNullException e) {
+    @ExceptionHandler(TokenInvalidException.class)
+    public List<ErrorResponse> kakaoTokenExceptionHandler(TokenInvalidException e) {
         return makeErrorResponse(e, "code");
     }
 
@@ -26,12 +26,12 @@ public class AuthExceptionHandler {
     }
 
     @ExceptionHandler(ProviderNotSupportedException.class)
-    public List<ErrorResponse> providerNotSupportedExceptionHandler(ProviderNotSupportedException e){
+    public List<ErrorResponse> providerNotSupportedExceptionHandler(ProviderNotSupportedException e) {
         return makeErrorResponse(e, "provider");
     }
 
     @ExceptionHandler(OAuthDeniedException.class)
-    public List<ErrorResponse> oAuthDeniedExceptionHandler(OAuthDeniedException e){
+    public List<ErrorResponse> oAuthDeniedExceptionHandler(OAuthDeniedException e) {
         return makeErrorResponse(e, "code");
     }
 }

@@ -1,5 +1,6 @@
 package com.ssafy.ibalance;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ibalance.common.MemberTestUtil;
 import com.ssafy.ibalance.common.TestBase;
@@ -16,6 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -35,6 +39,9 @@ public class ApiTest extends TestBase {
     @MockBean
     private GoogleOAuth2Utils googleOAuth2Utils;
 
+    @MockBean
+    protected AmazonS3 amazonS3;
+
     public static final String AUTH_HEADER = "Authorization";
 
     protected static final String DEFAULT_RESTDOC_PATH = "{class_name}/{method_name}";
@@ -51,6 +58,8 @@ public class ApiTest extends TestBase {
 
         Mockito.when(googleOAuth2Utils.getUserInfo(MemberTestUtil.otherCode, MemberTestUtil.googleRedirectUrl))
                 .thenReturn(MemberTestUtil.mockOAuthInfo(MemberTestUtil.otherCode));
+
+        Mockito.doReturn(null).when(amazonS3).putObject(anyString(), anyString(), any(), any());
     }
 
     protected void print(MvcResult result) throws UnsupportedEncodingException {

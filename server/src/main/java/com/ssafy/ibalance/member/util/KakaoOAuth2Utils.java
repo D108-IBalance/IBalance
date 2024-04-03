@@ -2,7 +2,6 @@ package com.ssafy.ibalance.member.util;
 
 import com.ssafy.ibalance.member.dto.response.KakaoMemberInfoResponse;
 import com.ssafy.ibalance.member.dto.response.KakaoTokenResponse;
-import com.ssafy.ibalance.member.exception.KakaoTokenIsNullException;
 import com.ssafy.ibalance.member.exception.OAuthDeniedException;
 import com.ssafy.ibalance.member.exception.OAuthInfoNullException;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class KakaoOAuth2Utils {
                 .block();
     }
 
-    public String getKakaoToken(String code, String redirect) throws KakaoTokenIsNullException {
+    public String getKakaoToken(String code, String redirect) {
         log.debug("getKakaoToken 호출 : {}", code);
 
         WebClient webClient = WebClient.builder()
