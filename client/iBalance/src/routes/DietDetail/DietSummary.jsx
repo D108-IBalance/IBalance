@@ -22,11 +22,25 @@ const DietSummary = (props) => {
     setLoadStep,
     setBgColor,
   } = props;
+  const [timer, setTimer] = useState(null);
+  const [fcmAni, setFcmAni] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const childId = useSelector((state) => state.childId);
   const [dietSummary, setDietSummary] = useState(null);
   const [dietDetail, setDietDetail] = useState(null);
-
+  const fcmDown = () => {
+    setFcmAni("fcmDown");
+  };
+  const fcmUp = () => {
+    setFcmAni("fcmUp");
+  };
+  useEffect(() => {
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
   useEffect(() => {
     const getDietDetailData = async () => {
       const res = await getInitDietDetail(
@@ -72,6 +86,12 @@ const DietSummary = (props) => {
           return prevTemp;
         });
       }
+    } catch (err) {
+      fcmDown();
+      let tempTimer = setTimeout(() => {
+        fcmUp();
+      }, 2000);
+      setTimer(tempTimer);
     } finally {
       setLoadStep(1);
       setBgColor("#fff");
@@ -80,6 +100,20 @@ const DietSummary = (props) => {
 
   return (
     <div className={classes.gridSet}>
+      <div className={`${classes.fcmContainer} ${classes[fcmAni]}`}>
+        <div className={classes.fcmMsg}>
+          <div className={classes.fcmIcon} />
+          <p className={classes.fcmContent}>
+            <span style={{ fontWeight: "bold" }}>
+              구성된 식단에 칼로리가 초과하여, 다른 메뉴를 추천할 수 없습니다.
+            </span>
+            <span style={{ fontWeight: "bold" }}>
+              높은 칼로리를 차지하는 메뉴를 변경하여 해당 메뉴를 변경
+              가능합니다.
+            </span>
+          </p>
+        </div>
+      </div>
       <div className={classes.container}>
         <div className={classes.leftBox}>
           <div className={classes.titleBox}>
