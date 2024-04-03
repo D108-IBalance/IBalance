@@ -32,7 +32,7 @@ const OffcanvasPage = ({ ...props }) => {
     };
     getInfo();
   }, []);
-  const [notification, setNotification] = useState();
+  const [notification, setNotification] = useState(null);
   const fcmDown = () => {
     setFcmAni("fcmDown");
   };
@@ -56,7 +56,8 @@ const OffcanvasPage = ({ ...props }) => {
     let notificationPermission = Notification.permission;
 
     if (notificationPermission === "granted") {
-      setNotification(payload.notification);
+      const arr = payload.notification.body.split("\n")
+      setNotification(arr);
       fcmDown();
       let tempTimer = setTimeout(() => fcmUp(), 2000);
       setTimer(tempTimer);
@@ -81,7 +82,11 @@ const OffcanvasPage = ({ ...props }) => {
         <div className={classes.fcmMsg}>
           <div className={classes.fcmIcon} />
           <p className={classes.fcmContent}>
-            <span style={{ fontWeight: "bold" }}>{notification?.body}</span>
+            {
+              notification && notification.map((msg,idx)=>{
+                return (<p key={idx} style={{ fontWeight: "bold" }}>{msg}</p>)
+              })
+            }
           </p>
         </div>
       </div>
