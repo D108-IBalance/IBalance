@@ -8,6 +8,7 @@ import com.ssafy.ibalance.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -25,7 +27,7 @@ public class MemberController {
     /**
      * 실제 회원 소셜 로그인
      *
-     * @param request Oauth에서 보내주는 인가 코드와 redirect_url
+     * @param request  Oauth에서 보내주는 인가 코드와 redirect_url
      * @param provider Oauth Provider (kakao, google, naver)
      * @param response 쿠키 저장을 위한 response
      * @return 로그인 한 회원 JWT token 정보
@@ -41,7 +43,7 @@ public class MemberController {
     /**
      * Oauth provider redirect url 테스트용
      *
-     * @param code Oauth에서 보내주는 인가 코드
+     * @param code     Oauth에서 보내주는 인가 코드
      * @param provider Oauth Provider (kakao, google, naver)
      * @param response 쿠키 저장을 위한 response
      * @return 로그인 한 회원 JWT token 정보
@@ -65,5 +67,16 @@ public class MemberController {
     @GetMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         jwtTokenProvider.removeRefreshTokenForClient(request, response);
+    }
+
+    /**
+     * 회원 액세스 토큰 갱신
+     *
+     * @param refreshToken 새로운 액세스 토큰을 만들어 주기 위해, 자동으로 쿠키에 담겨져 들어오는 리프레시 토큰
+     * @return 로그인 한 회원 JWT token 정보
+     */
+    @PostMapping("/issue/access-token")
+    public JwtTokenResponse issueAccessToken(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
+        return jwtTokenProvider.reissueAccessToken(refreshToken);
     }
 }

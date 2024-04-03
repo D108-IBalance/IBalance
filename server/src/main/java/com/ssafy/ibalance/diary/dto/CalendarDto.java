@@ -1,6 +1,6 @@
 package com.ssafy.ibalance.diary.dto;
 
-import com.ssafy.ibalance.member.entity.Member;
+import com.ssafy.ibalance.child.entity.Child;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CalendarDto {
 
-    private Member member;
+    private Child child;
     private LocalDate dietDate;
     private boolean allReviewed;
 }

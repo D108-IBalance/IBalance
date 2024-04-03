@@ -6,12 +6,12 @@ import com.ssafy.ibalance.common.MemberTestUtil;
 import com.ssafy.ibalance.member.entity.Member;
 import com.ssafy.ibalance.member.repository.MemberRepository;
 import com.ssafy.ibalance.member.type.OAuthProvider;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -100,5 +100,35 @@ public class MemberApiTest extends ApiTest {
                                 "<br>API 호출 시 200 OK 와 함께 현재 가지고 있는 refreshToken 를 삭제합니다." +
                                 "<br>헤더가 없어도 200 처리되며, Negative Code 가 발생되지 않습니다.", "로그아웃",
                         CommonDocument.AccessTokenHeader));
+    }
+
+    @Test
+    void 토큰_리프레시_성공_200() throws Exception {
+        Cookie refreshTokenCookie = memberTestUtil.회원가입_쿠키반환(mockMvc);
+
+        mockMvc.perform(
+                        post("/member/issue/access-token")
+                                .cookie(refreshTokenCookie)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH, "액세스 토큰을 갱신하는 API 입니다." +
+                                "<br>쿠키에 올바른 refresh token 을 담아 보내면, 200 OK 와 함께 새로운 access token 정보가 반환됩니다." +
+                                "<br>쿠키에 토큰이 없거나, 만료된 refresh token 이라면 401 Unauthorized 가 반환됩니다.",
+                        "액세스토큰 갱신",
+                        MemberDocument.refreshTokenCookieRequestField,
+                        MemberDocument.loginResultResponseField));
+    }
+
+    @Test
+    void 토큰_리프레시_토큰없음_401() throws Exception {
+        mockMvc.perform(
+                        post("/member/issue/access-token")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(401))
+                .andDo(this::print)
+                .andDo(document(DEFAULT_RESTDOC_PATH));
     }
 }
