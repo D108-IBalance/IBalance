@@ -70,11 +70,15 @@ const Calendar = (props) => {
           요일: weekDay,
           style: "disable",
           haveDiets: false,
+          reviewd: false,
         });
       }
     };
     const createCurrentMonthDays = (days, lastDay, dietDays) => {
-      const dietDaysSet = new Set(dietDays);
+      const diets = dietDays.map((day) => {
+        return day[0];
+      });
+      const dietDaysSet = new Set(diets);
       for (let day = 1; day <= lastDay; day++) {
         let weekDay = new Date(year, month, day).getDay();
         days.push({
@@ -82,6 +86,7 @@ const Calendar = (props) => {
           요일: weekDay,
           style: "able",
           haveDiets: dietDaysSet.has(day),
+          reviewd: dietDays.find((item) => (item[0] === day ? item[1] : false)),
         });
       }
     };
@@ -105,10 +110,11 @@ const Calendar = (props) => {
     const getDietInfo = async () => {
       let dietDays = [];
       const res = await getDietDates(CHILD_ID, year, month + 1);
+      console.log(res.data.data);
       if (res.data.status === 200) {
         dietDays = res.data.data.map((dietDate) => {
           const tempDate = new Date(dietDate["dietDate"]);
-          return tempDate.getDate();
+          return [tempDate.getDate(), dietDate["allReviewed"]];
         });
       }
       let dayArr = getDayArr(dietDays);
@@ -158,7 +164,7 @@ const Calendar = (props) => {
                     return (
                       <td
                         key={id}
-                        className={`${classes[day["style"]]}`}
+                        className={`${classes[day["style"]]} `}
                         onClick={() => {
                           day["haveDiets"]
                             ? onClickDay(
@@ -168,12 +174,17 @@ const Calendar = (props) => {
                             : null;
                         }}>
                         <span
-                          className={
+                          className={`${
                             day["haveDiets"]
                               ? currentClick === day["날짜"]
                                 ? classes.currentClick
                                 : classes.canClick
                               : ""
+                          }`}
+                          style={
+                            day["reviewd"] && currentClick !== day["날짜"]
+                              ? { border: "2px solid #fe724c" }
+                              : {}
                           }>
                           {day["날짜"]}
                         </span>
