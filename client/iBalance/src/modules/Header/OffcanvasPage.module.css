@@ -405,10 +405,10 @@
   pointer-events: none;
 }
 .fcmDown {
-  animation: fcmDown 3s ease forwards;
+  animation: fcmDown 1.5s ease-in-out forwards;
 }
 .fcmUp {
-  animation: fcmUp 3s ease forwards;
+  animation: fcmUp 1s ease-in-out forwards;
 }
 .fcmMsg {
   width: 350px;
