@@ -415,7 +415,7 @@
   height: 150px;
   padding-top: 20px;
   padding-bottom: 30px;
-  background-color: #efefef;
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-around;
   align-items: center;
