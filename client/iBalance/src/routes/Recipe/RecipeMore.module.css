@@ -79,8 +79,8 @@
     color: #fe724c;
   }
   .recipeImgBox {
-    width: 160px;
-    height: 160px;
+    width: 155px;
+    height: 155px;
     position: relative;
     margin: 10px;
   }
@@ -208,7 +208,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    border: 1px gre solid;
     height: auto;
     width: 100%;
   }
@@ -345,7 +344,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    border: 1px gre solid;
     height: auto;
     width: 100%;
   }
