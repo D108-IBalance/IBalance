@@ -399,7 +399,7 @@
 
 
 - Porting Manual
-    - <a href="exec/포팅메뉴얼.md">🖥️ Poring Manual</a>
+    - <a href="exec/포팅메뉴얼.md">🖥️ Porting Manual</a>
 
 
 - Reference
@@ -407,3 +407,4 @@
     - <a href="https://www.kns.or.kr/FileRoom/FileRoom_view.asp?idx=108&BoardID=Kdr">📒 보건복지부 - 2020년 한국인 영양소 섭취기준</a>
     - <a href="https://dietitian.or.kr/work/business/kb_c_child_obesity_edu.do">📒 대한영양사협회 - 소아비만의 교정 및 식사요법</a>
     - <a href="https://knhanes.kdca.go.kr/knhanes/sub08/sub08_02.do">📒 질병관리청 - 2017년 개월수별 신장, 체중, 체질량지수 백분위수 도표</a>
+    - <a href="https://www.10000recipe.com/">📒 만개의 레시피</a>
