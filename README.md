@@ -266,7 +266,7 @@
         <td><img src="image/4.refresh_menu_none.gif"></td>
     </tr>
     <tr>
-        <td>메뉴저장</td>
+        <td>식단저장</td>
         <td>마이페이지 식단확인</td>
     </tr>
     <tr>
@@ -355,7 +355,7 @@
     </tr>
     <tr>
         <td><img src="image/8.backgound_review.gif"></td>
-        <td><img src="image/8.background_diet.jpg" width=30%></td>
+        <td><img src="image/8.background_diet.gif"></td>
         <td><img src="image/8.background_update.gif"></td>
     </tr>
     <tr>
@@ -365,10 +365,9 @@
     </tr>
     <tr>
         <td><img src="image/8.foreground_review.gif"></td>
-        <td><img src="image/8.foreground_diet.gif" width=30%></td>
+        <td><img src="image/8.foreground_diet.gif"></td>
         <td><img src="image/8.foreground_update.gif"></td>
     </tr>
-
 </table>
 
 
@@ -395,7 +394,7 @@
 
 
 - Porting Manual
-
+    - <a href="exec/포팅메뉴얼.md">Poring Manual</a>
 
 
 
