@@ -375,27 +375,35 @@
 
 - API 명세서
 
+    - <a href="https://sly-level-724.notion.site/API-4946fc4058b1473ead528f3adcd20cd3?pvs=4">📜 Notion API 명세서</a>
 
 
 - ERD Schema
 
-
+    <img src="image/IBalance_ERD.png">
 
 
 - 와이어프레임
 
-
-
+    - <a href="https://www.figma.com/file/3tMNTEx7G8jjic6yRiO2b5/BigData?type=design&node-id=0%3A1&mode=design&t=J0CnBqMtnzV3sISN-1">🎨 Figma</a>
 
 
 - Convention
-
+    - <a href="https://sly-level-724.notion.site/Jira-convention-2c5a26c27c994519950619762dafdd98?pvs=4">✨Jira Convention</a>
+    - <a href="https://sly-level-724.notion.site/Git-convention-6360af6ac8a240d899759161f025f02e?pvs=4">✨Git Convention</a>
+    - <a href="https://sly-level-724.notion.site/BackEnd-Code-convention-0c40c94d8c5c4b6bae500efd887b4d68?pvs=4">✨[Backend] Code Convention</a>
+    - <a href="https://sly-level-724.notion.site/FrontEnd-Code-convention-55f9324e6e2e4dd5896e84ffaf848020?pvs=4">✨[Frontend] Code Convention</a>
+    - <a href="https://sly-level-724.notion.site/BackEnd-Directory-Structure-74461abf6239422294e340c8abccdaee?pvs=4">✨[Backend] Directory Structure</a>
+    - <a href="https://sly-level-724.notion.site/FrontEnd-Directory-Structure-97636a2c1a1b4c75b5d8ed6cb28677ed?pvs=4">✨[Frontend] Directory Structure</a>
 
 
 
 - Porting Manual
-    - <a href="exec/포팅메뉴얼.md">Poring Manual</a>
-
+    - <a href="exec/포팅메뉴얼.md">🖥️ Poring Manual</a>
 
 
 - Reference
+    - <a href="https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15118065">📒 식품의약품안전처 - 어린이 식단 정보(공공데이터포털)</a>
+    - <a href="https://www.kns.or.kr/FileRoom/FileRoom_view.asp?idx=108&BoardID=Kdr">📒 보건복지부 - 2020년 한국인 영양소 섭취기준</a>
+    - <a href="https://dietitian.or.kr/work/business/kb_c_child_obesity_edu.do">📒 대한영양사협회 - 소아비만의 교정 및 식사요법</a>
+    - <a href="https://knhanes.kdca.go.kr/knhanes/sub08/sub08_02.do">📒 질병관리청 - 2017년 개월수별 신장, 체중, 체질량지수 백분위수 도표</a>
