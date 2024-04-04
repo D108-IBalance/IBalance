@@ -18,10 +18,10 @@ public class Growth extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private double height;
 
-    @Column
+    @Column(nullable = false)
     private double weight;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
