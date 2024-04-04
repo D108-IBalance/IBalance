@@ -17,7 +17,7 @@ public class DietMaterial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private boolean picky;
 
     @Column(length = 50, nullable = false)
