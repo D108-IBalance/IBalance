@@ -8,7 +8,7 @@ public enum PeriodUnit {
     WEEKLY(date -> date.minusWeeks(1)),
     MONTHLY(date -> date.minusMonths(1));
 
-    private Function<LocalDate, LocalDate> dateFunction;
+    private final Function<LocalDate, LocalDate> dateFunction;
 
     PeriodUnit(Function<LocalDate, LocalDate> dateFunction) {
         this.dateFunction = dateFunction;
