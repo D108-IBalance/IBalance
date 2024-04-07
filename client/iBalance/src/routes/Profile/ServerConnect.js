@@ -1,43 +1,47 @@
-// 외부 모듈
-
-import axios from "axios";
-
 // 내부 모듈
 
-// import customAxios, { token } from "../../axiosController";
+import axios from "axios";
+import customAxios from "../../axiosController";
 
-const getProfile = async (TOKEN) => {
-  const headers = {
-    Authorization: `${TOKEN}`,
-  };
-  return axios.get("https://j10d108.p.ssafy.io/api/child", { headers });
+const getProfile = async () => {
+  return customAxios.get(`child`);
 };
 
-const addProfile = async (TOKEN, profile) => {
+const getChildProfile = async (idx) => {
+  return customAxios.get(`child/${idx}`);
+};
+
+const addProfile = async (profile) => {
+  return customAxios.post("child", JSON.stringify(profile));
+};
+
+const deleteProfile = async (id) => {
+  return customAxios.delete(`child/${id}`);
+};
+
+const editProfileImg = async (childId, profileImg, token) => {
   const headers = {
-    Authorization: `${TOKEN}`,
-    "Content-Type": `application/json`,
+    Authorization: token,
+    "Content-Type": "multipart/form-data",
   };
-  return axios.post(
-    "https://j10d108.p.ssafy.io/api/child",
-    JSON.stringify(profile),
-    {
-      headers,
-    },
+  const formData = new FormData();
+  formData.append("image", profileImg);
+  return axios.put(
+    `https://j10d108.p.ssafy.io/api/child/profile/${childId}`,
+    formData,
+    { headers },
   );
 };
 
-const deleteProfile = async (TOKEN, id) => {
-  const headers = {
-    Authorization: `${TOKEN}`,
-  };
-  return axios.delete(`https://j10d108.p.ssafy.io/api/child/${id}`, {
-    headers,
-  });
+const editProfile = async (childId, profileData) => {
+  return customAxios.put(`child/${childId}`, JSON.stringify(profileData));
 };
 
-// const getTestProfile = async () => {
-//   return customAxios.get("child");
-// };
-
-export { getProfile, addProfile, deleteProfile };
+export {
+  getProfile,
+  getChildProfile,
+  addProfile,
+  deleteProfile,
+  editProfileImg,
+  editProfile,
+};

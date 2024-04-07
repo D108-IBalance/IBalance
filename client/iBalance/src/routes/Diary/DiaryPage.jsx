@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 // 외부 모듈
 import { useState } from "react";
 // 내부 모듈
@@ -8,22 +6,35 @@ import NavbarModule from "../../modules/Navbar/NavbarModule";
 import Calendar from "./Calendar";
 import DiaryCards from "./DiaryCards";
 import DiaryWrite from "./DiaryWrite";
+import DiaryReview from "./DiaryReview";
 import Header from "../../modules/Header/Header";
 import notSelectIcon from "../../assets/diary/img/notselect.svg";
 
 const DiaryPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const [dietId, setDietId] = useState(0);
   const [pageStep, setPageStep] = useState(0);
-  const cardComponent =
-    pageStep === 0 ? (
-      <DiaryCards
-        selectedDate={selectedDate}
-        pageStep={pageStep}
-        setPageStep={setPageStep}
-      />
-    ) : (
-      <DiaryWrite selectedDate={selectedDate} />
-    );
+  const cardComponent = [
+    <DiaryCards
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      setDietId={setDietId}
+      key="DiaryCards"
+    />,
+    <DiaryWrite
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      dietId={dietId}
+      setDietId={setDietId}
+      key="DiaryWrite"
+    />,
+    <DiaryReview
+      selectedDate={selectedDate}
+      setPageStep={setPageStep}
+      dietId={dietId}
+      key="DiaryReview"
+    />,
+  ];
   return (
     <>
       <div className={classes.gridSet}>
@@ -43,7 +54,7 @@ const DiaryPage = () => {
                 </p>
               </div>
             ) : (
-              cardComponent
+              cardComponent[pageStep]
             )}
           </div>
         </div>

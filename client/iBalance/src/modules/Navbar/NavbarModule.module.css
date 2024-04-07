@@ -35,7 +35,7 @@
     cursor: pointer;
   }
 
-  .homeIcon:hover {
+  .homeIconHover {
     background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -65,7 +65,7 @@
     cursor: pointer;
   }
 
-  .recipeIcon:hover {
+  .recipeIconHover {
     background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -95,7 +95,7 @@
     cursor: pointer;
   }
 
-  .dietIcon:hover {
+  .dietIconHover {
     background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -125,7 +125,7 @@
     cursor: pointer;
   }
 
-  .diaryIcon:hover {
+  .diaryIconHover {
     background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -201,7 +201,7 @@
     margin: 0;
   }
 
-  .homeIcon:hover {
+  .homeIconHover {
     background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -234,7 +234,7 @@
     margin: 0;
   }
 
-  .recipeIcon:hover {
+  .recipeIconHover {
     background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -267,7 +267,7 @@
     margin: 0;
   }
 
-  .dietIcon:hover {
+  .dietIconHover {
     background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -300,7 +300,7 @@
     margin: 0;
   }
 
-  .diaryIcon:hover {
+  .diaryIconHover {
     background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -362,7 +362,7 @@
     cursor: pointer;
   }
 
-  .homeIcon:hover {
+  .homeIconHover {
     background: url("../../assets/navbar/home_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -392,7 +392,7 @@
     cursor: pointer;
   }
 
-  .recipeIcon:hover {
+  .recipeIconHover {
     background: url("../../assets/navbar/recipe_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -422,7 +422,7 @@
     cursor: pointer;
   }
 
-  .dietIcon:hover {
+  .dietIconHover {
     background: url("../../assets/navbar/diet_active_jcon.png");
     background-size: contain;
     background-position: center;
@@ -452,7 +452,7 @@
     cursor: pointer;
   }
 
-  .diaryIcon:hover {
+  .diaryIconHover {
     background: url("../../assets/navbar/diary_active_jcon.png");
     background-size: contain;
     background-position: center;

@@ -5,6 +5,8 @@ import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // 내부 모듈
 import classes from "./Profile.module.css";
@@ -12,6 +14,7 @@ import { getProfile, deleteProfile } from "./ServerConnect.js";
 import settingImg from "../../assets/profile/Img/setting.svg";
 import warningImg from "../../assets/profile/Img/warning.svg";
 import { setChildId } from "../../store.js";
+import customAxios from "../../axiosController";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -20,6 +23,32 @@ const Profile = () => {
   const [profileList, setProfileList] = useState([]);
   const [isSetting, setIsSetting] = useState(false);
   const [deleteIdx, setDeleteIdx] = useState(-1);
+
+  const app = initializeApp({
+    apiKey: import.meta.env.VITE_APP_FCM_API_KEY,
+    authDomain: import.meta.env.VITE_APP_FCM_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_APP_FCM_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_APP_FCM_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_APP_FCM_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_FCM_APP_ID,
+    measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID,
+  });
+
+  const messaging = getMessaging();
+
+  function requestPermission() {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        getToken(messaging, {
+          vapidKey: import.meta.env.VITE_APP_FCM_VAPID_KEY,
+        }).then((currentToken) => {
+          if (currentToken) {
+            customAxios.post("fcm", { token: currentToken }).then((res) => {});
+          }
+        });
+      }
+    });
+  }
 
   const goToHome = (idx) => {
     dispatch(setChildId(profileList[idx].childId));
@@ -31,7 +60,7 @@ const Profile = () => {
       return;
     }
     const { childId } = profileList[deleteIdx];
-    const value = await deleteProfile(token, childId);
+    const value = await deleteProfile(childId);
     if (value.status == "200") {
       setProfileList(profileList.filter((_, idx) => idx !== deleteIdx));
       setDeleteIdx(-1);
@@ -41,8 +70,9 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    requestPermission();
     const getProfileList = async () => {
-      let value = await getProfile(token);
+      let value = await getProfile();
       setProfileList(value.data.data);
     };
     getProfileList();
@@ -76,12 +106,17 @@ const Profile = () => {
                     <div className={classes.deleteIcon} />
                   </div>
                 ) : null}
-                <div className={classes.profileIcon}></div>
+                <img
+                  src={profile.imageUrl}
+                  className={
+                    !isSetting ? classes.profileIcon : classes.profileDeleteIcon
+                  }
+                />
                 <p className={classes.profileName}>{profile.name}</p>
               </div>
             );
           })}
-          {profileList.length < 6 && (
+          {profileList.length < 6 && !isSetting && (
             <div
               className={classes.profile}
               onClick={() => navigate("/profile/add")}>
