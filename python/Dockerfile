@@ -1,0 +1,40 @@
+FROM python:3.12
+
+# 환경 변수
+
+ARG MONGO_HOST
+ENV MONGO_HOST=${MONGO_HOST}
+
+ARG MYSQL_HOST
+ENV MYSQL_HOST=${MYSQL_HOST}
+
+ARG MYSQL_USER
+ENV MYSQL_USER=${MYSQL_USER}
+
+ARG MYSQL_PASSWORD
+ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+ARG MYSQL_DATABASE
+ENV MYSQL_DATABASE=${MYSQL_DATABASE}
+
+ARG MYSQL_PORT
+ENV MYSQL_PORT=${MYSQL_PORT}
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 소스 코드 복사
+COPY . /app
+
+# 필요한 라이브러리 설치
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 앱 실행
+CMD ["sh", "-c", "PYTHONUNBUFFERED=1 \
+    MONGO_HOST=${MONGO_HOST} \
+    MYSQL_HOST=${MYSQL_HOST} \
+    MYSQL_USER=${MYSQL_USER} \
+    MYSQL_PASSWORD=${MYSQL_PASSWORD} \
+    MYSQL_DATABASE=${MYSQL_DATABASE} \
+    MYSQL_PORT=${MYSQL_PORT} \
+    uvicorn controller:app --host 0.0.0.0 --port 5050"]
