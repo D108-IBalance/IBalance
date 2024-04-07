@@ -35,7 +35,7 @@ public class Diet extends BaseTime {
     @Column
     private String diary;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private boolean isReviewed;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

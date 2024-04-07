@@ -40,7 +40,7 @@ public class Child extends BaseTime {
     @Column(nullable = false)
     private double weight;
 
-    @Column(columnDefinition = "varchar(255) default '초기 이미지 URL'")
+    @Column(columnDefinition = "varchar(255) default '초기 이미지 URL'", nullable = false)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
