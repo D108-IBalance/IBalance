@@ -82,6 +82,7 @@
   }
   .card {
     display: flex;
+    position: relative;
     flex-direction: row;
     justify-content: space-between;
     height: 25%;
@@ -96,13 +97,21 @@
   .card:hover {
     transform: scale(1.01);
   }
-  .cardImg {
+  .cardImgBox {
     height: 80px;
     width: 80px;
+  }
+  .cardImg {
+    height: 100%;
+    width: 100%;
     border-radius: 20px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
   .cardContent {
-    width: 70%;
+    width: auto;
+    max-width: 70%;
     padding: 0px 15px;
   }
   .resetIcon {
@@ -130,6 +139,17 @@
     font-size: 0.7rem;
     color: #fe724c;
     font-weight: bold;
+  }
+  .settingIcon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: url("../../assets/diet/reset_icon.png");
+    height: 20px;
+    width: 20px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 }
 @media screen and (min-width: 576px) {
@@ -208,9 +228,11 @@
     justify-content: flex-start;
   }
   .card {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     height: 23%;
     width: 98%;
     border-radius: 18px;
@@ -224,13 +246,20 @@
   .card:hover {
     transform: scale(1.01);
   }
-  .cardImg {
+  .cardImgBox {
     height: 80px;
     width: 80px;
+  }
+  .cardImg {
+    height: 100%;
+    width: 100%;
     border-radius: 20px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
   .cardContent {
-    width: 70%;
+    width: auto;
     padding: 0px 15px;
   }
   .resetIcon {
@@ -258,5 +287,83 @@
     font-size: 0.7rem;
     color: #fe724c;
     font-weight: bold;
+  }
+  .settingIcon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: url("../../assets/diet/reset_icon.png");
+    height: 20px;
+    width: 20px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
+.fcmContainer {
+  position: fixed;
+  z-index: 999;
+  top: -300px;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  padding-top: 50px;
+  padding-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+.fcmDown {
+  animation: fcmDown 1.5s ease-in-out forwards;
+}
+.fcmUp {
+  animation: fcmUp 1s ease-in-out forwards;
+}
+.fcmMsg {
+  width: 350px;
+  height: 150px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+  flex-direction: column;
+  box-shadow:
+    5px 5px 5px rgba(160, 160, 160, 0.3),
+    -5px 5px 5px rgba(160, 160, 160, 0.3);
+
+  border-radius: 10px;
+}
+.fcmIcon {
+  background-image: url(../../assets/diet/emptyDiet.png);
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.fcmContent {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+@keyframes fcmDown {
+  0% {
+    top: -300px;
+  }
+  100% {
+    top: 0px;
+  }
+}
+
+@keyframes fcmUp {
+  0% {
+    top: 0px;
+  }
+  100% {
+    top: -300px;
   }
 }

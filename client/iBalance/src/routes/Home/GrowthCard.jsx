@@ -6,11 +6,12 @@ import { useSelector } from "react-redux";
 import classes from "./GrowthCard.module.css";
 import prevArrow from "../../assets/home/prevArrow.svg";
 import nextArrow from "../../assets/home/nextArrow.svg";
-import { getUserChart } from "./ServerConnect";
+import { getHeightChart, getWeightChart } from "./ServerConnect";
 import Chart from "./Chart.jsx";
 
 const GrowthCard = (props) => {
-  const { chartInfo } = props;
+  const { heightChartInfo, weightChartInfo } = props;
+  const [svgAni, setSvgAni] = useState("svgAni");
   const [toggle, setToggle] = useState(false);
   const [heightChart, setHeightChart] = useState({});
   const [heightLast, setHeightLast] = useState(true);
@@ -20,27 +21,43 @@ const GrowthCard = (props) => {
   const [weightPage, setWeightPage] = useState(0);
   const CHILD_ID = useSelector((state) => state.childId);
   const getChart = async (isHeight, step) => {
+    setSvgAni("");
     const page = isHeight === "height" ? heightPage + step : weightPage + step;
-    let value = await getUserChart(page, CHILD_ID);
     if (isHeight === "height") {
+      const value = await getHeightChart(page, CHILD_ID);
       setHeightChart(value.data.data);
       setHeightLast(value.data.data.last);
       setHeightPage(page);
     } else {
+      const value = await getWeightChart(page, CHILD_ID);
       setWeightChart(value.data.data);
       setWeightLast(value.data.data.last);
       setWeightPage(page);
     }
+    setSvgAni("svgAni");
+  };
+  let timer = null;
+  const onToggle = () => {
+    setSvgAni("");
+    setToggle(!toggle);
+    timer = setTimeout(() => {
+      setSvgAni("svgAni");
+    }, 50);
   };
 
   useEffect(() => {
-    if (chartInfo) {
-      setHeightChart(Object.assign(chartInfo));
-      setHeightLast(chartInfo.last);
-      setWeightChart(Object.assign(chartInfo));
-      setWeightLast(chartInfo.last);
+    if (heightChartInfo && weightChartInfo) {
+      setHeightChart(Object.assign(heightChartInfo));
+      setHeightLast(heightChartInfo.last);
+      setWeightChart(Object.assign(weightChartInfo));
+      setWeightLast(weightChartInfo.last);
     }
-  }, [chartInfo]);
+  }, [heightChartInfo, weightChartInfo]);
+  useEffect(() => {
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [timer]);
 
   const COMPONENT_INFO = useMemo(() => {
     return [
@@ -96,7 +113,7 @@ const GrowthCard = (props) => {
                   <span
                     className={!toggle ? classes.bold : null}
                     onClick={() => {
-                      setToggle(!toggle);
+                      onToggle();
                     }}>
                     키
                   </span>
@@ -104,7 +121,7 @@ const GrowthCard = (props) => {
                   <span
                     className={toggle ? classes.bold : null}
                     onClick={() => {
-                      setToggle(!toggle);
+                      onToggle();
                     }}>
                     몸무게
                   </span>
@@ -116,11 +133,11 @@ const GrowthCard = (props) => {
                 <div className={classes.legends}>
                   <div className={classes.legend}>
                     <div className={classes.selectIcon} />
-                    <p>선택된 요소</p>
+                    <p>우리 아이 성장 곡선</p>
                   </div>
                   <div className={classes.legend}>
                     <div className={classes.notSelectIcon} />
-                    <p>선택되지 않은 요소</p>
+                    <p>평균 성장 곡선</p>
                   </div>
                 </div>
                 <div className={classes.controller}>
@@ -146,7 +163,10 @@ const GrowthCard = (props) => {
                   ) : null}
                 </div>
               </div>
-              <Chart chart={data.chart} isHeight={data.isHeight}></Chart>
+              <Chart
+                chart={data.chart}
+                isHeight={data.isHeight}
+                svgAni={svgAni}></Chart>
             </div>
           </div>
         );

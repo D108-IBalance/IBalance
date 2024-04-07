@@ -92,7 +92,7 @@ const ChildBirth = (props) => {
       </button>
       {warn ? (
         <p className={classes.warn}>
-          저희 서비스는 생후 6개월부터 만 6세까지의 식단을 제공합니다.
+          저희 서비스는 만 3세부터 만 8세까지의 식단을 제공합니다.
         </p>
       ) : (
         <></>
