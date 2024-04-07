@@ -1,62 +1,58 @@
-
-.loginFormbox{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+.loginFormbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.loginForm{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.loginForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.loginLogo{
-    width: 300px;
-    height: 110px;
-    background: url('../../assets/auth/img/logo_large.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-bottom: 50px;
-
+.loginLogo {
+  width: 300px;
+  height: 110px;
+  background: url("../../assets/auth/img/logo_large.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-bottom: 50px;
 }
 
-.loginGoogle{
-    background: url('../../assets/auth/img/google_login.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-top: 25px;
-    height: 60px;
-    width: 290px;
-    cursor: pointer;
+.loginGoogle {
+  background: url("../../assets/auth/img/google_login.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 25px;
+  height: 60px;
+  width: 290px;
+  cursor: pointer;
 }
 
 .loginGoogle:hover,
 .loginNaver:hover,
 .loginKakao:hover {
-    transform: scale(1.2);
+  transition: 0.5s ease;
+  transform: scale(1.03);
 }
 
-
-.loginNaver{
-    background: url('../../assets/auth/img/naver_login.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-top: 25px;
-    height: 60px;
-    width: 290px;
-    cursor: pointer;
-
+.loginNaver {
+  background: url("../../assets/auth/img/naver_login.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 25px;
+  height: 60px;
+  width: 290px;
+  cursor: pointer;
 }
-.loginKakao{
-    background: url('../../assets/auth/img/kakao_login.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-top: 25px;
-    height: 60px;
-    width: 290px;
-    cursor: pointer;
-
+.loginKakao {
+  background: url("../../assets/auth/img/kakao_login.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 25px;
+  height: 60px;
+  width: 290px;
+  cursor: pointer;
 }

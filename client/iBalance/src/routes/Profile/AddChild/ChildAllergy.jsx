@@ -1,6 +1,5 @@
 // 외부 모듈
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // 내부 모듈
@@ -9,10 +8,7 @@ import allergy from "./allergy.js";
 import { addProfile } from "../ServerConnect.js";
 
 const ChildAllergy = (props) => {
-  const TOKEN = useSelector((state) => {
-    return state.token;
-  });
-  const { setProfileData, profileData } = props;
+  const { setProfileData, profileData, step, setStep } = props;
   const [animation, setAnimation] = useState("fadeIn");
   const [current, setCurrent] = useState(0);
   const [select, setSelect] = useState([]);
@@ -35,22 +31,36 @@ const ChildAllergy = (props) => {
     setSelect(tempSelect);
   };
   let onNextStep = async () => {
-    let temp = Object.assign({}, profileData);
-    temp.haveAllergies = select;
-    setProfileData(temp);
-    try {
-      await addProfile(temp, TOKEN);
-      setCurrent(1);
-    } catch (err) {
-      console.log(err);
+    let allergyArr = Object.assign({}, profileData);
+    allergyArr.haveAllergies = select;
+    setProfileData(allergyArr);
+    if (step !== 3) {
+      await addProfile(allergyArr);
     }
+    setCurrent(1);
   };
+  useEffect(() => {
+    if (profileData.haveAllergies) {
+      let tempShadow = [...new Array(allergy.length)].map(() => {
+        return "0px 4px 4px 0px rgba(0,0,0,0.25)";
+      });
+      for (let id of profileData.haveAllergies) {
+        tempShadow[id - 1] = "0px 4px 4px 0px rgba(254, 114, 76, 0.8)";
+      }
+      setShadow(tempShadow);
+      setSelect([...profileData.haveAllergies]);
+    }
+  }, [profileData]);
   useEffect(() => {
     let timer = null;
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
-        navigate("/enter/profile");
+        if (step === 3) {
+          setStep(0);
+        } else {
+          navigate("/enter/profile");
+        }
       }, 500);
     }
     return () => {
@@ -67,6 +77,7 @@ const ChildAllergy = (props) => {
       <div className={classes.infoBox}>
         {allergy.map((data, idx) => {
           return (
+            idx === 4? null : (
             <div className={classes.ingredient} key={idx}>
               <div
                 className={classes.img}
@@ -79,7 +90,7 @@ const ChildAllergy = (props) => {
                 }}
               />
               <span className={classes.info}>{data["name"]}</span>
-            </div>
+            </div>)
           );
         })}
       </div>

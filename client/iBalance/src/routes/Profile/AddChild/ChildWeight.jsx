@@ -1,5 +1,5 @@
 // 외부 모듈
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // 내부 모듈
 import classes from "./ChildWeight.module.css";
@@ -10,9 +10,10 @@ const ChildWeight = (props) => {
   const { setStep, setProfileData, profileData } = props;
   const [animation, setAnimation] = useState("fadeIn");
   const [current, setCurrent] = useState(0);
-  const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState("0");
   const [go, setGo] = useState(MAX_WEIGHT * 4.1);
   const [validate, setValidate] = useState(false);
+  const inputDiv = useRef(null);
   let arr = [...new Array(MAX_WEIGHT + 1)].map((_, idx) => {
     if (idx % 5 == 0) {
       return "long";
@@ -20,8 +21,10 @@ const ChildWeight = (props) => {
     return "short";
   });
   let onChangeIt = (e) => {
-    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
-    let temp = Number.parseInt(e.currentTarget.value);
+    e.currentTarget.value = e.currentTarget.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+    let temp = Number.parseFloat(e.currentTarget.value);
     if (temp > MAX_WEIGHT) {
       e.currentTarget.value = e.currentTarget.value.slice(0, 2);
     }
@@ -32,13 +35,20 @@ const ChildWeight = (props) => {
   };
   let onNextStep = () => {
     let temp = Object.assign({}, profileData);
-    temp.weight = Number.parseInt(weight);
+    temp.weight = weight;
     setProfileData(temp);
     setCurrent(1);
   };
   useEffect(() => {
+    if (profileData.weight && inputDiv) {
+      inputDiv.current.value = profileData.weight;
+      setWeight("" + profileData.weight);
+      setGo(MAX_WEIGHT * 4.1 - 8.2 * profileData.weight);
+    }
+  }, [profileData, inputDiv]);
+  useEffect(() => {
     let weightValidate = () => {
-      if (weight !== "0" && weight !== "") {
+      if (weight !== "0" && weight !== "" && !weight.startsWith(".")) {
         setValidate(true);
       } else {
         setValidate(false);
@@ -51,7 +61,10 @@ const ChildWeight = (props) => {
     if (current === 1) {
       setAnimation("fadeOut");
       timer = setTimeout(() => {
-        setStep(5);
+        setStep((prev) => {
+          if (prev === 2) return 0;
+          return 5;
+        });
       }, 500);
     }
     return () => {
@@ -71,10 +84,11 @@ const ChildWeight = (props) => {
           <input
             type="text"
             className={classes.weightInput}
-            maxLength={3}
+            maxLength={4}
             onChange={(e) => {
               onChangeIt(e);
             }}
+            ref={inputDiv}
           />
           <p className={classes.kg}>(KG)</p>
         </div>
@@ -82,7 +96,7 @@ const ChildWeight = (props) => {
           style={{ transform: `translateX(${go}px)` }}
           className={classes.ruler}>
           {arr.map((content, idx) => {
-            if (idx == weight) {
+            if (idx == Math.round(weight)) {
               return (
                 <div key={idx} className={classes[content + "Color"]}></div>
               );

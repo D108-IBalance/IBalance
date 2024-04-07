@@ -4,11 +4,13 @@ import OffcanvasPage from "./OffcanvasPage";
 
 const HomeHeader = () => {
   return (
-    <div className={classes.headerBox}>
-      <div className={classes.tempIcon}></div>
-      <div className={classes.homeLogo}></div>
-      <OffcanvasPage placement={"end"} name={"end"}></OffcanvasPage>
-    </div>
+    <>
+      <div className={classes.headerBox}>
+        <div className={classes.tempIcon}></div>
+        <div className={classes.homeLogo}></div>
+        <OffcanvasPage placement={"end"} name={"end"}></OffcanvasPage>
+      </div>
+    </>
   );
 };
 

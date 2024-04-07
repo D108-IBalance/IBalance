@@ -41,11 +41,12 @@
   }
   .nameBox {
     display: flex;
+    padding-left: 15px;
+    padding-right: 15px;
     flex-direction: column;
     align-items: start;
     justify-content: flex-end;
     width: auto;
-    margin-left: 2%;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -60,8 +61,18 @@
   .backIcon:hover {
     transform: scale(1.2);
   }
+  .ImgBox {
+    width: 100%;
+    height: 300px;
+  }
   .menuImg {
     width: 100%;
+    height: 100%;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
   .ImgBox {
     position: relative;
@@ -80,17 +91,21 @@
   .contentBox {
     width: 100%;
     height: auto;
-    padding: 5px 10px;
+    margin-top: 20px;
     padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .menuName {
     font-size: 2rem;
     font-weight: bold;
+    margin-top: 8px;
   }
   .grayText {
     color: #8c8a9d;
     font-weight: 300;
     font-size: 1rem;
+    margin-left: 3px;
   }
   .nutriBox {
     padding: 0px 5px;
@@ -104,6 +119,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 3px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -155,22 +171,22 @@
     font-size: 0.8rem;
     border: 2px solid #fe724c;
     border-radius: 30px;
-    padding: 8px 15px;
+    padding: 5px 10px;
     background: #fff;
-    margin: 5px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .recipeBox {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-bottom: 20px;
+    padding: 10px;
   }
-  .recipeBox p {
+  .recipe {
+    padding-bottom: 15px;
+  }
+  .recipe p {
     color: #9598a0;
-  }
-  .recipeImg {
-    height: 100px;
-    width: 120px;
-    margin-right: 20px;
   }
 }
 @media screen and (min-width: 576px) {
@@ -178,10 +194,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* position: fixed; */
-    /* top: 0; */
-    /* right: 0; */
-    /* background: blue; */
+    position: fixed;
+    top: 0;
+    right: 0;
     background: rgba(0, 0, 0, 30%);
     height: 100vh;
     width: 375px;
@@ -208,13 +223,12 @@
   }
   .titleBox {
     width: 100%;
-    height: 22%;
+    height: 7%;
     display: flex;
     position: absolute;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-top: 5px;
   }
   .nameBox {
     display: flex;
@@ -222,7 +236,8 @@
     align-items: start;
     justify-content: flex-end;
     width: auto;
-    margin-left: 2%;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .backIcon {
     background: url("../../assets/diet/back_white_icon.png");
@@ -239,9 +254,14 @@
   }
   .menuImg {
     width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
   .ImgBox {
-    position: relative;
+    width: 100%;
+    height: 300px;
   }
   .likeBtn {
     position: absolute;
@@ -257,17 +277,21 @@
   .contentBox {
     width: 100%;
     height: auto;
-    padding: 5px 10px;
+    margin-top: 20px;
     padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .menuName {
     font-size: 1.5rem;
     font-weight: bold;
+    margin-top: 8px;
   }
   .grayText {
     color: #8c8a9d;
     font-weight: 300;
     font-size: 1rem;
+    margin-left: 3px;
   }
   .nutriBox {
     padding: 0px 5px;
@@ -281,6 +305,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 3px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding-bottom: 10px;
@@ -332,21 +357,21 @@
     font-size: 0.8rem;
     border: 2px solid #fe724c;
     border-radius: 30px;
-    padding: 8px 15px;
+    padding: 5px 10px;
     background: #fff;
-    margin: 5px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
   .recipeBox {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-bottom: 20px;
+    padding: 10px;
   }
-  .recipeBox p {
+  .recipe {
+    padding-bottom: 15px;
+  }
+  .recipe p {
     color: #9598a0;
-  }
-  .recipeImg {
-    height: 100px;
-    width: 120px;
-    margin-right: 20px;
   }
 }

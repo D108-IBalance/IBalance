@@ -1,6 +1,7 @@
 // 외부 모듈
 import Lottie from "react-lottie";
 import Icon from "../../assets/load/json/Lottie-load.json";
+import dietIcon from "../../assets/load/json/getDietLottie.json";
 
 // 내부 모듈
 import classes from "./Load.module.css";
@@ -13,7 +14,7 @@ import classes from "./Load.module.css";
         - 2 : (off/none -> on)
 */
 const Load = (props) => {
-  const { step } = props;
+  const { step, bgColor, isCreate } = props;
   let isShow = false;
   let fade = "";
 
@@ -34,7 +35,7 @@ const Load = (props) => {
     <>
       {isShow ? ( //isShow값에 따른 랜더 결정 default 제외 모두 랜더
         <div id="spinner">
-          <Spinner fade={fade}></Spinner>
+          <Spinner fade={fade} bgColor={bgColor} isCreate={isCreate}></Spinner>
         </div>
       ) : (
         <></>
@@ -44,20 +45,28 @@ const Load = (props) => {
 };
 
 const Spinner = (props) => {
+  const { fade, bgColor, isCreate } = props; // 애니메이션 클래스
   const defaultOptions = {
     // lottie Options
     loop: true,
     autoplay: true,
-    animationData: Icon,
+    animationData: isCreate ? dietIcon : Icon,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { fade } = props; // 애니메이션 클래스
   return (
-    <div className={classes.container + ` ${classes[fade]}`}>
-      <Lottie options={defaultOptions} height={100} width={100} />
-      <span className={classes.loadText}>Loading...</span>
+    <div
+      className={classes.container + ` ${classes[fade]}`}
+      style={bgColor && { backgroundColor: `${bgColor}` }}>
+      <Lottie
+        options={defaultOptions}
+        height={isCreate ? 300 : 100}
+        width={isCreate ? 300 : 100}
+      />
+      <span className={classes.loadText}>
+        {isCreate ? <>Create Weekly Diets...</> : <>Loading...</>}
+      </span>
     </div>
   );
 };
