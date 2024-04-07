@@ -77,6 +77,7 @@ const ChildAllergy = (props) => {
       <div className={classes.infoBox}>
         {allergy.map((data, idx) => {
           return (
+            idx === 4? null : (
             <div className={classes.ingredient} key={idx}>
               <div
                 className={classes.img}
@@ -89,7 +90,7 @@ const ChildAllergy = (props) => {
                 }}
               />
               <span className={classes.info}>{data["name"]}</span>
-            </div>
+            </div>)
           );
         })}
       </div>
