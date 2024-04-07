@@ -14,7 +14,7 @@
     position: relative;
     background: white;
     margin-bottom: 20px;
-    padding: 280px 15px 50px 15px;
+    padding: 255px 15px 90px 15px;
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     overflow-y: scroll;
